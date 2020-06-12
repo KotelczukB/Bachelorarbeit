@@ -1,11 +1,7 @@
-// Application hooks that run for every service
-// Don't remove this comment. It's needed to format import lines nicely.
-
-import userAuth from "./hooks/user-auth";
 
 export default {
   before: {
-    all: [userAuth()],
+    all: [],
     find: [],
     get: [],
     create: [],
