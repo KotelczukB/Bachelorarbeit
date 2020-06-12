@@ -12,4 +12,10 @@ export class ClientConnector extends Service {
       this.Model = db.collection('client-connector');
     });
   }
+
+  public push() {
+    return {
+      'message': 'hello' 
+    }
+  }
 };

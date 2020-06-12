@@ -1,8 +1,8 @@
 // Use this hook to manipulate incoming or outgoing data.
 // For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
 import { Hook, HookContext } from '@feathersjs/feathers';
-import { IUser } from '../Models/IUser';
-import { ERoles } from '../Models/ERoles';
+import { IUser } from '../Models/Interfaces/IUser';
+import { ERoles } from '../Models/Interfaces/ERoles';
 
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
@@ -13,7 +13,7 @@ export default (options = {}): Hook => {
 
     if(method !== 'create' && user.role !== ERoles.ClusterApp)
       throw new Error('Application do not have premission for this action');
-      
+
     return context;
   };
 }

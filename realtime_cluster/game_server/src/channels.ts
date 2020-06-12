@@ -40,6 +40,10 @@ export default function(app: Application) {
     }
   });
 
+  app.service('client-connector').publish('push', (data, context) => {
+    return app.channel('season-clients');
+  })
+
   // eslint-disable-next-line no-unused-vars
   app.publish((data: any, hook: HookContext) => {
     // Here you can add event publishers to channels set up in `channels.js`
