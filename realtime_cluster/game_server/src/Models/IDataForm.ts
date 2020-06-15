@@ -1,7 +1,7 @@
 import { IUser } from "./Interfaces/IUser";
 
 // Model der Standarisierten Schnittstelle
-export interface IDataForm {
+export default interface IDataForm {
   user: IUser,
   message: string,
   [idx: string]: object | string | boolean

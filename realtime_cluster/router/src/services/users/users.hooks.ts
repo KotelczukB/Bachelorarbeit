@@ -1,12 +1,13 @@
 
+import preRegister from '../../hooks/pre-register';
 export default {
   before: {
     all: [],
     find: [],
     get: [],
-    create: [],
-    update: [],
-    patch: [],
+    create: [preRegister()],
+    update: [preRegister()],
+    patch: [preRegister()],
     remove: []
   },
 

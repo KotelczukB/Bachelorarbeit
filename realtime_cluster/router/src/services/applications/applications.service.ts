@@ -1,13 +1,13 @@
-// Initializes the `clientConnector` service on path `/client-connector`
+// Initializes the `applications` service on path `/applications`
 import { ServiceAddons } from '@feathersjs/feathers';
 import { Application } from '../../declarations';
-import { ClientConnector } from './client-connector.class';
-import hooks from './client-connector.hooks';
+import { Applications } from './applications.class';
+import hooks from './applications.hooks';
 
 // Add this service to the service type index
 declare module '../../declarations' {
   interface ServiceTypes {
-    'client-connector': ClientConnector & ServiceAddons<any>;
+    'applications': Applications & ServiceAddons<any>;
   }
 }
 
@@ -17,10 +17,10 @@ export default function (app: Application) {
   };
 
   // Initialize our service with any options it requires
-  app.use('/client-connector', new ClientConnector(options, app));
+  app.use('/applications', new Applications(options, app));
 
   // Get our initialized service so that we can register hooks
-  const service = app.service('client-connector');
+  const service = app.service('applications');
 
   service.hooks(hooks);
 }
