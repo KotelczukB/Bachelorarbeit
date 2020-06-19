@@ -2,18 +2,14 @@
 // For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
 import { Hook, HookContext } from '@feathersjs/feathers';
 
+// Authentification with an timestamed key from router
+
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
-    // if auth goes correct
     const {data, app} = context;
-    const rtApp = app.service('applications')._find({
-      query: {
-        active: true,
-        backend: data.backend,
-      }
-    });
-    context.result.realtimeApp = rtApp;
-    context.result.rtAuthToken = "yes";
+    // Validate token
+    if(!data.rtAuthToken || data.rtAuthToken !== 'yes')
+      throw new Error('premission denied')
     return context;
   };
 }

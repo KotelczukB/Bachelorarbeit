@@ -1,12 +1,14 @@
 
+import postClientCreate from '../../hooks/post-client-create';
+import preClientCreate from '../../hooks/pre-client-create';
 export default {
   before: {
     all: [],
     find: [],
     get: [],
-    create: [],
-    update: [],
-    patch: [],
+    create: [preClientCreate()],
+    update: [preClientCreate()],
+    patch: [preClientCreate()],
     remove: []
   },
 
@@ -14,9 +16,9 @@ export default {
     all: [],
     find: [],
     get: [],
-    create: [],
-    update: [],
-    patch: [],
+    create: [postClientCreate()],
+    update: [postClientCreate()],
+    patch: [postClientCreate()],
     remove: []
   },
 
