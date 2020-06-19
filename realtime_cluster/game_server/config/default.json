@@ -8,6 +8,6 @@
     },
     "routerHost": "localhost",
     "routerPort": "3031",
-    "routerRegisterService": "rtServerRegister",
+    "routerRegisterService": "applications",
     "mongodb": "mongodb://localhost:27017/realtime_gameserver"
 }
