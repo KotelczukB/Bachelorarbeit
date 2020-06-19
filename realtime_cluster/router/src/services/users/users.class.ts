@@ -12,4 +12,11 @@ export class Users extends Service {
       this.Model = db.collection('users');
     });
   }
+
+  // Override with own func
+  public async create (data: any, params: any): Promise<any> {
+    if(!data.succeed)
+      data.routeranswer = new Error('could not authentificate at backend server');
+    return await super._create(data, params);
+  }
 };

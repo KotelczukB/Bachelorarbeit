@@ -1,13 +1,16 @@
 
-import preRegister from '../../hooks/pre-register';
+import preRegisterUser from '../../hooks/pre-register-user';
+import postResponseUser from '../../hooks/post-response-user';
+import preRegisterUserBackend from '../../hooks/pre-register-user-backend';
+import applicationStateCheck from '../../hooks/application-state-check';
 export default {
   before: {
     all: [],
     find: [],
     get: [],
-    create: [preRegister()],
-    update: [preRegister()],
-    patch: [preRegister()],
+    create: [preRegisterUserBackend(), preRegisterUser(), applicationStateCheck()],
+    update: [preRegisterUserBackend(), preRegisterUser(), applicationStateCheck()],
+    patch: [preRegisterUserBackend(), preRegisterUser(), applicationStateCheck()],
     remove: []
   },
 
@@ -15,9 +18,9 @@ export default {
     all: [],
     find: [],
     get: [],
-    create: [],
-    update: [],
-    patch: [],
+    create: [postResponseUser()],
+    update: [postResponseUser()],
+    patch: [postResponseUser()],
     remove: []
   },
 

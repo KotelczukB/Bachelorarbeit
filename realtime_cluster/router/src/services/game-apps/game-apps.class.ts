@@ -12,4 +12,11 @@ export class GameApps extends Service {
       this.Model = db.collection('game-apps');
     });
   }
+  public async create(data: any, params: any): Promise<any> {
+    const serverData = {
+      serverURL: data.serverURL,
+      serverName: data.serverName,
+    };
+    return super.create(serverData, params);
+  }
 };

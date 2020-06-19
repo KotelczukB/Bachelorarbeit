@@ -1,12 +1,14 @@
 
+import postBackendCreation from '../../hooks/post-backend-creation';
+import applicationStateCheck from '../../hooks/application-state-check';
 export default {
   before: {
     all: [],
     find: [],
     get: [],
-    create: [],
-    update: [],
-    patch: [],
+    create: [applicationStateCheck()],
+    update: [applicationStateCheck()],
+    patch: [applicationStateCheck()],
     remove: []
   },
 
@@ -14,7 +16,7 @@ export default {
     all: [],
     find: [],
     get: [],
-    create: [],
+    create: [postBackendCreation()],
     update: [],
     patch: [],
     remove: []
