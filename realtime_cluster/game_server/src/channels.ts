@@ -10,7 +10,12 @@ export default function(app: Application) {
 
   app.on('connection', (connection: any) => {
     // On a new real-time connection, add it to the anonymous channel
-    app.channel('anonymous').join(connection);
+    const client = app.service('clients')._get(connection.outerID);
+    if(client) {
+      app.channel(`${connection.channelName}`).join(connection);
+    } else {
+      throw new Error('Client not registerd yet.')
+    }
   });
 
   app.on('login', (authResult: any, { connection }: any) => {
@@ -40,16 +45,16 @@ export default function(app: Application) {
     }
   });
 
-  // eslint-disable-next-line no-unused-vars
-  app.publish((data: any, hook: HookContext) => {
-    // Here you can add event publishers to channels set up in `channels.js`
-    // To publish only for a specific event use `app.publish(eventname, () => {})`
+  app.service('client-inputs').publish('update', (data, context) => app.channel(context.result.targetChannel));
+  app.service('client-inputs').publish('patch', (data, context) => app.channel(context.result.targetChannel));
+  app.service('client-inputs').publish('create', () => {});
 
-    console.log('Publishing all events to all authenticated users. See `channels.js` and https://docs.feathersjs.com/api/channels.html for more information.'); // eslint-disable-line
 
-    // e.g. to publish all service events to all authenticated users use
-    return app.channel('authenticated');
-  });
+  // Preventing area
+  app.service('health').publish(() => {null});
+  app.service('backends').publish(() => {null});
+  app.service('clients').publish(() => {null});
+  
 
   // Here you can also add service specific event publishers
   // e.g. the publish the `users` service `created` event to the `admins` channel

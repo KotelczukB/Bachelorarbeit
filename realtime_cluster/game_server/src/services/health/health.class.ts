@@ -15,32 +15,28 @@ export class Health implements ServiceMethods<Data> {
   }
 
   async find (params?: Params): Promise<Data[] | Paginated<Data>> {
-    return [];
+    throw new Error('Function not avalible')
   }
 
   async get (id: Id, params?: Params): Promise<Data> {
     return {
-      id, text: `A new message with ID: ${id}!`
+      id, text: 'Im alife'
     };
   }
 
   async create (data: Data, params?: Params): Promise<Data> {
-    if (Array.isArray(data)) {
-      return Promise.all(data.map(current => this.create(current, params)));
-    }
-
-    return data;
+    throw new Error('Function not avalible')
   }
 
   async update (id: NullableId, data: Data, params?: Params): Promise<Data> {
-    return data;
+    throw new Error('Function not avalible')
   }
 
   async patch (id: NullableId, data: Data, params?: Params): Promise<Data> {
-    return data;
+    throw new Error('Function not avalible')
   }
 
   async remove (id: NullableId, params?: Params): Promise<Data> {
-    return { id };
+    throw new Error('Function not avalible')
   }
 }

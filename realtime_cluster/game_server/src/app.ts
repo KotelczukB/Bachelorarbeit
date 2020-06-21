@@ -17,7 +17,6 @@ import services from './services';
 import appHooks from './app.hooks';
 import channels from './channels';
 import mongodb from './mongodb';
-import IRouterSettings from './models/interfaces/IRouterSettings';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 const app: Application = express(feathers());
@@ -54,7 +53,7 @@ app.use(express.errorHandler({ logger } as any));
 // router default REST Client
 const routerRestClient = rest(`http://${app.get('routerHost')}:${app.get('routerPort')}`);
 app.configure(routerRestClient.fetch(window.fetch));
-const routerSettings: IRouterSettings = app.service(app.get('routerRegisterService'));
+const routerSettings = app.service(app.get('routerRegisterService'));
 app.set('routerSettings', routerSettings);
 
 app.hooks(appHooks);

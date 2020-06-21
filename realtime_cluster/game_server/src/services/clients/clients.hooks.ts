@@ -1,14 +1,14 @@
 
-import postClientCreate from '../../hooks/post-client-create';
-import preClientCreate from '../../hooks/pre-client-create';
+import postOuterAppCreate from '../../hooks/post-outer-app-create';
+import preOuterAppCreate from '../../hooks/pre-outer-app-create';
 export default {
   before: {
     all: [],
     find: [],
     get: [],
-    create: [preClientCreate()],
-    update: [preClientCreate()],
-    patch: [preClientCreate()],
+    create: [preOuterAppCreate()],
+    update: [preOuterAppCreate()],
+    patch: [preOuterAppCreate()],
     remove: []
   },
 
@@ -16,9 +16,9 @@ export default {
     all: [],
     find: [],
     get: [],
-    create: [postClientCreate()],
-    update: [postClientCreate()],
-    patch: [postClientCreate()],
+    create: [postOuterAppCreate()],
+    update: [postOuterAppCreate()],
+    patch: [postOuterAppCreate()],
     remove: []
   },
 

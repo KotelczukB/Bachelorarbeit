@@ -1,12 +1,14 @@
+import preOuterAppCreate from "../../hooks/pre-outer-app-create";
+import postOuterAppCreate from "../../hooks/post-outer-app-create";
 
 export default {
   before: {
     all: [],
     find: [],
     get: [],
-    create: [],
-    update: [],
-    patch: [],
+    create: [preOuterAppCreate()],
+    update: [preOuterAppCreate()],
+    patch: [preOuterAppCreate()],
     remove: []
   },
 
@@ -14,9 +16,9 @@ export default {
     all: [],
     find: [],
     get: [],
-    create: [],
-    update: [],
-    patch: [],
+    create: [postOuterAppCreate()],
+    update: [postOuterAppCreate()],
+    patch: [postOuterAppCreate()],
     remove: []
   },
 
