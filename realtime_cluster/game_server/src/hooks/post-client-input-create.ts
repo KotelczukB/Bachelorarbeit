@@ -12,7 +12,7 @@ export default (options = {}): Hook => {
     // if yes
     // get all inputs and convert for backend execute app.service('backend-input).update()
     // else
-    // 
+    // return
     return context;
   };
 }

@@ -1,9 +1,10 @@
 import { Application } from "@feathersjs/feathers";
+import R from "ramda";
 
 export const getFreeChannel = (app: Application, type: string, maxCount: number): string | null => 
-  filterChannelsOnType(app.channels, type)
+  R.head(filterChannelsOnType(app.channels, type)
     .map(elem => hasMaxConnections(app, maxCount, elem))
-    .sort(compareChannels)[0] ?? createChannelOnDemand(app, type)
+    .sort(compareChannels)) ?? createChannelOnDemand(app, type);
   
 export const compareChannels = (channel_1: string | null, channel_2: string | null): number =>  
   channel_1 === channel_2 ? 1 : -1
@@ -18,5 +19,6 @@ export const createChannelOnDemand = (app: Application, type: string) : string =
 
 export const createNewChannel = (app: Application, name: string): string => {
   app.channel(name);
+  app.service('sessions').create(name, null);
   return name;
 }
