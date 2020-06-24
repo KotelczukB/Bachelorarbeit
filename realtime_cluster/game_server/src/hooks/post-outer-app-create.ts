@@ -1,9 +1,9 @@
 // Use this hook to manipulate incoming or outgoing data.
 // For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
 import { Hook, HookContext } from "@feathersjs/feathers";
-import { getFreeSession } from "../modules/channels/sessionFinder";
+import { getFreeSession } from "../modules/channels/session-finder";
 import { IConnectionData } from "../Models/Interfaces/IClientForm";
-import { createSession } from "../modules/channels/sessionCreater";
+import { createSession } from "../modules/channels/session-creater";
 
 // adding channel name to client response
 

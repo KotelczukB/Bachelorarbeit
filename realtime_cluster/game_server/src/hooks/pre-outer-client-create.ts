@@ -13,6 +13,7 @@ export default (options = {}): Hook => {
     // Validate token
     if (!connectData.token || connectData.token !== "yes")
       throw new Error("premission denied");
+    searchAndRemoveFromSessions(connectData.id);
     // check if already exists unter runnung sessions
     if (connectData.sessionName) {
       const session: ISession | null = await app.service("sessions")
