@@ -8,7 +8,7 @@ export default (options = {}): Hook => {
     const {data} = context;
     if(!data)
       throw new Error('Session faild on create')
-    const name = data;
+    const name = data.name;
     const session: ISession = {
       createdAt: new Date(),
       session_name: name,
