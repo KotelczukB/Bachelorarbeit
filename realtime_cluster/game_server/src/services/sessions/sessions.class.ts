@@ -17,13 +17,15 @@ export class Sessions extends Service {
     const data: ISession = {
       createdAt: new Date(),
       session_name: name,
+      count: 0,
       activ: true,
       client_names: []
     }
-    return super._create(data, params)
+    console.log(data);
+    return super.create(data, params)
   } 
 
   public async patch(data: {client_names: string} | any, params: {session_name: string} | any): Promise<any> {
-    return super._patch(null, data, params);
+    return super.patch(null, data, params);
   } 
 };

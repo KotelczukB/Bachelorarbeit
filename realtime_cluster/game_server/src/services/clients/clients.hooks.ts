@@ -1,14 +1,14 @@
 
 import postOuterAppCreate from '../../hooks/post-outer-app-create';
-import preOuterAppCreate from '../../hooks/pre-outer-app-create';
+import preOuterClientCreate from '../../hooks/pre-outer-client-create';
 export default {
   before: {
     all: [],
     find: [],
     get: [],
-    create: [preOuterAppCreate()],
-    update: [preOuterAppCreate()],
-    patch: [preOuterAppCreate()],
+    create: [preOuterClientCreate()],
+    update: [preOuterClientCreate()],
+    patch: [preOuterClientCreate()],
     remove: []
   },
 

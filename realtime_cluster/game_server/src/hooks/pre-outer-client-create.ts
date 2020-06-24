@@ -9,16 +9,15 @@ import ISession from "../Models/session/ISession";
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
     const { data, app } = context;
-    const connectData = data.connection as IConnectionData;
+    const connectData = data as IConnectionData;
     // Validate token
     if (!connectData.token || connectData.token !== "yes")
       throw new Error("premission denied");
     // check if already exists unter runnung sessions
     if (connectData.sessionName) {
-      const session: ISession | null = await app
-        .service("sessions")
-        .find({ session_name: connectData.sessionName, active: true });
-      if (session)
+      const session: ISession | null = await app.service("sessions")
+          .find({ session_name: connectData.sessionName, active: true });
+      if (session) {
         await app.service("sessions").patch(
           {
             client_names: session.client_names.push(connectData.id),
@@ -27,6 +26,8 @@ export default (options = {}): Hook => {
             session_name: session.session_name,
           }
         );
+        context.data.targetChannel = session.session_name;
+      }
     }
     return context;
   };

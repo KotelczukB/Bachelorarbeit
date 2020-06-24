@@ -10,6 +10,7 @@ import express from '@feathersjs/express';
 import socketio from '@feathersjs/socketio'
 import rest from '@feathersjs/rest-client'
 
+import fetch from 'node-fetch'
 import { Application } from './declarations';
 import logger from './logger';
 import middleware from './middleware';
@@ -52,7 +53,7 @@ app.use(express.errorHandler({ logger } as any));
 
 // router default REST Client
 const routerRestClient = rest(`http://${app.get('routerHost')}:${app.get('routerPort')}`);
-app.configure(routerRestClient.fetch(window.fetch));
+app.configure(routerRestClient.fetch(fetch));
 const routerSettings = app.service(app.get('routerRegisterService'));
 app.set('routerSettings', routerSettings);
 

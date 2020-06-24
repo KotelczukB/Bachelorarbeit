@@ -1,24 +1,21 @@
-import { Application } from "@feathersjs/feathers";
-import R from "ramda";
+import { Application, Service } from "@feathersjs/feathers";
+import R, { isEmpty } from "ramda";
+import ISession from "../../Models/session/ISession";
 
-export const getFreeChannel = (app: Application, type: string, maxCount: number): string | null => 
-  R.head(filterChannelsOnType(app.channels, type)
-    .map(elem => hasMaxConnections(app, maxCount, elem))
-    .sort(compareChannels)) ?? createChannelOnDemand(app, type);
-  
-export const compareChannels = (channel_1: string | null, channel_2: string | null): number =>  
-  channel_1 === channel_2 ? 1 : -1
+export const getFreeSession = async (
+  service: any,
+  type: string,
+  prop: string,
+  maxCount: number
+): Promise<string | null> =>
+    filterSessions(service, prop, maxCount)
+      .then(elem => getJustName(R.head(elem)))
+   ?? createNewChannel(service, type);
 
-export const filterChannelsOnType = (channels: string[], type: string) => channels.filter(channel => channel.includes(type))
+export const filterSessions = async (service: any, prop: string, maxCount: number): Promise<ISession[]> =>
+  await service.find({prop: {$lt: maxCount}});
 
-export const hasMaxConnections = (app: Application, maxCount: number, channelName: string): string | null  => 
-  app.channel(channelName).connections.length >= maxCount ? null : channelName;
+export const getJustName = (session: any): string | null => session !== undefined ? session.session_name : null;
 
-export const createChannelOnDemand = (app: Application, type: string) : string => 
-  createNewChannel(app, `${type}-Session-${app.channels.length + 1}`) 
-
-export const createNewChannel = (app: Application, name: string): string => {
-  app.channel(name);
-  app.service('sessions').create(name, null);
-  return name;
-}
+export const createNewChannel = async (service: any, type: string): Promise<string> => 
+  service.create(`${type}-Session-${new Date()}`).then((elem: ISession) => elem.session_name);

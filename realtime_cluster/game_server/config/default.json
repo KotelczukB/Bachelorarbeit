@@ -9,6 +9,6 @@
     "routerHost": "localhost",
     "routerPort": "3031",
     "routerRegisterService": "applications",
-    "mongodb": "mongodb://localhost:27017/realtime_gameserver",
+    "mongodb": "mongodb://localhost:27017/rtGameserver",
     "maxChannelConnections": 5
 }

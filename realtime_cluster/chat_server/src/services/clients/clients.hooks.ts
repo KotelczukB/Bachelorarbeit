@@ -1,11 +1,10 @@
 
-import preSessionCreate from '../../hooks/pre-session-create';
 export default {
   before: {
     all: [],
     find: [],
     get: [],
-    create: [preSessionCreate()],
+    create: [],
     update: [],
     patch: [],
     remove: []

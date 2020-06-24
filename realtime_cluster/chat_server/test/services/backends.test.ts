@@ -1,8 +1,8 @@
 import app from '../../src/app';
 
-describe('\'users\' service', () => {
+describe('\'backends\' service', () => {
   it('registered the service', () => {
-    const service = app.service('users');
+    const service = app.service('backends');
     expect(service).toBeTruthy();
   });
 });
