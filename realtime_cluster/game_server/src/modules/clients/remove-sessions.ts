@@ -10,7 +10,7 @@ export const searchAndRemoveFromSessions = async (
 export const removeClient = (id: string) => (session: ISession): ISession => {
   return {
     ...session,
-    client_names: session.client_names.filter((elem) => elem !== id),
+    clients: session.clients.filter((elem) => elem !== id),
   };
 };
 

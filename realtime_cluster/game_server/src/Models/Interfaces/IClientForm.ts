@@ -1,9 +1,15 @@
 export default interface IClientForm {
   created: Date,
   send: Date,
-  connection: IConnectionData,
+  clientData: IClient,
   game: IGameData,
   custom: ICustomData
+}
+
+export interface IClientConnection {
+  targetServerURL: string,
+  targetChannel: string,
+  sessionName: string | null
 }
 
 // *******************************************************************************************************************
@@ -11,12 +17,10 @@ export default interface IClientForm {
 // einordnen zu konnen. und dem gleichem Channel zu zuweisen
 // *******************************************************************************************************************
 
-export interface IConnectionData {
+export interface IClient {
   id: string,
   token: string | null,
-  targetServerURL: string,
-  targetChannel: string,
-  sessionName: string | null
+  network: IClientConnection
 }
 
 // *******************************************************************************************************************

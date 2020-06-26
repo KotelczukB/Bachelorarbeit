@@ -44,9 +44,9 @@ export default function(app: Application) {
       // app.channel(`userIds/$(user.id}`).join(channel);
     }
   });
-  //app.service('client-inputs').publish('update', (data, context) => app.channel(context.result.targetChannel));
-  //app.service('client-inputs').publish('patch', (data, context) => app.channel(context.result.targetChannel));
-  //app.service('client-inputs').publish('create', () => {});
+  app.service('client-inputs').publish('updated', (data, context) => app.channel(context.result.targetChannel));
+  app.service('client-inputs').publish('patched', (data, context) => app.channel(context.result.targetChannel));
+  app.service('client-inputs').publish('created', () => {});
 
 
   // Preventing area

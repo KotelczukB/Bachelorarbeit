@@ -3,6 +3,7 @@
 import { Hook, HookContext } from "@feathersjs/feathers";
 import { searchAndRemoveFromSessions } from "../modules/clients/remove-sessions";
 import ISession from "../Models/session/ISession";
+import { IClient } from "../Models/Interfaces/IClientForm";
 
 // ************************************************
 // a)
@@ -16,18 +17,18 @@ import ISession from "../Models/session/ISession";
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
     const { data, app } = context;
-    const connectData: ISession = data;
+    const clientData: IClient = data;
     // a) 
-    await searchAndRemoveFromSessions(connectData.id, app.service("sessions"));
+    await searchAndRemoveFromSessions(clientData.id, app.service("sessions"));
     // b)
-    if (connectData.sessionName) {
+    if (clientData.network.sessionName) {
       const session: ISession | null = await app
         .service("sessions")
-        .find({ session_name: connectData.sessionName, active: true });
+        .find({ session_name: clientData.network.sessionName, active: true });
       if (session) {
         await app.service("sessions").patch(
           {
-            client_names: session.client_names.push(connectData.id),
+            client_names: session.client_names.push(clientData.id),
           },
           {
             session_name: session.session_name,

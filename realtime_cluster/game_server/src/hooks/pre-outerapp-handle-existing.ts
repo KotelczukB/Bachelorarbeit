@@ -1,7 +1,7 @@
 // Use this hook to manipulate incoming or outgoing data.
 // For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
 import { Hook, HookContext } from '@feathersjs/feathers';
-import { IConnectionData } from '../Models/Interfaces/IClientForm';
+import { IClient } from '../Models/Interfaces/IClientForm';
 
 // ************************************************
 // Entferne den Client aus der DB, Redundanzen vermeidung
@@ -9,11 +9,11 @@ import { IConnectionData } from '../Models/Interfaces/IClientForm';
 
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
-    const {data, app} = context;
-    const connection: IConnectionData = data;
-    const exsists = await app.service('clients').find({id: connection.id})
+    const {data, app, path} = context;
+    const clientData: IClient = data;
+    const exsists = await app.service(path).find({id: clientData.id})
     if(exsists)
-      await app.service('client').remove( { id: connection.id } );
+      await app.service(path).remove( { id: clientData.id } );
     return context;
   };
 }

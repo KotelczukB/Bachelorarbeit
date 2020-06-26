@@ -1,24 +1,30 @@
 import preOuterAppAssignChannel from "../../hooks/pre-outerapp-assign-channel";
+import preBackendAuth from "../../hooks/pre-backend-auth";
+import preOuterappHandleExisting from "../../hooks/pre-outerapp-handle-existing";
 
 export default {
   before: {
     all: [],
     find: [],
     get: [],
-    create: [],
-    update: [],
-    patch: [],
-    remove: []
+    create: [
+      preBackendAuth(),
+      preOuterappHandleExisting(),
+      preOuterAppAssignChannel(),
+    ],
+    update: [preBackendAuth()],
+    patch: [preBackendAuth()],
+    remove: [],
   },
 
   after: {
     all: [],
     find: [],
     get: [],
-    create: [preOuterAppAssignChannel()],
-    update: [preOuterAppAssignChannel()],
-    patch: [preOuterAppAssignChannel()],
-    remove: []
+    create: [],
+    update: [],
+    patch: [],
+    remove: [],
   },
 
   error: {
@@ -28,6 +34,6 @@ export default {
     create: [],
     update: [],
     patch: [],
-    remove: []
-  }
+    remove: [],
+  },
 };

@@ -16,9 +16,9 @@ export default (options = {}): Hook => {
     const session: ISession = {
       createdAt: new Date(),
       session_name: name,
-      count: 0,
       activ: true,
-      client_names: [],
+      clients: [],
+      backend: []
     }
     context.data = session;
     return context;
