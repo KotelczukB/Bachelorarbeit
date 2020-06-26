@@ -20,7 +20,8 @@ export default (options = {}): Hook => {
         (await getFreeSession(
           service,
           app.get(`maxChannelConnections-${path}`),
-          path
+          path,
+          ((<IClient>appData).network.targetServerURL ?? undefined)
         )) ?? (await createSession(service, context.path));
       // error: Unhandled Rejection at: Promise  wtf?
       if (!targetChannel)

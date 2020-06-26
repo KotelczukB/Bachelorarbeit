@@ -1,4 +1,4 @@
-import preOuterAppAssignChannel from "../../hooks/pre-outerapp-assign-channel";
+import preOuterAppAssignSession from "../../hooks/pre-outerapp-assign-session";
 import preBackendAuth from "../../hooks/pre-backend-auth";
 import preOuterappHandleExisting from "../../hooks/pre-outerapp-handle-existing";
 
@@ -10,7 +10,7 @@ export default {
     create: [
       preBackendAuth(),
       preOuterappHandleExisting(),
-      preOuterAppAssignChannel(),
+      preOuterAppAssignSession(),
     ],
     update: [preBackendAuth()],
     patch: [preBackendAuth()],
