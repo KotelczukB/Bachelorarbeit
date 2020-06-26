@@ -3,6 +3,10 @@
 import { Hook, HookContext } from '@feathersjs/feathers';
 import ISession from '../Models/session/ISession';
 
+// **********************************
+// Uberprufe und modifiziere ein Session Objekt vor dem speichern
+// **********************************
+
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
     const {data} = context;

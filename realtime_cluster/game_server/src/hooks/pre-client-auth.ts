@@ -3,6 +3,7 @@
 import { Hook, HookContext } from "@feathersjs/feathers";
 import { IConnectionData } from "../Models/Interfaces/IClientForm";
 import ISession from "../Models/session/ISession";
+import { searchAndRemoveFromSessions } from "../modules/clients/remove-sessions";
 
 // Authentification with an timestamed key from router
 
@@ -13,23 +14,7 @@ export default (options = {}): Hook => {
     // Validate token
     if (!connectData.token || connectData.token !== "yes")
       throw new Error("premission denied");
-    searchAndRemoveFromSessions(connectData.id);
-    // check if already exists unter runnung sessions
-    if (connectData.sessionName) {
-      const session: ISession | null = await app.service("sessions")
-          .find({ session_name: connectData.sessionName, active: true });
-      if (session) {
-        await app.service("sessions").patch(
-          {
-            client_names: session.client_names.push(connectData.id),
-          },
-          {
-            session_name: session.session_name,
-          }
-        );
-        context.data.targetChannel = session.session_name;
-      }
-    }
+
     return context;
   };
 };

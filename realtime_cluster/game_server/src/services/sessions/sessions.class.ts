@@ -1,7 +1,6 @@
 import { Db } from 'mongodb';
 import { Service, MongoDBServiceOptions } from 'feathers-mongodb';
 import { Application } from '../../declarations';
-import ISession from '../../Models/session/ISession';
 
 export class Sessions extends Service {
   constructor(options: Partial<MongoDBServiceOptions>, app: Application) {

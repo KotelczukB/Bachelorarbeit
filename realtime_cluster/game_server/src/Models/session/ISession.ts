@@ -4,4 +4,5 @@ export default interface ISession {
   activ: boolean,
   count: number,
   client_names: string[]
+  [idx: string]: any,
 }

@@ -1,4 +1,4 @@
-import postOuterAppCreate from "../../hooks/post-outer-app-create";
+import preOuterAppAssignChannel from "../../hooks/pre-outerapp-assign-channel";
 
 export default {
   before: {
@@ -15,9 +15,9 @@ export default {
     all: [],
     find: [],
     get: [],
-    create: [postOuterAppCreate()],
-    update: [postOuterAppCreate()],
-    patch: [postOuterAppCreate()],
+    create: [preOuterAppAssignChannel()],
+    update: [preOuterAppAssignChannel()],
+    patch: [preOuterAppAssignChannel()],
     remove: []
   },
 

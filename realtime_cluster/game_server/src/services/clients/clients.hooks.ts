@@ -1,25 +1,31 @@
-
-import postOuterAppCreate from '../../hooks/post-outer-app-create';
-import preOuterClientCreate from '../../hooks/pre-outer-client-create';
+import preOuterAppAssignChannel from "../../hooks/pre-outerapp-assign-channel";
+import preOuterClientAuth from "../../hooks/pre-client-auth";
+import preClientHandleExisting from "../../hooks/pre-client-handle-existing";
+import preOuterClientAssignChannel from "../../hooks/pre-client-assign-channel";
 export default {
   before: {
     all: [],
     find: [],
     get: [],
-    create: [preOuterClientCreate()],
-    update: [preOuterClientCreate()],
-    patch: [preOuterClientCreate()],
-    remove: []
+    create: [
+      preOuterClientAuth(),
+      preClientHandleExisting(),
+      preOuterClientAssignChannel(),
+      preOuterAppAssignChannel(),
+    ],
+    update: [preOuterClientAuth(), preOuterAppAssignChannel()],
+    patch: [preOuterClientAuth(), preOuterAppAssignChannel()],
+    remove: [],
   },
 
   after: {
     all: [],
     find: [],
     get: [],
-    create: [postOuterAppCreate()],
-    update: [postOuterAppCreate()],
-    patch: [postOuterAppCreate()],
-    remove: []
+    create: [],
+    update: [],
+    patch: [],
+    remove: [],
   },
 
   error: {
@@ -29,6 +35,6 @@ export default {
     create: [],
     update: [],
     patch: [],
-    remove: []
-  }
+    remove: [],
+  },
 };

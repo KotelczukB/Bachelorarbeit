@@ -12,6 +12,4 @@ export class Backends extends Service {
       this.Model = db.collection('backends');
     });
   }
-
-  // create Methode, muss den vergebenen Channel mit speichern
 };
