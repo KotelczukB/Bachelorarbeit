@@ -1,8 +1,8 @@
 // Use this hook to manipulate incoming or outgoing data.
 // For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
 import { Hook, HookContext } from "@feathersjs/feathers";
-import { searchAndRemoveFromSessions } from "../modules/clients/remove-sessions";
-import ISession from "../Models/session/ISession";
+import { searchAndRemoveFromSessions } from "../modules/sessions/remove-sessions";
+import ISession from "../models/Interfaces/session/ISession";
 import { IClient } from "../Models/Interfaces/IClientForm";
 
 // ************************************************
@@ -18,7 +18,7 @@ export default (options = {}): Hook => {
   return async (context: HookContext) => {
     const { data, app } = context;
     const clientData: IClient = data;
-    // a) 
+    // a)
     await searchAndRemoveFromSessions(clientData.id, app.service("sessions"));
     // b)
     if (clientData.network.sessionName) {
@@ -26,12 +26,12 @@ export default (options = {}): Hook => {
         .service("sessions")
         .find({ session_name: clientData.network.sessionName, active: true });
       if (session) {
-        await app.service("sessions").patch(
+        await app.service("sessions").patch(null,
           {
-            client_names: session.client_names.push(clientData.id),
+            $set: { client_names: session.client_names.push(clientData.id) },
           },
           {
-            session_name: session.session_name,
+            query: { session_name: session.session_name },
           }
         );
         context.data.targetChannel = session.session_name;

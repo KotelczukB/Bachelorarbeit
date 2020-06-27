@@ -1,15 +1,18 @@
 export default interface IClientForm {
-  created: Date,
-  send: Date,
-  clientData: IClient,
+  created_utc_timestamp: number,
+  sended_utc_timestamp: number,
+  client_data: IClient,
   game: IGameData,
-  custom: ICustomData
+  custom: ICustomData | undefined
+  [idx: string]: any
 }
 
 export interface IClientConnection {
   targetServerURL: string,
   targetChannel: string,
-  sessionName: string | null
+  sessionName: string | null,
+  backendToken: string
+  backendAuth: boolean
 }
 
 // *******************************************************************************************************************
@@ -20,6 +23,7 @@ export interface IClientConnection {
 export interface IClient {
   id: string,
   token: string | null,
+  ping: number,
   network: IClientConnection
 }
 

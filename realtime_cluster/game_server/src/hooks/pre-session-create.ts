@@ -1,7 +1,7 @@
 // Use this hook to manipulate incoming or outgoing data.
 // For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
 import { Hook, HookContext } from '@feathersjs/feathers';
-import ISession from '../Models/session/ISession';
+import ISession from '../models/Interfaces/session/ISession';
 
 // **********************************
 // Uberprufe und modifiziere ein Session Objekt vor dem speichern
@@ -12,15 +12,6 @@ export default (options = {}): Hook => {
     const {data} = context;
     if(!data)
       throw new Error('Session faild on create')
-    const name = data.name;
-    const session: ISession = {
-      createdAt: new Date(),
-      session_name: name,
-      activ: true,
-      clients: [],
-      backend: []
-    }
-    context.data = session;
     return context;
   };
 }

@@ -1,6 +1,5 @@
 import preOuterAppAssignSession from "../../hooks/pre-outerapp-assign-session";
-import preBackendAuth from "../../hooks/pre-backend-auth";
-import preOuterappHandleExisting from "../../hooks/pre-outerapp-handle-existing";
+import preBackendAuth from "../../hooks/pre-backend-auth"
 
 export default {
   before: {
@@ -8,9 +7,7 @@ export default {
     find: [],
     get: [],
     create: [
-      preBackendAuth(),
-      preOuterappHandleExisting(),
-      preOuterAppAssignSession(),
+      preBackendAuth()
     ],
     update: [preBackendAuth()],
     patch: [preBackendAuth()],

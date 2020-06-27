@@ -1,4 +1,4 @@
-import ISession from "../../Models/session/ISession";
+import ISession from "../../models/Interfaces/session/ISession";
 
 export const searchAndRemoveFromSessions = async (
   id: string,

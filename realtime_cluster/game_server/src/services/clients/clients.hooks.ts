@@ -1,7 +1,7 @@
-import preOuterAppAssignSession from "../../hooks/pre-outerapp-assign-session";
+import preClientAssignSession from "../../hooks/pre-outerapp-assign-session";
 import preOuterClientAuth from "../../hooks/pre-client-auth";
 import preOuterappHandleExisting from "../../hooks/pre-outerapp-handle-existing";
-import preOuterClientAssignChannel from "../../hooks/pre-client-reconnect-session";
+import preClientReconnectSession from "../../hooks/pre-client-reconnect-session";
 export default {
   before: {
     all: [],
@@ -10,11 +10,11 @@ export default {
     create: [
       preOuterClientAuth(),
       preOuterappHandleExisting(),
-      preOuterClientAssignChannel(),
-      preOuterAppAssignSession(),
+      preClientReconnectSession(),
+      preClientAssignSession(),
     ],
-    update: [preOuterClientAuth(), preOuterAppAssignSession()],
-    patch: [preOuterClientAuth(), preOuterAppAssignSession()],
+    update: [preOuterClientAuth(), preClientAssignSession()],
+    patch: [preOuterClientAuth(), preClientAssignSession()],
     remove: [],
   },
 
