@@ -4,6 +4,7 @@ export default interface ISession {
   activ: boolean, // am leben
   started: boolean, // backend ist drin
   closed: boolean, // spiel hat begonnen
+  clientsToStart: number;
   clients_channel: string,
   backends_channel: string,
   clients: string[],

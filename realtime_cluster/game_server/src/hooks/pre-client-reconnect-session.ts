@@ -1,10 +1,11 @@
 // Use this hook to manipulate incoming or outgoing data.
 // For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
 import { Hook, HookContext } from "@feathersjs/feathers";
-import { searchAndRemoveFromSessions } from "../modules/sessions/remove-sessions";
+import { searchAndRemoveFromSessions } from "../modules/sessions/remove-from-sessions";
 import ISession from "../models/Interfaces/session/ISession";
 import { IClient } from "../Models/Interfaces/IClientForm";
 import findOnServiceGetFirst from "../modules/helpers/find-on-service-get-first";
+import { default_params } from "../modules/helpers/basic-default-service-params";
 
 // ************************************************
 // a)
@@ -29,7 +30,7 @@ export default (options = {}): Hook => {
       if (session) {
         await app.service("sessions").patch(session._id, {
           $push: { clients: clientData.id },
-        });
+        }, default_params);
         context.data.targetChannel = session.clients_channel;
       }
       return context;

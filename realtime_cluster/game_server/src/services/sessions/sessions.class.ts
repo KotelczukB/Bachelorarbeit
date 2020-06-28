@@ -20,13 +20,19 @@ export class Sessions extends Service {
       session_name: data.name,
       backends_channel: `backend_${data.name}`,
       clients_channel: `clinet_${data.name}`,
-      started: data.backendURL !== undefined,
+      started: false,
+      clientsToStart: 0,
       closed: false,
-      activ: true,
+      activ: data.backendURL !== undefined,
       clients: [data.client_id],
       backend: [data.backendURL],
       syncPing: 0
     }
     return super.create(session, params)
   } 
+
+  // **************************************************************
+  // create & patch triggern post-verify-session-progress
+  // update triggert es nicht, update ist dafur gedacht falls "silent" changes vorgenommen werden mussen
+  // **************************************************************
 };

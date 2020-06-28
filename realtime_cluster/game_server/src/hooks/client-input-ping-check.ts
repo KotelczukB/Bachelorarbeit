@@ -4,6 +4,10 @@ import { Hook, HookContext, Application } from "@feathersjs/feathers";
 import IClientForm from "../Models/Interfaces/IClientForm";
 import getPing from "../modules/helpers/create_ping";
 import validateClientForm from "../modules/helpers/validate_client_form";
+import {
+  default_params,
+  addToDefaultParams,
+} from "../modules/helpers/basic-default-service-params";
 
 // ******************************************
 // Validiert die mindest Anforderungen der Form und pruft den ping
@@ -17,18 +21,23 @@ export default (options = {}): Hook => {
     if (!validateClientForm(client, app))
       throw new Error("Input does not satisfied basic requirements");
     const client_ping = getPing(client.sended_utc_timestamp);
-    await app.service("clients").patch(client.client_data.id, {
-      $set: { ping: client_ping },
-    });
-    await app.service("sessions")
-      .patch(
-        null,
-        { $set: { syncPing: client_ping } },
-        {
+    await app.service("clients").patch(
+      client.client_data.id,
+      {
+        $set: { ping: client_ping },
+      },
+      default_params
+    );
+    await app.service("sessions").patch(
+      null,
+      { $set: { syncPing: client_ping } },
+      addToDefaultParams({
+        query: {
           session_name: client.client_data.network.sessionName,
           syncPing: { $lt: client_ping },
-        }
-      );
+        },
+      })
+    );
     return context;
   };
 };

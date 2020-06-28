@@ -1,5 +1,6 @@
 import ISession from "../../models/Interfaces/session/ISession";
 import ISessionCreate from "../../models/Interfaces/session/ISessionCreate";
+import { default_params, addToDefaultParams } from "../helpers/basic-default-service-params";
 
 // *************************************
 // generiere eine neue Session und weise das Backend zu falls es im Echtzeit server registriert wurde
@@ -21,13 +22,13 @@ export const createNewSession = async (
   service: any,
   sessionData: ISessionCreate
 ): Promise<{ user: string; session: string, backend: string}> =>
-  service.create(sessionData).then(getSessionName());
+  service.create(sessionData, default_params).then(getSessionName());
 
 export const checkBackendavalible = async (
   service: any,
   backendURL: string
 ): Promise<boolean> =>
-  service.find({ ownURL: backendURL }).then((elem: any) => elem !== undefined);
+  service.find(addToDefaultParams({query: { ownURL: backendURL }})).then((elem: any) => elem !== undefined);
 
 export const getSessionName = () => (
   session: ISession

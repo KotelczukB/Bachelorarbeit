@@ -1,8 +1,10 @@
 
 import preSessionCreate from '../../hooks/pre-session-create';
+import postChangeVerifySessionProgress from '../../hooks/post-change-verify-session-progress';
+import preRestrictExternCall from '../../hooks/pre-session-restrict-extern-call';
 export default {
   before: {
-    all: [],
+    all: [preRestrictExternCall()],
     find: [],
     get: [],
     create: [preSessionCreate()],
@@ -15,9 +17,9 @@ export default {
     all: [],
     find: [],
     get: [],
-    create: [],
+    create: [postChangeVerifySessionProgress()],
     update: [],
-    patch: [],
+    patch: [postChangeVerifySessionProgress()],
     remove: []
   },
 

@@ -1,5 +1,6 @@
 import R from "ramda";
 import ISession from "../../models/Interfaces/session/ISession";
+import { default_params } from "../helpers/basic-default-service-params";
 // ***************************************
 // Sucht eine Session die bereits erstellt worden ist mit dem gleichem Backend
 // ***************************************
@@ -14,7 +15,7 @@ export const getFreeSession = async (
     .then((elem) =>
       getNameAndPatchSession(R.head(elem.data), service, client_id, userType)
     )
-    .catch(() => null);
+    .catch((error) => { console.log(error); return null} );
 
 export const getNameAndPatchSession = async (
   session: ISession,
@@ -23,7 +24,7 @@ export const getNameAndPatchSession = async (
   userType: string
 ): Promise<{ user: string; session: string; backend: string } | null> =>
   service
-    .patch(session._id, { $push: { clients: client_id } })
+    .patch(session._id, { $push: { clients: client_id } }, default_params)
     .then(() => getJustName(userType)(session));
 
 export const filterSessions = async (

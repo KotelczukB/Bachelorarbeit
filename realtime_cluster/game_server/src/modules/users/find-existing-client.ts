@@ -1,10 +1,11 @@
 import { IClient } from "../../Models/Interfaces/IClientForm";
+import { addToDefaultParams } from "../helpers/basic-default-service-params";
 
 export default async (
   service: any,
   client_id: string
 ): Promise<{ data: IClient[]; [idx: string]: any } | undefined> =>
-  service.find({ query: { id: client_id } }).then(returnNullifEmpty());
+  service.find(addToDefaultParams({ query: { id: client_id } })).then(returnNullifEmpty());
 
 export const returnNullifEmpty = () => (
   retrunObj: any
