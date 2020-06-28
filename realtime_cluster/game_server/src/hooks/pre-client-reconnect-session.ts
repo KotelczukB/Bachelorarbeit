@@ -23,9 +23,9 @@ export default (options = {}): Hook => {
     // a)
     await searchAndRemoveFromSessions(clientData.id, app.service("sessions"));
     // b)
-    if (clientData.network.sessionName) {
+    if (clientData.network.session_name) {
       const session: ISession | null = await findOnServiceGetFirst(app.service("sessions"), {
-        query: { session_name: clientData.network.sessionName, activ: true },
+        query: { session_name: clientData.network.session_name, activ: true },
       });
       if (session) {
         await app.service("sessions").patch(session._id, {

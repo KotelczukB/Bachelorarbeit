@@ -8,11 +8,11 @@ export default interface IClientForm {
 }
 
 export interface IClientConnection {
-  targetServerURL: string,
-  targetChannel: string,
-  sessionName: string | null,
-  backendToken: string
-  backendAuth: boolean
+  target_server_URL: string,
+  target_channel: string,
+  session_name: string | null,
+  backend_token: string
+  backend_auth: boolean
 }
 
 // *******************************************************************************************************************

@@ -4,10 +4,10 @@ import {
 } from "../../Models/Interfaces/IClientForm";
 
 export default (network: IClientConnection): number =>
-  !network.targetChannel && !network.sessionName
+  !network.target_channel && !network.session_name
     ? 1
-    : !network.targetChannel && network.sessionName
+    : !network.target_channel && network.session_name
     ? 0
-    : network.targetChannel && !network.sessionName
+    : network.target_channel && !network.session_name
     ? -1
     : -1;

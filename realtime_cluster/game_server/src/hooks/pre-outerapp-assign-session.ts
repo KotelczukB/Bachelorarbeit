@@ -21,7 +21,7 @@ export default (options = {}): Hook => {
         app.get(`maxChannelConnections-${path}`),
         path,
         app.service("backends"),
-        createSessionData(client.network.targetServerURL, client.id)
+        createSessionData(client.network.target_server_URL, client.id)
       );
       if (!targetChannel)
         throw new Error("no channel exists or can be created");
