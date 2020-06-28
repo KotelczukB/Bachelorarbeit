@@ -1,0 +1,1 @@
+export default async (service: any, query: {query: {[idx: string]: any}}): Promise<any> => service.find(query).then((elem:any ) => elem.data[0])

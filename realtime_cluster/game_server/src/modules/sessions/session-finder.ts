@@ -9,7 +9,7 @@ export const getFreeSession = async (
   maxCount: number,
   userType: string,
   targetURL: string
-): Promise<string | null> =>
+): Promise<{ user: string; session: string; backend: string } | null> =>
   filterSessions(service, maxCount, userType, targetURL)
     .then((elem) =>
       getNameAndPatchSession(R.head(elem.data), service, client_id, userType)
@@ -21,8 +21,9 @@ export const getNameAndPatchSession = async (
   service: any,
   client_id: string,
   userType: string
-): Promise<string | null> =>
-  service.patch(session._id, { $push: { clients: client_id } })
+): Promise<{ user: string; session: string; backend: string } | null> =>
+  service
+    .patch(session._id, { $push: { clients: client_id } })
     .then(() => getJustName(userType)(session));
 
 export const filterSessions = async (
@@ -35,8 +36,14 @@ export const filterSessions = async (
 
 export const getJustName = (user_type: string) => (
   session: ISession
-): string | null =>
-  session !== undefined ? session[`${user_type}_channel`] : null;
+): { user: string; session: string; backend: string } | null =>
+  session !== undefined
+    ? {
+        user: session[`${user_type}_channel`],
+        session: session.session_name,
+        backend: session.backends_channel,
+      }
+    : null;
 
 export const buildQuery = (
   userType: string,
@@ -46,7 +53,7 @@ export const buildQuery = (
   return {
     [userType]: { $exists: true },
     $where: `this.${userType}.length<${maxCount}`,
-    started: false,
+    closed: false,
     activ: true,
     backends: targetURL,
   };

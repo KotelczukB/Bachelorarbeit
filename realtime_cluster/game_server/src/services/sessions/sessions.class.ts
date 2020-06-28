@@ -18,9 +18,10 @@ export class Sessions extends Service {
     const session: ISession = {
       createdAt: new Date(),
       session_name: data.name,
-      backends_channel: `backend_${name}`,
-      clients_channel: `clinet_${name}`,
-      started: false,
+      backends_channel: `backend_${data.name}`,
+      clients_channel: `clinet_${data.name}`,
+      started: data.backendURL !== undefined,
+      closed: false,
       activ: true,
       clients: [data.client_id],
       backend: [data.backendURL],

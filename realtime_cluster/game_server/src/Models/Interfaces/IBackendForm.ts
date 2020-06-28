@@ -6,13 +6,14 @@ export default interface IBackendForm {
 export interface IBackend {
   id: string,
   token: string,
-  network: IBackendNetwork
+  network: IBackendNetwork,
   clients: IClientAuth[],
   gameData: IGameData
 }
 
 export interface IGameData{
-  sync: ISyncData
+  intervall: number,
+  sync: ISyncData,
   static: IStaticData
 }
 
@@ -26,8 +27,6 @@ export interface IStaticData {
 
 export interface IBackendNetwork {
   ownURL: string,
-  targetChannel: string,
-  sessionName: string
 }
 
 export interface IClientAuth {

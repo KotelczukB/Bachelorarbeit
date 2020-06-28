@@ -8,7 +8,7 @@ export default async (
   kinde: string,
   service_backends: any,
   sessionData: ISessionCreate
-): Promise<string | null> => {
+): Promise<{ user: string; session: string, backend: string} | null> => {
   return (
     (await getFreeSession(
       service_session,

@@ -1,7 +1,8 @@
 // Use this hook to manipulate incoming or outgoing data.
 // For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
-import { Hook, HookContext } from '@feathersjs/feathers';
-import { IClient } from '../Models/Interfaces/IClientForm';
+import { Hook, HookContext } from "@feathersjs/feathers";
+import { IClient } from "../Models/Interfaces/IClientForm";
+import findExistingClient from "../modules/users/find-existing-client";
 
 // ************************************************
 // Entferne den Client aus der DB, Redundanzen vermeidung
@@ -9,11 +10,11 @@ import { IClient } from '../Models/Interfaces/IClientForm';
 
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
-    const {data, app, path} = context;
+    const { data, app, path } = context;
     const clientData: IClient = data;
-    const exsists = await app.service(path).find({id: clientData.id})
-    if(exsists)
-      await app.service(path).remove( { id: clientData.id } );
+    const exsists = await findExistingClient(app.service(path), clientData.id);
+    if (exsists)
+      await app.service(path).remove(exsists._id);
     return context;
   };
-}
+};

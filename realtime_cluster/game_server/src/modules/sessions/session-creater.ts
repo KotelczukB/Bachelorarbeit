@@ -9,7 +9,7 @@ export const createSession = async (
   service: any,
   service_second: any,
   sessionData: ISessionCreate
-): Promise<string | null> =>
+): Promise<{ user: string; session: string, backend: string} | null> =>
   checkBackendavalible(
     service_second,
     sessionData.backendURL
@@ -17,14 +17,24 @@ export const createSession = async (
     valid ? await createNewSession(service, sessionData) : null
   );
 
-export const createNewSession = async (service: any, sessionData: ISessionCreate): Promise<string> =>
+export const createNewSession = async (
+  service: any,
+  sessionData: ISessionCreate
+): Promise<{ user: string; session: string, backend: string}> =>
   service.create(sessionData).then(getSessionName());
 
 export const checkBackendavalible = async (
-  backendURL: string,
-  service: any
+  service: any,
+  backendURL: string
 ): Promise<boolean> =>
   service.find({ ownURL: backendURL }).then((elem: any) => elem !== undefined);
 
-export const getSessionName = () => (session: ISession): string =>
-  session.session_name;
+export const getSessionName = () => (
+  session: ISession
+): { user: string; session: string, backend: string} => {
+  return {
+    user: session.clients_channel,
+    backend: session.backends_channel,
+    session: session.session_name,
+  };
+};

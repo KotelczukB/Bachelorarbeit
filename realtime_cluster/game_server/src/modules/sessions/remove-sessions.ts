@@ -4,16 +4,9 @@ export const searchAndRemoveFromSessions = async (
   id: string,
   service: any
 ) =>
-  service.find({ client_names: id })
-    .then((elem: any) => (elem.data as ISession[]).map(removeClient(id)).map(updateSessions(service)));
+  service.find({query: { clients: id }})
+    .then((elem: any) => (elem.data as ISession[]).map(updateSessions(service)(id)));
 
-export const removeClient = (id: string) => (session: ISession): ISession => {
-  return {
-    ...session,
-    clients: session.clients.filter((elem) => elem !== id),
-  };
-};
-
-export const updateSessions = (service: any) => async (session: ISession) => {
-  await service.update(session._id, session)
+export const updateSessions = (service: any) => (id: string) => async (session: ISession) => {
+  await service.update(session._id, { $pull: { clients: id } })
 }
