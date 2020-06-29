@@ -1,7 +1,6 @@
 import { IClient } from "../../Models/Interfaces/IClientForm";
-import { IBackend } from "../../models/Interfaces/IBackendForm";
 
-export default (app: IClient | IBackend , session: string, channel: string): IClient | IBackend => {
+export default (app: IClient , session: string, channel: string): IClient => {
   app.network = {
     ...app.network,
     target_channel: channel,
