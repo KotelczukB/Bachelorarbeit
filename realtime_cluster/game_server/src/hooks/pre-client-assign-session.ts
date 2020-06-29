@@ -27,7 +27,7 @@ export default (options = {}): Hook => {
       context.data = assignSessionAndChannelName(data, targetChannel.session, targetChannel.user);
       // -1 da ist irg.was schief gegangen
     } else if(validateClientSessionProp(data.network) === -1) {
-       throw new Error("connection Data incomplete missing channel or session")
+       throw new Error("connection data incomplete. Missing channel or session")
     }
     return context;
   };

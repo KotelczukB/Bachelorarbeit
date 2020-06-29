@@ -1,7 +1,7 @@
 
 import preInputUpdate from '../../hooks/pre-input-update';
-import postInputUpdate from '../../hooks/post-input-update';
-import preInputCreate from '../../hooks/pre-input-create';
+import postInputUpdate from '../../hooks/post-clientinput-update';
+import preInputCreate from '../../hooks/pre-clientinput-create';
 export default {
   before: {
     all: [],

@@ -1,9 +1,9 @@
 
 import preInputUpdate from '../../hooks/pre-input-update';
-import postInputUpdate from '../../hooks/post-input-update';
-import preInputCreate from '../../hooks/pre-input-create';
-import postInputCreate from '../../hooks/post-client-input-create';
-import clientInputPingCheck from '../../hooks/client-input-ping-check';
+import postInputUpdate from '../../hooks/post-clientinput-update';
+import preInputCreate from '../../hooks/pre-clientinput-create';
+import postInputCreate from '../../hooks/post-clientinput-create';
+import clientInputPingCheck from '../../hooks/pre-clientinput-ping-check';
 export default {
   before: {
     all: [],

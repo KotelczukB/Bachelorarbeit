@@ -1,4 +1,4 @@
-import preOuterAppAssignSession from "../../hooks/pre-outerapp-assign-session";
+import preOuterAppAssignSession from "../../hooks/pre-client-assign-session";
 import preBackendAuth from "../../hooks/pre-backend-auth"
 
 export default {

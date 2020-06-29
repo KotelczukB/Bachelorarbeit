@@ -1,6 +1,6 @@
-import preClientAssignSession from "../../hooks/pre-outerapp-assign-session";
+import preClientAssignSession from "../../hooks/pre-client-assign-session";
 import preOuterClientAuth from "../../hooks/pre-client-auth";
-import preOuterappHandleExisting from "../../hooks/pre-outerapp-handle-existing";
+import preOuterappHandleExisting from "../../hooks/pre-client-handle-existing";
 import preClientReconnectSession from "../../hooks/pre-client-reconnect-session";
 export default {
   before: {
