@@ -2,6 +2,7 @@ import preClientAssignSession from "../../hooks/pre-client-assign-session";
 import preOuterClientAuth from "../../hooks/pre-client-auth";
 import preOuterappHandleExisting from "../../hooks/pre-client-handle-existing";
 import preClientReconnectSession from "../../hooks/pre-client-reconnect-session";
+import postClientVerifySessionChanges from '../../hooks/post-client-verify-session-changes';
 export default {
   before: {
     all: [],
@@ -22,7 +23,7 @@ export default {
     all: [],
     find: [],
     get: [],
-    create: [],
+    create: [postClientVerifySessionChanges()],
     update: [],
     patch: [],
     remove: [],

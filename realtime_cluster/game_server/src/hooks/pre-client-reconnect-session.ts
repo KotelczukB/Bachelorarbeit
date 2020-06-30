@@ -25,7 +25,7 @@ export default (options = {}): Hook => {
     // b)
     if (clientData.network.session_name) {
       const session: ISession | null = await findOnServiceGetFirst(app.service("sessions"), {
-        query: { session_name: clientData.network.session_name, activ: true },
+        query: { session_name: clientData.network.session_name, state: 0 },
       });
       if (session) {
         await app.service("sessions").patch(session._id, {

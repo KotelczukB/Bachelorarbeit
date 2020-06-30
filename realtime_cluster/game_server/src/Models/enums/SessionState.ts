@@ -1,6 +1,6 @@
 export enum SessionState {
   running,
-  activ,
+  active,
   full,
-  dead,
+  closed,
 }

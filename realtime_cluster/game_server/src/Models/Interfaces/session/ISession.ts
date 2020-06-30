@@ -1,10 +1,10 @@
+import { SessionState } from "../../enums/SessionState";
+
 export default interface ISession {
   createdAt: Date,
   session_name: string,
-  activ: boolean, // am leben
-  started: boolean, // backend ist drin
-  closed: boolean, // spiel hat begonnen
-  clientsToStart: number;
+  state: SessionState, // active, running, full, closed
+  clients_to_start: number;
   clients_channel: string,
   backends_channel: string,
   clients: string[],

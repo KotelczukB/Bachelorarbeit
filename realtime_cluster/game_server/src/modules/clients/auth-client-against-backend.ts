@@ -33,10 +33,10 @@ export const sendAuthRequest = async (
 ): Promise<boolean> => makeRequest(fetch, client).then(validate);
 
 export const makeRequest = async (fetch: any, client: IClient): Promise<any> =>
-  fetch(client.network.target_server_URL, {
+  fetch(client.network.backend_server_URL, {
     method: "get",
     headers: { Bearer: client.network.backend_auth },
-  }).then((res: any) => res.json());
+  }).then((res: Response) => res.json());
 
 export const validateResponses = async (
   promise: Promise<any>

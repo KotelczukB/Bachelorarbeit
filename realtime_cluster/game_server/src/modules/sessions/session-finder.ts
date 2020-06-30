@@ -15,7 +15,7 @@ export const getFreeSession = async (
     .then((elem) =>
       getNameAndPatchSession(R.head(elem.data), service, client_id, userType)
     )
-    .catch((error) => { console.log(error); return null} );
+    .catch((error) => { return null} );
 
 export const getNameAndPatchSession = async (
   session: ISession,
@@ -54,8 +54,7 @@ export const buildQuery = (
   return {
     [userType]: { $exists: true },
     $where: `this.${userType}.length<${maxCount}`,
-    closed: false,
-    activ: true,
+    state: { $lt: 2 },
     backends: targetURL,
   };
 };
