@@ -1,6 +1,5 @@
 import ISession from "./ISession";
 import { IClient } from "../IClientForm";
-import { SessionState } from "../../enums/SessionState";
 import { Application } from "@feathersjs/feathers";
 
 export interface ISessionSwitcher {

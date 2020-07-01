@@ -1,7 +1,5 @@
-import {
-  IClient,
-  IClientConnection,
-} from "../../Models/Interfaces/IClientForm";
+import { IClientConnection } from "../../models/Interfaces/clients/IClientConnection";
+
 
 export default (network: IClientConnection): number =>
   !network.target_channel && !network.session_name

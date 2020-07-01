@@ -1,7 +1,8 @@
 
-import preInputUpdate from '../../hooks/pre-input-update';
+import preInputUpdate from '../../hooks/pre-input-update-forbidden';
 import postInputUpdate from '../../hooks/post-clientinput-update';
 import preInputCreate from '../../hooks/pre-clientinput-create';
+import postBackendinputSetInterval from '../../hooks/post-backendinput-set-interval';
 export default {
   before: {
     all: [],
@@ -17,7 +18,7 @@ export default {
     all: [],
     find: [],
     get: [],
-    create: [],
+    create: [postBackendinputSetInterval()],
     update: [postInputUpdate()],
     patch: [postInputUpdate()],
     remove: []

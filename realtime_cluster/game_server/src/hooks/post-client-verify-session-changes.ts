@@ -1,7 +1,6 @@
 // Use this hook to manipulate incoming or outgoing data.
 // For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
 import { Hook, HookContext, Application } from "@feathersjs/feathers";
-import { IClient } from "../Models/Interfaces/IClientForm";
 import {
   validateIncreaseSessionState,
   switcher,
@@ -10,6 +9,8 @@ import switchSessionState from "../modules/sessions/switch-session-state";
 import { validateSessionRequierdProps } from "../modules/sessions/validate-session";
 import ISession from "../models/Interfaces/session/ISession";
 import { SessionState } from "../models/enums/SessionState";
+import { addToDefaultParams } from "../modules/helpers/basic-default-service-params";
+import { IClient } from "../models/Interfaces/clients/IClient";
 
 //******************************************************************
 //Prufe vorausgesetzte props von Sessions, prufe anzahl von Clients.
@@ -22,7 +23,7 @@ export default (options = {}): Hook => {
   return async (context: HookContext) => {
     const { result, app } = context as { result: IClient; app: Application };
     app.service("sessions")
-      .find({ query: { session_name: result.network.session_name } })
+      .find(addToDefaultParams({ query: { session_name: result.network.session_name } }))
       .then((response: { [idx: string]: any, data: ISession }) =>
         validateSessionRequierdProps(response.data as ISession)
           ? validateIncreaseSessionState(

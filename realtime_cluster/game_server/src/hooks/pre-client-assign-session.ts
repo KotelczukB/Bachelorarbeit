@@ -1,7 +1,7 @@
 // Use this hook to manipulate incoming or outgoing data.
 // For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
 import { Hook, HookContext } from "@feathersjs/feathers";
-import { IClient } from "../Models/Interfaces/IClientForm";
+import { IClient } from "../models/Interfaces/clients/IClient";
 import assignSessionAndChannelName from "../modules/helpers/assign-session-channel";
 import findOrCreateSession from "../modules/helpers/find-or-create-session";
 import createSessionData from "../modules/helpers/create-session-data";

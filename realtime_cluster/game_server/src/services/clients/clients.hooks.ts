@@ -1,5 +1,5 @@
 import preClientAssignSession from "../../hooks/pre-client-assign-session";
-import preOuterClientAuth from "../../hooks/pre-client-auth";
+import preOuterClientAuth from "../../hooks/pre-client-all-auth";
 import preOuterappHandleExisting from "../../hooks/pre-client-handle-existing";
 import preClientReconnectSession from "../../hooks/pre-client-reconnect-session";
 import postClientVerifySessionChanges from '../../hooks/post-client-verify-session-changes';

@@ -1,4 +1,4 @@
-import { IClient } from "../../Models/Interfaces/IClientForm";
+import { IClient } from "../../models/Interfaces/clients/IClient";
 
 export default (app: IClient , session: string, channel: string): IClient => {
   app.network = {

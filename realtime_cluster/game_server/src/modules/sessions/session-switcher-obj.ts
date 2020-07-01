@@ -5,10 +5,11 @@ import {
   ISwitcherClientProps,
 } from "../../models/Interfaces/session/ISessionSwitcher";
 import ISession from "../../models/Interfaces/session/ISession";
-import { IClient } from "../../Models/Interfaces/IClientForm";
 import { SessionState } from "../../models/enums/SessionState";
 import app from "../../app";
 import fetch, { Response } from "node-fetch";
+import { addToDefaultParams } from "../helpers/basic-default-service-params";
+import { IClient } from "../../models/Interfaces/clients/IClient";
 
 export const validateIncreaseSessionState = async (
   should_switch: (
@@ -40,7 +41,7 @@ export const getClientsOnSession = async (
 ): Promise<ISwitcherClientProps> =>
   app
     .service("clients")
-    .find({ query: { session_name: obj.name } })
+    .find(addToDefaultParams({ query: { session_name: obj.name } }))
     .then((resp: any) => {
       return { clients: resp.data as IClient[], app: obj.app };
     });

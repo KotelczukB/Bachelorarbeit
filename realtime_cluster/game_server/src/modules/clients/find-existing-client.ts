@@ -1,5 +1,6 @@
-import { IClient } from "../../Models/Interfaces/IClientForm";
+
 import { addToDefaultParams } from "../helpers/basic-default-service-params";
+import { IClient } from "../../models/Interfaces/clients/IClient";
 
 export default async (
   service: any,

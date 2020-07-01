@@ -1,5 +1,6 @@
-import { IClient } from "../../Models/Interfaces/IClientForm";
+
 import fetch from "node-fetch";
+import { IClient } from "../../models/Interfaces/clients/IClient";
 
 export default async (
   client: IClient

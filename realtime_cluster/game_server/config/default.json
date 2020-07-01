@@ -12,7 +12,6 @@
     "mongodb": "mongodb://localhost:27017/rtGameserver",
     "maxChannelConnections-clients": 5,
     "maxChannelConnections-backends": 1,
-    "client_required": ["created_timestamp", "sended_timestamp", "client_data", "game"],
-    "client_data_required": ["id", "token", "network"],
-    "game_required": ["sequenzed", "stable"]
+    "client_required": ["created_utc_timestamp", "sended_utc_timestamp", "client_id", "session_name", "game"],
+    "game_required": ["variable", "const"]
 }

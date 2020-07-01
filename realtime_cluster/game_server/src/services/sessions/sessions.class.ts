@@ -22,6 +22,7 @@ export class Sessions extends Service {
       backends_channel: `backend_${data.name}`,
       clients_channel: `clinet_${data.name}`,
       clients_to_start: 0,
+      interval_value: data.interval,
       state: SessionState.active,
       clients: [data.client_id],
       backend: [data.backendURL],

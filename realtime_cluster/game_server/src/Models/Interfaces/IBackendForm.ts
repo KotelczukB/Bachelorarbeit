@@ -8,6 +8,7 @@ export interface IBackend {
   token: string,
   network: IBackendNetwork,
   clients: IClientAuth[],
+  interval_value: number
   gameData: IGameData
 }
 

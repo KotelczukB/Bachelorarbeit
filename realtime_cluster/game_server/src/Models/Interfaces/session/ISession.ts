@@ -7,6 +7,7 @@ export default interface ISession {
   clients_to_start: number;
   clients_channel: string,
   backends_channel: string,
+  interval_value: number
   clients: string[],
   backend: string[],
   syncPing: number,

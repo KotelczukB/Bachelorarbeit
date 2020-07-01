@@ -1,39 +1,28 @@
 // short way to get UTC timestamp
 
-import IClientForm from "../../Models/Interfaces/IClientForm";
-import R from "ramda";
-import { default_params, addToDefaultParams } from "./basic-default-service-params";
+import { addToDefaultParams } from "./basic-default-service-params";
+import IClientInput from "../../models/Interfaces/clients-inputs/IClientInput";
 
 export default async (
-  client: IClientForm,
-  client_service: any,
+  client: IClientInput,
   session_service: any
-  ) => {
-    const client_ping = R.applyTo(getPing(client.sended_utc_timestamp));
-    await client_ping(patchClients(client_service, client.client_data.id));
-    await client_ping(
-      patchSessions(session_service, client.client_data.network.session_name)
-      );
-    };
-    
-export const getPing = (input_timestamp: number) =>  (+ new Date()) - input_timestamp 
-
-export const patchClients = (service: any, id: string) => async (
-  client_ping: number
-) =>
-  service.patch(
-    id,
-    {
-      $set: { ping: client_ping },
-    },
-    default_params
+): Promise<number> =>
+  await patchSessions(
+    session_service,
+    client.client_data.network.session_name,
+    getPing(client.sended_utc_timestamp)
   );
 
-export const patchSessions = (service: any, sessionName: string | null) => async (
+export const getPing = (input_timestamp: number): number =>
+  +new Date() - input_timestamp;
+
+export const patchSessions = async (
+  service: any,
+  sessionName: string | null,
   client_ping: number
-) =>
+): Promise<number> =>
   service.patch(
-    null,
+    {},
     { $set: { syncPing: client_ping } },
     addToDefaultParams({
       query: {
@@ -41,4 +30,4 @@ export const patchSessions = (service: any, sessionName: string | null) => async
         syncPing: { $lt: client_ping },
       },
     })
-  );
+  ).then((resp: any) => client_ping);

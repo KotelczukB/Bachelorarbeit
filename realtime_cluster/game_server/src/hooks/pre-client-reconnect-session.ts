@@ -3,7 +3,7 @@
 import { Hook, HookContext } from "@feathersjs/feathers";
 import { searchAndRemoveFromSessions } from "../modules/sessions/remove-from-sessions";
 import ISession from "../models/Interfaces/session/ISession";
-import { IClient } from "../Models/Interfaces/IClientForm";
+import { IClient } from "../models/Interfaces/clients/IClient";
 import findOnServiceGetFirst from "../modules/helpers/find-on-service-get-first";
 import { default_params } from "../modules/helpers/basic-default-service-params";
 
@@ -23,6 +23,8 @@ export default (options = {}): Hook => {
     // a)
     await searchAndRemoveFromSessions(clientData.id, app.service("sessions"));
     // b)
+
+    /// Functional
     if (clientData.network.session_name) {
       const session: ISession | null = await findOnServiceGetFirst(app.service("sessions"), {
         query: { session_name: clientData.network.session_name, state: 0 },

@@ -11,9 +11,8 @@ export default (options = {}): Hook => {
   return async (context: HookContext) => {
     const {data} = context;
     const backendData: IBackend = data;
-
     if(!backendData.token || backendData.token !== 'yes-backend')
-      throw new Error('access denide')
+      throw new Error('access forbidden')
     return context;
   };
 }
