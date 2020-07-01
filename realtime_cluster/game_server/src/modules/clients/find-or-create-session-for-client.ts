@@ -4,7 +4,6 @@ import ISessionCreate from "../../models/Interfaces/session/ISessionCreate";
 
 export default async (
   service_session: any,
-  max_connections: number,
   kinde: string,
   service_backends: any,
   sessionData: ISessionCreate
@@ -13,7 +12,6 @@ export default async (
     (await getFreeSession(
       service_session,
       sessionData.client_id,
-      max_connections,
       kinde,
       sessionData.backendURL
     )) ??

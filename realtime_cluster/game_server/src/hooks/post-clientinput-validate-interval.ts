@@ -14,7 +14,7 @@ export default (options = {}): Hook => {
     const minInterval = await app.get('min_rt_interval')
     if(session.interval_value < minInterval)
       // Do magic stuff
-      // - get all Clientinputs for this session
+      // - get neuste Clientinputs for this session
       // -- do rtFuncs on Clientinputs
       // --- send to Backend
     return context;

@@ -1,5 +1,5 @@
 
-import preSessionCreate from '../../hooks/pre-session-create';
+import preSessionCreate from '../../hooks/pre-session-validate';
 import preRestrictExternCall from '../../hooks/pre-session-restrict-extern-call';
 import preSessionGetInterval from '../../hooks/pre-session-get-interval';
 export default {

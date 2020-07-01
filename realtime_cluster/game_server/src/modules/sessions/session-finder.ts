@@ -7,11 +7,10 @@ import { default_params } from "../helpers/basic-default-service-params";
 export const getFreeSession = async (
   service: any,
   client_id: string,
-  maxCount: number,
   userType: string,
   targetURL: string
 ): Promise<{ user: string; session: string; backend: string } | null> =>
-  filterSessions(service, maxCount, userType, targetURL)
+  filterSessions(service, userType, targetURL)
     .then((elem) =>
       getNameAndPatchSession(R.head(elem.data), service, client_id, userType)
     )
@@ -29,11 +28,10 @@ export const getNameAndPatchSession = async (
 
 export const filterSessions = async (
   service: any,
-  maxCount: number,
   userType: string,
   targetURL: string
 ): Promise<ISession> =>
-  await service.find(buildQuery(userType, maxCount, targetURL));
+  await service.find(buildQuery(userType, targetURL));
 
 export const getJustName = (user_type: string) => (
   session: ISession
@@ -48,12 +46,11 @@ export const getJustName = (user_type: string) => (
 
 export const buildQuery = (
   userType: string,
-  maxCount: number,
   targetURL: string
 ): {} => {
   return {
     [userType]: { $exists: true },
-    $where: `this.${userType}.length<${maxCount}`,
+    $where: `this.${userType}.length<this.max_clients`,
     state: { $lt: 2 },
     backends: targetURL,
   };

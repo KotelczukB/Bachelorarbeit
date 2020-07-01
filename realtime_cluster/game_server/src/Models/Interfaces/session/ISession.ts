@@ -4,7 +4,8 @@ export default interface ISession {
   createdAt: Date,
   session_name: string,
   state: SessionState, // active, running, full, closed
-  clients_to_start: number;
+  min_clients: number;
+  max_clients: number;
   clients_channel: string,
   backends_channel: string,
   interval_value: number

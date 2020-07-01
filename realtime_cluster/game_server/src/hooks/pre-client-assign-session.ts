@@ -17,7 +17,6 @@ export default (options = {}): Hook => {
     if (validateClientSessionProp(data.network) === 1) {
       const targetChannel: { user: string; session: string, backend: string}  | null = await findOrCreateSession(
         app.service("sessions"),
-        app.get(`maxChannelConnections-${path}`),
         path,
         app.service("backends"),
         createSessionData(data.network.backend_server_URL, data.id)

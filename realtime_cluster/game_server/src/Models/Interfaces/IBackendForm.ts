@@ -1,15 +1,9 @@
-export default interface IBackendForm {
-  createdAt: Date,
-  backendData: IBackend,
-}
+import { IBackend } from "./backends/IBackend";
 
-export interface IBackend {
-  id: string,
-  token: string,
-  network: IBackendNetwork,
-  clients: IClientAuth[],
-  interval_value: number
-  gameData: IGameData
+export default interface IBackendForm {
+  createdAt: Date;
+  backendData: IBackend;
+  gameData: IGameData;
 }
 
 // *****************************************************
@@ -17,28 +11,15 @@ export interface IBackend {
 // Backend bestimmt die minimale Anzahl an Clients um eine Session zu beginnen
 // *****************************************************
 
-export interface IGameData{
-  intervall: number,
-  clientsToStart: number,
-  sync: ISyncData,
-  static: IStaticData
+export interface IGameData {
+  intervall: number;
+  clientsToStart: number;
+  sync: ISyncData;
+  static: IStaticData;
 }
 
-export interface ISyncData {
+export interface ISyncData {}
 
-}
+export interface IStaticData {}
 
-export interface IStaticData {
-  
-}
-
-export interface IBackendNetwork {
-  ownURL: string,
-}
-
-export interface IClientAuth {
-  id: string,
-  backendToken: string,
-  auth: boolean
-
-}
+export interface IBackendNetwork {}

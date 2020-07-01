@@ -28,7 +28,7 @@ export const checkMinClientsCount = (
 ): ISwitcherSessionNameProps => {
   return {
     name: obj.session
-      ? obj.session.clients_channel.length >= obj.session.clients_to_start
+      ? obj.session.clients_channel.length >= obj.session.min_clients
         ? obj.session?.session_name
         : null
       : null,
