@@ -4,4 +4,5 @@ export default (backendURL: string, client_id: string): ISessionCreate => { retu
   name: `Session-${+new Date()}`,
   backendURL,
   client_id,
+  interval: 0
 };}

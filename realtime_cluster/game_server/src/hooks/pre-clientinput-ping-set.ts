@@ -1,8 +1,8 @@
 // Use this hook to manipulate incoming or outgoing data.
 // For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
 import { Hook, HookContext, Application } from "@feathersjs/feathers";
-import validateClientForm from "../modules/helpers/validate-client_form";
-import createPing from "../modules/helpers/create-ping";
+import validateClientForm from "../modules/clients/validate-client_form";
+import createPing from "../modules/client-input/create-ping-clientinput";
 import IClientInput from "../models/Interfaces/clients-inputs/IClientInput";
 
 // ******************************************

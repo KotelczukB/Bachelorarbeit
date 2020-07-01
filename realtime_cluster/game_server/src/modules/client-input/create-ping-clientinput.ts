@@ -1,6 +1,6 @@
 // short way to get UTC timestamp
 
-import { addToDefaultParams } from "./basic-default-service-params";
+import { addToDefaultParams } from "../helpers/basic-default-service-params";
 import IClientInput from "../../models/Interfaces/clients-inputs/IClientInput";
 
 export default async (

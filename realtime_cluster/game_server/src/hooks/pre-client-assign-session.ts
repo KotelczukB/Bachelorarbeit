@@ -2,10 +2,10 @@
 // For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
 import { Hook, HookContext } from "@feathersjs/feathers";
 import { IClient } from "../models/Interfaces/clients/IClient";
-import assignSessionAndChannelName from "../modules/helpers/assign-session-channel";
-import findOrCreateSession from "../modules/helpers/find-or-create-session";
-import createSessionData from "../modules/helpers/create-session-data";
-import validateClientSessionProp from "../modules/helpers/validate-client-session-prop";
+import assignSessionAndChannelName from "../modules/sessions/assign-session-channel";
+import findOrCreateSession from "../modules/clients/find-or-create-session-for-client";
+import createSessionData from "../modules/sessions/create-session-data";
+import validateClientSessionProp from "../modules/clients/validate-client-session-prop";
 
 // ************************************************
 // Suche oder erstelle eine freie Session und ubergebe diese an den Client
