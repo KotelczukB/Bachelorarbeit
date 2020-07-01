@@ -1,6 +1,6 @@
 import ISession from "./ISession";
-import { IClient } from "../IClientForm";
 import { Application } from "@feathersjs/feathers";
+import { IClient } from "../clients/IClient";
 
 export interface ISessionSwitcher {
   [idx: string]: { [idx: string]: (arg: any) => any};
