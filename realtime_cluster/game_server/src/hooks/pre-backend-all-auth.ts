@@ -12,7 +12,6 @@ import { addToDefaultParams } from '../modules/helpers/basic-default-service-par
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
     const {data, app} = context as {data: IBackend, app: Application};
-
     /// Functional
     if(!data.token || data.token !== 'yes-backend')
       throw new Error('access forbidden')

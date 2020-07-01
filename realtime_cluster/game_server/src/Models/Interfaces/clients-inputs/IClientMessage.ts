@@ -1,6 +1,6 @@
 import { IGameData } from "./IGameData";
 
-export default interface IClientInput {
+export default interface IClientMessage {
   rang: number,
   created_utc_timestamp: number,
   sended_utc_timestamp: number,

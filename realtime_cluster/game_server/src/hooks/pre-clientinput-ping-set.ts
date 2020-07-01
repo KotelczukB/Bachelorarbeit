@@ -3,7 +3,7 @@
 import { Hook, HookContext, Application } from "@feathersjs/feathers";
 import validateClientForm from "../modules/clients/validate-client_form";
 import createPing from "../modules/client-input/create-ping-clientinput";
-import IClientInput from "../models/Interfaces/clients-inputs/IClientInput";
+import IClientMessage from "../models/Interfaces/clients-inputs/IClientMessage";
 
 // ******************************************
 // Validiert die mindest Anforderungen der Form und pruft den ping
@@ -12,7 +12,7 @@ import IClientInput from "../models/Interfaces/clients-inputs/IClientInput";
 
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
-    const { data, app } = context as {data: IClientInput, app: Application};
+    const { data, app } = context as {data: IClientMessage, app: Application};
     if (!validateClientForm(data, app))
       throw new Error("Input does not satisfied basic requirements");
     data.ping = await createPing(data, app.service("sessions"));

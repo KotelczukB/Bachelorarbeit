@@ -11,5 +11,6 @@
     "routerRegisterService": "applications",
     "mongodb": "mongodb://localhost:27017/rtGameserver",
     "client_required": ["created_utc_timestamp", "sended_utc_timestamp", "client_id", "session_name", "game"],
-    "game_required": ["variable", "const"]
+    "game_required": ["variable", "const"],
+    "min_rt_interval": 30
 }

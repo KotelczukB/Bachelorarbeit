@@ -1,8 +1,8 @@
 import { Application } from "@feathersjs/feathers";
 import validateMessage from "./validate-message";
-import IClientInput from "../../models/Interfaces/clients-inputs/IClientInput";
+import IClientMessage from "../../models/Interfaces/clients-inputs/IClientMessage";
 
-export default (input: IClientInput, app: Application): boolean =>
+export default (input: IClientMessage, app: Application): boolean =>
   validateMessage(input, app.get("client_required"), {
     game: app.get("game_required"),
   });

@@ -1,6 +1,9 @@
 import '@feathersjs/transport-commons';
 import { HookContext } from '@feathersjs/feathers';
 import { Application } from './declarations';
+import prepareClientInputs from './modules/client-input/prepare-backend-message-on-rt-constrain';
+import { addToDefaultParams } from './modules/helpers/basic-default-service-params';
+import ISession from './models/Interfaces/session/ISession';
 
 export default function(app: Application) {
   if(typeof app.channel !== 'function') {
@@ -46,7 +49,19 @@ export default function(app: Application) {
   });
   app.service('client-inputs').publish('updated', (data, context) => app.channel(context.result.targetChannel));
   app.service('client-inputs').publish('patched', (data, context) => app.channel(context.result.targetChannel));
-  app.service('client-inputs').publish('created', () => {});
+
+  // Clients Kommunikation
+  // publish nur dann wenn es kein Intervall gibt
+  app.service('client-inputs').publish('created', async (data, context) => {
+    const result = await app.service('sessions').find(addToDefaultParams({query: {session_name: data.session_name}}))
+    const session: any = result;
+    const minInterval = await app.get('min_rt_interval')
+    if(session.interval_value < minInterval) {
+      return await prepareClientInputs(data, app, minInterval)
+    } 
+  });
+  // Backend Kommunikation
+  app.service('backend-inputs').publish('created', async (data, context) => await app.get("min_rt_interval").then(async (interval: number) => await prepareClientInputs(data, app, interval)))
 
 
   // Preventing area

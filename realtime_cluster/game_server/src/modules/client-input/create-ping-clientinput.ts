@@ -1,10 +1,10 @@
 // short way to get UTC timestamp
 
 import { addToDefaultParams } from "../helpers/basic-default-service-params";
-import IClientInput from "../../models/Interfaces/clients-inputs/IClientInput";
+import IClientMessage from "../../models/Interfaces/clients-inputs/IClientMessage";
 
 export default async (
-  client: IClientInput,
+  client: IClientMessage,
   session_service: any
 ): Promise<number> =>
   await patchSessions(
