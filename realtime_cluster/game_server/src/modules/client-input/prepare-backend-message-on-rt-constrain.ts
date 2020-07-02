@@ -29,7 +29,7 @@ export default async (
             )
               .then(clientInputsRtModifications)
               .then((resp: IBackendMessage) =>
-                app.channel(session.session_name).send({
+                app.channel(session.backends_channel).send({
                   resp,
                 })
               ),

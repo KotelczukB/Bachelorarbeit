@@ -2,7 +2,6 @@
 import preInputUpdate from '../../hooks/pre-input-update-forbidden';
 import preInputCreate from '../../hooks/pre-clientinput-create';
 import clientInputPingCheck from '../../hooks/pre-clientinput-ping-set';
-import postClientinputValidateInterval from '../../hooks/post-clientinput-validate-interval';
 export default {
   before: {
     all: [],
@@ -18,7 +17,7 @@ export default {
     all: [],
     find: [],
     get: [],
-    create: [postClientinputValidateInterval()],
+    create: [],
     update: [],
     patch: [],
     remove: []

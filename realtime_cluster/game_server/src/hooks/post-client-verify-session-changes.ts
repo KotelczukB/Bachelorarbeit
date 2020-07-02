@@ -28,7 +28,8 @@ export default (options = {}): Hook => {
         validateSessionRequierdProps(response.data as ISession)
           ? validateIncreaseSessionState(
               switchSessionState,
-              switcher
+              switcher,
+              app
             ).then((res: (session: ISession) => Promise<SessionState>) =>
               res(response.data).then(async (state: SessionState) =>
                 response.data.state !== state
