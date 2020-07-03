@@ -1,6 +1,7 @@
 import R from "ramda";
 import ISession from "../../models/Interfaces/session/ISession";
 import { default_params } from "../helpers/basic-default-service-params";
+import { Service } from "feathers-mongodb/types";
 // ***************************************
 // Sucht eine Session die bereits erstellt worden ist mit dem gleichem Backend
 // ***************************************

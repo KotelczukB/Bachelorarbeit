@@ -1,6 +1,6 @@
 import preClientAssignSession from "../../hooks/pre-client-assign-session";
-import preOuterClientAuth from "../../hooks/pre-client-all-auth";
-import preOuterappHandleExisting from "../../hooks/pre-client-handle-existing";
+import preClientClientAuth from "../../hooks/pre-client-all-auth";
+import preClientHandleExisting from "../../hooks/pre-client-handle-existing";
 import preClientReconnectSession from "../../hooks/pre-client-reconnect-session";
 import postClientVerifySessionChanges from '../../hooks/post-client-verify-session-changes';
 export default {
@@ -9,13 +9,13 @@ export default {
     find: [],
     get: [],
     create: [
-      preOuterClientAuth(),
-      preOuterappHandleExisting(),
+      preClientClientAuth(),
+      preClientHandleExisting(),
       preClientReconnectSession(),
       preClientAssignSession(),
     ],
-    update: [preOuterClientAuth(), preClientAssignSession()],
-    patch: [preOuterClientAuth(), preClientAssignSession()],
+    update: [preClientClientAuth(), preClientAssignSession()],
+    patch: [preClientClientAuth(), preClientAssignSession()],
     remove: [],
   },
 

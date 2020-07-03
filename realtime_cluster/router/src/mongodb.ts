@@ -12,8 +12,8 @@ export default function (app: Application) {
         .collection('users');
       app.service('applications').Model = client.db(database)
         .collection('applications');
-      app.service('game-apps').Model = client.db(database)
-        .collection('game-apps');
+      app.service('ext-apps').Model = client.db(database)
+        .collection('ext-apps');
     });
 
   app.set('mongoClient', mongoClient);

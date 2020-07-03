@@ -1,4 +1,4 @@
-export default interface IUserRequest {
+export default interface IUser {
   serverURL: string,
   username: string,
   password: string,
