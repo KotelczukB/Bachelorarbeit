@@ -5,7 +5,6 @@ import ISession from "../models/Interfaces/session/ISession";
 import { SessionState } from "../models/enums/SessionState";
 import { _AppType } from "../models/Interfaces/_AppType";
 import getEnvTYPE from "../modules/helpers/get-env-TYPE";
-import collectChatSendToBackend from "../modules/rtFunctions/collect-chat-send-to-backend";
 import handleClosedSession, { leaveChannel } from "../modules/sessions/handle-closed-session";
 
 export default (options = {}): Hook => {
