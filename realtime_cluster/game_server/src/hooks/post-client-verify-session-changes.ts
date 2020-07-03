@@ -35,7 +35,7 @@ export default (options = {}): Hook => {
                 response.data.state !== state
                   ? await app
                       .service("sessions")
-                      .update(response.data._id, { state: state })
+                      .patch(response.data._id, { state: state })
                   : null
               )
             )

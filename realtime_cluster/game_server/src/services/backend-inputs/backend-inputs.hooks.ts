@@ -1,4 +1,5 @@
 
+import postBackendInputForceSessionStateChanger from '../../hooks/post-backend-input-force-session-state-changer';
 export default {
   before: {
     all: [],
@@ -14,7 +15,7 @@ export default {
     all: [],
     find: [],
     get: [],
-    create: [],
+    create: [postBackendInputForceSessionStateChanger()],
     update: [],
     patch: [],
     remove: []

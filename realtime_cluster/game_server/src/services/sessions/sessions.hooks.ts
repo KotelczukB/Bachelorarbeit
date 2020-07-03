@@ -2,6 +2,7 @@
 import preSessionCreate from '../../hooks/pre-session-validate';
 import preRestrictExternCall from '../../hooks/pre-session-restrict-extern-call';
 import preSessionGetInterval from '../../hooks/pre-session-get-interval';
+import postSessionDropConnectionsOnClosed from '../../hooks/post-session-drop-connections-on-closed';
 export default {
   before: {
     all: [preRestrictExternCall()],
@@ -19,7 +20,7 @@ export default {
     get: [],
     create: [],
     update: [],
-    patch: [],
+    patch: [postSessionDropConnectionsOnClosed()],
     remove: []
   },
 

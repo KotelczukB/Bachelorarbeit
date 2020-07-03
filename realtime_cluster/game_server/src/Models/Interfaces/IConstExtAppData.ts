@@ -1,6 +1,6 @@
 //*******************************************
 // Daten die vom Echtzeitsever nicht angefasst werden sollen
 //*******************************************
-export interface IConstGameData {
+export interface IConstExtAppData {
   [idx: string]: string
 }

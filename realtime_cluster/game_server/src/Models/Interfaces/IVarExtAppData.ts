@@ -2,6 +2,6 @@
 // Daten die je nach bedarf verandern werden konnen
 //********************************************
 
-export interface IVarGameData {
+export interface IVarExtAppData {
   [idx: string]: string
 }

@@ -1,7 +1,7 @@
 import IClientMessage from "../../models/Interfaces/clients-inputs/IClientMessage";
-import { IBackendMessage } from "../../models/Interfaces/backend-inputs/IBackendMessage";
+import { IMessageToBackend } from "../../models/Interfaces/backend-inputs/IMessageToBackend";
 
-export default (param: IClientMessage[]): IBackendMessage => createBackendInput(param);
+export default (param: IClientMessage[]): IMessageToBackend => createBackendInput(param);
 
 export const createBackendInput = (param: IClientMessage[]) => {
   return {

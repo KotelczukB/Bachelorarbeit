@@ -2,10 +2,15 @@ import { Application } from "@feathersjs/feathers";
 import { addToDefaultParams } from "../helpers/basic-default-service-params";
 import ISession from "../../models/Interfaces/session/ISession";
 import getNewestInputsOnSession from "./get-newest-inputs-on-session";
-import clientInputsRtModifications from "../rtFunctions/client-inputs-rt-modifications";
+import clientInputsRtModifications from "../rtFunctions/client-inputs-app-rt-modifications";
 import { Channel } from "@feathersjs/transport-commons/lib/channels/channel/base";
-import { IBackendMessage } from "../../models/Interfaces/backend-inputs/IBackendMessage";
+import { IMessageToBackend } from "../../models/Interfaces/backend-inputs/IMessageToBackend";
 import { IBackendInput } from "../../models/Interfaces/backend-inputs/IBackendInput";
+
+//**************************************************** */
+// after Backend Input -> setzt Timeout nachdem alle Client-inputs geholt werden (neusten und in der Session)
+// und an das Backend geschickt werden sollen 
+//**************************************************** */
 
 export default async (
   data: IBackendInput,
@@ -28,12 +33,13 @@ export default async (
               -1
             )
               .then(clientInputsRtModifications)
-              .then((resp: IBackendMessage) =>
+              .then((resp: IMessageToBackend) =>
                 app.channel(session.backends_channel).send({
                   resp,
                 })
               ),
-          session.interval_value
+              // interval + ping damit alle im Interval ankommen konnen
+          session.interval_value + session.syncPing
         )
       );
     });

@@ -1,6 +1,6 @@
 {
-    "name": "realtime-gameserver",
-    "description": "realtime gameserver",
+    "name": "realtime-appserver",
+    "description": "realtime appserver",
     "version": "0.0.0",
     "homepage": "",
     "private": true,

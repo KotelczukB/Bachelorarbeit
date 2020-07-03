@@ -4,8 +4,8 @@ import { Channel } from "@feathersjs/transport-commons/lib/channels/channel/base
 import { addToDefaultParams } from "../helpers/basic-default-service-params";
 import ISession from "../../models/Interfaces/session/ISession";
 import getNewestInputsOnSession from "./get-newest-inputs-on-session";
-import clientInputsRtModifications from "../rtFunctions/client-inputs-rt-modifications";
-import { IBackendMessage } from "../../models/Interfaces/backend-inputs/IBackendMessage";
+import clientInputsRtModifications from "../rtFunctions/client-inputs-app-rt-modifications";
+import { IMessageToBackend } from "../../models/Interfaces/backend-inputs/IMessageToBackend";
 
 //********************************************
 // Beim Client input create hole die dazugehorige Session
@@ -18,7 +18,7 @@ export default async (
   data: IClientMessage,
   app: Application,
   minInterval: number
-): Promise<Channel[]> =>
+): Promise<Channel[] | void> =>
   app
     .service("sessions")
     .find(addToDefaultParams({ query: { session_name: data.session_name } }))
@@ -34,10 +34,10 @@ export default async (
           -1
         )
           .then(clientInputsRtModifications)
-          .then((resp: IBackendMessage) =>
+          .then((resp: IMessageToBackend) =>
             app.channel(session.backends_channel).send({
               resp,
             })
           ), session.syncPing
       ));
-    });
+    }).catch((err: any) => {console.log(err)});
