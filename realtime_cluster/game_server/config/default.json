@@ -1,0 +1,15 @@
+{
+    "host": "localhost",
+    "port": 3030,
+    "public": "../public/",
+    "paginate": {
+        "default": 10,
+        "max": 50
+    },
+    "routerHost": "localhost",
+    "routerPort": "3031",
+    "routerRegisterService": "applications",
+    "mongodb": "mongodb://localhost:27017/rtAppserver",
+    "client_required": ["created_utc_timestamp", "sended_utc_timestamp", "client_id", "session_name", "app"],
+    "min_rt_interval": 30
+}
