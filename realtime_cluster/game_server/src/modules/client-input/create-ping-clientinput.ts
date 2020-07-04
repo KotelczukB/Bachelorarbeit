@@ -2,6 +2,7 @@
 
 import { addToDefaultParams } from "../helpers/basic-default-service-params";
 import IClientMessage from "../../models/Interfaces/clients-inputs/IClientMessage";
+import getTimeStamp from "../helpers/getTimeStamp";
 
 export default async (
   client: IClientMessage,
@@ -23,7 +24,7 @@ export const patchSessions = async (
 ): Promise<number> =>
   service.patch(
     {},
-    { $set: { syncPing: client_ping } },
+    { $set: { syncPing: client_ping, newest_update: getTimeStamp()} },
     addToDefaultParams({
       query: {
         session_name: sessionName,

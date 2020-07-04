@@ -10,8 +10,9 @@ import { SessionState } from "../../models/enums/SessionState";
 export default async (
   input: IBackendInput,
   session_service: any,
-  app: Application
-): Promise<Channel[]> =>
+  app: Application,
+  appType: _AppType
+): Promise<(Channel | null)[]> =>
   session_service
     .find(
       addToDefaultParams({
@@ -19,12 +20,14 @@ export default async (
       })
     )
     .then((res: any) =>
-      (res.data as ISession[]).map(setDataToChannel(app, input))
+      (res.data as ISession[]).map(setDataToChannel(app, input, appType))
     );
 
-export const setDataToChannel = (app: Application, input: IBackendInput) => (
+export const setDataToChannel = (app: Application, input: IBackendInput, appType: _AppType) => (
   session: ISession
-): Channel =>
+): Channel | null => 
+// prufen ob daten die vom AppExtServer gekommen sind, schon veraltet sind oder nicht.
+(session.newest_update - session.syncPing) > input.created_at ? 
   app
     .channel(session.clients_channel)
-    .send(backendInputAppRtModifications(input));
+    .send(backendInputAppRtModifications(input, appType)) : null;

@@ -7,7 +7,7 @@ export default interface IClientMessage {
   created_utc_timestamp: number;
   sended_utc_timestamp: number;
   ping: number;
-  client_id: number;
+  client_id: string;
   session_name: string;
   target_channel_name: string;
   app: IExternalAppData;

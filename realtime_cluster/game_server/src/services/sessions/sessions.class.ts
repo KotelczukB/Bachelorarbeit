@@ -4,6 +4,7 @@ import { Application } from '../../declarations';
 import ISession from '../../models/Interfaces/session/ISession';
 import ISessionCreate from '../../models/Interfaces/session/ISessionCreate';
 import { SessionState } from '../../models/enums/SessionState';
+import getTimeStamp from '../../modules/helpers/getTimeStamp';
 
 export class Sessions extends Service {
   constructor(options: Partial<MongoDBServiceOptions>, app: Application) {
@@ -27,7 +28,8 @@ export class Sessions extends Service {
       state: SessionState.active,
       clients: [data.client_id],
       backend: [data.backendURL],
-      syncPing: 0
+      syncPing: 0,
+      newest_update: getTimeStamp()
     }
     return super.create(session, params)
   } 

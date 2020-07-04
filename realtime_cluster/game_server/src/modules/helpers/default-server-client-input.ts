@@ -5,9 +5,25 @@ import { _ExternType } from "../../models/Interfaces/_ExternType"
 
 // Input generalisierung nur Chat wird weiter geschickt
 
-export default (input: IBackendInput | IClientMessage): IClientMessage => {
+export const appServerClientsInputs = (input: IBackendInput | IClientMessage): IClientMessage => {
   return {
-    client_id: NaN,
+    client_id: 'server',
+    created_utc_timestamp: getTimeStamp(),
+    ping: NaN,
+    rang: NaN,
+    sended_utc_timestamp: getTimeStamp(),
+    session_name: input.session_name,
+    type: _ExternType.server,
+    app: {
+      ...input.externalAppData
+    },
+    target_channel_name: '' 
+  }
+}
+
+export const chatServerClientsInputs = (input: IBackendInput | IClientMessage): IClientMessage => {
+  return {
+    client_id: 'server',
     created_utc_timestamp: getTimeStamp(),
     ping: NaN,
     rang: NaN,

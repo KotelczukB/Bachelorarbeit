@@ -11,17 +11,18 @@ export default async (
   session_service: any,
   interval: number,
   appType: _AppType
-): Promise<Channel[] | void> =>
+): Promise<(Channel | null)[] | void> =>
   await sendInputsToTargetClients(
     data,
     session_service,
-    app
-  ).then(async (ret: Channel[]) =>
+    app,
+    appType
+  ).then(async (ret: (Channel | null)[]) =>
     appType === _AppType.app
       ? await prepareBackendMessageOnRtConstrain(
           data,
           app,
           interval
-        ).then((ret_2: Channel[]) => ret.concat(ret_2))
+        ).then((ret_2: Channel[]) => ret !== null ? ret.concat(ret_2) : ret_2)
       : ret
   ).catch((err: any) => { console.log(err)});
