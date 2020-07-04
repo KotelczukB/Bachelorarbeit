@@ -25,6 +25,6 @@ export const updateApplicationsOnHealthCheck = async (
       (resp.data as IRealTimeApp[]).forEach(async (item: IRealTimeApp) =>
         fetch(`${item.connection_string}/health`, {
           method: "get",
-        }).then((resp: any) => { if(!resp.succeed) app_service.patch(item._id, {state: _RealTimeAppStatus.inactive}) })
+        }).then((resp: any) => { if(!resp.succeed) app_service.patch(item._id, {state: _RealTimeAppStatus.inactive})})
       )
     );
