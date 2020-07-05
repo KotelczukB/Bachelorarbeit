@@ -1,5 +1,6 @@
 import React from 'react';
 import { runInThisContext } from 'vm';
+import { Router, Redirect } from 'react-router-dom';
 
 export interface IRegisterProps {}
 
@@ -21,9 +22,11 @@ export class Register extends React.Component<IRegisterProps, IRegisterState> {
 		};
 	}
 
-	public handleSubmit = (event: any) => {
-		//fetch() send to backend
-		event.preventDefault();
+	public handleSubmit = (event: any): JSX.Element => {
+    //fetch() send to backend
+    //localStorage.setItem('authToken', 'dslfj')
+    event.preventDefault();
+    return <Redirect to='/game'/>
 	};
 
 	public canSubmit = (): boolean =>
@@ -58,10 +61,15 @@ export class Register extends React.Component<IRegisterProps, IRegisterState> {
 				: this.state.password.includes(this.state.re_password)
 				? ''
 				: 'Sorry man but your passwords, doesnt match up'
-			: '';
+      : '';
+      
+  public redirect = (): JSX.Element => {
+    return <Redirect to='/login'/>
+  }
 
 	public render(): JSX.Element {
 		return (
+      <div className="register_overlay">
 			<form onSubmit={this.handleSubmit}>
 				<div className="form-group">
 					<label>Email address</label>
@@ -111,10 +119,14 @@ export class Register extends React.Component<IRegisterProps, IRegisterState> {
 						onChange={this.setPassword}
 					/>
 				</div>
-				<button type="submit" className="btn btn-primary" disabled={this.canSubmit()}>
-					Login
+				<button type="submit" className="btn btn-primary btn-lg" disabled={this.canSubmit()}>
+					Send
+				</button>
+        <button type="button" className="btn btn-secondary" onClick={this.redirect}>
+					Back
 				</button>
 			</form>
+      </div>
 		);
 	}
 }
