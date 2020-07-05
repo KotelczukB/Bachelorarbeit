@@ -9,13 +9,11 @@ function App() {
   return (
     <div className="app">
     <BrowserRouter>
-    <main>
       <Switch>
         <Route exact path="/" component={Login} />
         <Route exact path="/register" component={Register} />
         <Route exact path="/game" component={Game} />
       </Switch>
-    </main>
     </BrowserRouter>
   </div>
   );

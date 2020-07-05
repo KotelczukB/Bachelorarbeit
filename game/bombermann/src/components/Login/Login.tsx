@@ -1,8 +1,7 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
-
 import './Login.scss'
 import { Header } from '../Header/Header';
+import { getAuthToken, setAuthToken } from '../../modules/auth-token';
 
 export interface ILoginProps {}
 
@@ -21,24 +20,25 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
 	}
 
 	componentDidMount = () => {
-		const token = localStorage.getItem('authToken');
+		const token = getAuthToken();
 		if (token) {
 			// sende an router
 			// if router ok
-			return <Redirect to="/game"/>;
+      
+      (this.props as any).history.push('/game');
 		}
   };
   
-  public handleSubmit = (event: any): JSX.Element => {
+  public handleSubmit = (event: any): void => {
     //fetch() send over router to backend
     // get token
-    //localStorage.setItem('authToken', 'dslfj')
+    //setAuthToken('sfsdf')
     event.preventDefault();
-    return <Redirect to='/game'/>
+    (this.props as any).history.push('/game');
 	};
 
-	public redirect = (): JSX.Element => {
-		return <Redirect to="/register" />;
+	public redirect = (): void => {
+		(this.props as any).history.push('/register');
 	};
 
 	public canSubmit = (): boolean =>
@@ -61,6 +61,7 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
 			<div className="login-overlay">
         <Header/>
 				<form onSubmit={this.handleSubmit} className='login-form'>
+          <h3 className="title"> Login </h3>
 					<div className="form-group">
 						<label>Email address</label>
 						<input
