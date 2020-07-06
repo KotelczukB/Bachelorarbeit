@@ -1,29 +1,36 @@
-import React from "react";
-import { getAuthToken } from "../../modules/auth-token";
+import React from 'react';
+import Phaser from 'phaser';
+import LoadScene from '../../phaser/LoadScene';
+import './Game.scss';
+import GameScene from '../../phaser/GameScene';
 
-export interface IGameProps {
+export interface IGameProps {}
 
-}
-
-export interface IGameState {
-
-}
+export interface IGameState {}
 
 export class Game extends React.Component<IGameProps, IGameState> {
-  constructor(props: Readonly<IGameProps>) {
-    super(props);
-    this.state = {
+	componentDidMount() {
+		const game = new Phaser.Game({
+			type: Phaser.AUTO,
+			width: '100%',
+			height: '100%',
+			parent: 'phaser-game',
+      scene: [LoadScene, GameScene],
+      render: {
+        pixelArt: true
+      }
+		});
+	}
 
-    }
-    if(!getAuthToken())
-    (this.props as any).history.push('/');
-  }
+	shouldComponentUpdate() {
+		return false;
+	}
 
-  public render(): JSX.Element {
-    return (
-      <div></div>
-    )
-  }
-
-  
+	public render = (): JSX.Element => {
+		return (
+			<div className="login-overlay">
+				<div className="game-container" id="phaser-game" />
+			</div>
+		);
+	};
 }
