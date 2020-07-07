@@ -1,15 +1,16 @@
-import { IDirection } from './player-models';
+import { IDirection, IPlayerAnimations } from './player-models';
 
 export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
 	hp: number;
 	id: number;
 	shoot_blocked: number;
 	anima: IPlayerAnimations;
-	direction: IDirection;
 	sheet_id: string;
 	shot_anim_fly: string;
 	shot_anim_imp: string;
-
+	stamina: number;
+	y_heart_offset: number = 130;
+	x_heart_offset: number = 200;
 	constructor(
 		scene: Phaser.Scene,
 		id: number,
@@ -28,20 +29,17 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
 		this.setScale(2);
 		scene.physics.world.enableBody(this);
 		this.setImmovable(true);
-		this.hp = 10;
+		this.setSize(6, 8);
+		this.setOffset(5, 5);
+		this.setCollideWorldBounds(true);
+		this.setDepth(2);
+		this.hp = 3;
 		this.id = id;
 		this.shoot_blocked = 0;
 		this.anima = animations;
-		this.direction = IDirection.down;
-    this.sheet_id = 'player';
-    this.shot_anim_fly = shot_anim_fly;
+		this.sheet_id = 'player';
+		this.shot_anim_fly = shot_anim_fly;
 		this.shot_anim_imp = shot_anim_imp;
+		this.stamina = 300;
 	}
-}
-
-export interface IPlayerAnimations {
-	up: { name: string; sheet: string };
-	down: { name: string; sheet: string };
-	left: { name: string; sheet: string };
-	right: { name: string; sheet: string };
 }
