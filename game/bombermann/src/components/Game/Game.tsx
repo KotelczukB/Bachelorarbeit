@@ -18,6 +18,12 @@ export class Game extends React.Component<IGameProps, IGameState> {
       scene: [LoadScene, GameScene],
       render: {
         pixelArt: true
+      },
+      physics: {
+        default: "arcade",
+        arcade: {
+          debug: true
+        }
       }
 		});
 	}

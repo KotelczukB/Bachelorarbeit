@@ -40,6 +40,6 @@ export default class LoadScene extends Scene {
 
 	}
 	create() {
-		this.scene.start("GAME");
+		this.scene.start("GAME", {character_id: 1});
 	}
 }

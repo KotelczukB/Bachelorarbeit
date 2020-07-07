@@ -1,6 +1,10 @@
+import { IPlayerData, IDirection } from "../models/player-models";
+
 export const players_data: IPlayerData[] = [
 	{
-		sheet_id: 'player',
+    sheet_id: 'player',
+    direction: IDirection.down,
+		id: 1,
 		prefix: 'player_1_',
 		count_prefix: '_0',
 		min: 0,
@@ -12,11 +16,24 @@ export const players_data: IPlayerData[] = [
 			down: { name: 'player_1_down', sheet: 'front' },
 		},
 		starting_sprite: 'player_1_front_01',
-    sprite_object: null,
-    start: {x: 100, y: 100}
+		sprite_object: null,
+		start: { x: 100, y: 100 },
+		shot: {
+      direction: IDirection.down,
+			sheet_id: 'player',
+			prefix: 'blob_shot_',
+			animations: {
+				fly: { name: 'blob_shot', sheet: '', min: 0, max: 5 },
+				impact: { name: 'blob_shot_imp', sheet: '', min: 4, max: 5 },
+			},
+			starting_sprite: 'blob_shot_1',
+			sprite_object: null,
+		},
 	},
 	{
-		sheet_id: 'player',
+		id: 2,
+    sheet_id: 'player',
+    direction: IDirection.down,
 		prefix: 'player_2_',
 		count_prefix: '_0',
 		min: 0,
@@ -27,12 +44,25 @@ export const players_data: IPlayerData[] = [
 			up: { name: 'player_2_up', sheet: 'back' },
 			down: { name: 'player_2_down', sheet: 'front' },
 		},
-		starting_sprite: 'player_2_front_01',
-    sprite_object: null,
-    start: {x: 150, y: 150}
+		starting_sprite: 'player_3_front_01',
+		sprite_object: null,
+		start: { x: 150, y: 150 },
+		shot: {
+      direction: IDirection.down,
+			sheet_id: 'player',
+			prefix: 'blue_shot_',
+			animations: {
+				fly: { name: 'blue_shot', sheet: '', min: 0, max: 3 },
+				impact: { name: 'blue_shot_imp', sheet: 'imp_', min: 0, max: 4 },
+			},
+			starting_sprite: 'blue_shot_1',
+			sprite_object: null,
+		},
 	},
 	{
-		sheet_id: 'player',
+		id: 3,
+    sheet_id: 'player',
+    direction: IDirection.down,
 		prefix: 'player_3_',
 		count_prefix: '_0',
 		min: 0,
@@ -44,11 +74,24 @@ export const players_data: IPlayerData[] = [
 			down: { name: 'player_3_down', sheet: 'front' },
 		},
 		starting_sprite: 'player_3_front_01',
-    sprite_object: null,
-    start: {x: 200, y: 200}
+		sprite_object: null,
+		start: { x: 200, y: 200 },
+		shot: {
+      direction: IDirection.down,
+			sheet_id: 'player',
+			prefix: 'red_shot_',
+			animations: {
+				fly: { name: 'red_shot', sheet: '', min: 0, max: 4 },
+				impact: { name: 'red_shot_imp', sheet: 'imp_', min: 0, max: 4 },
+			},
+			starting_sprite: 'red_shot_1',
+			sprite_object: null,
+		},
 	},
 	{
-		sheet_id: 'player',
+		id: 4,
+    sheet_id: 'player',
+    direction: IDirection.down,
 		prefix: 'player_4_',
 		count_prefix: '_0',
 		min: 0,
@@ -60,24 +103,20 @@ export const players_data: IPlayerData[] = [
 			down: { name: 'player_4_down', sheet: 'front' },
 		},
 		starting_sprite: 'player_4_front_01',
-    sprite_object: null,
-    start: {x: 250, y: 250}
+		sprite_object: null,
+		start: { x: 250, y: 250 },
+		shot: {
+      direction: IDirection.down,
+			sheet_id: 'player',
+			prefix: 'brown_shot_',
+			animations: {
+				fly: { name: 'brown_shot', sheet: '', min: 0, max: 2 },
+				impact: { name: 'brown_shot_imp', sheet: 'imp_', min: 0, max: 3 },
+			},
+			starting_sprite: 'brown_shot_1',
+			sprite_object: null,
+		},
 	},
 ];
 
-export interface IPlayerData {
-	sheet_id: string;
-	prefix: string;
-	count_prefix: string;
-	min: number;
-	max: number;
-	animations: {
-		left: { name: string; sheet: string };
-		right: { name: string; sheet: string };
-		up: { name: string; sheet: string };
-		down: { name: string; sheet: string };
-	};
-	starting_sprite: string;
-  sprite_object: Phaser.GameObjects.Sprite | null;
-  start: {x: number, y: number}
-}
+
