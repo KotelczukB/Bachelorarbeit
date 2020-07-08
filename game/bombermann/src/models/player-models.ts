@@ -8,7 +8,6 @@ export interface IPlayerData {
 	count_prefix: string;
 	min: number;
 	max: number;
-	direction: IDirection;
 	animations: IPlayerAnimations;
 	starting_sprite: string;
 	sprite_object: CharacterSprite | null;
@@ -19,7 +18,6 @@ export interface IPlayerData {
 export interface IShotData {
 	sheet_id: string;
 	prefix: string;
-	direction: IDirection;
 	animations: {
 		fly: { name: string; sheet: string; min: number; max: number };
 		impact: { name: string; sheet: string; min: number; max: number };
@@ -36,9 +34,3 @@ export interface IPlayerAnimations {
 	head: { name: string; sheet: string };
 }
 
-export enum IDirection {
-	right,
-	left,
-	up,
-	down,
-}

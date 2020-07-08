@@ -1,4 +1,4 @@
-import { IDirection, IPlayerAnimations } from './player-models';
+import { IPlayerAnimations } from './player-models';
 
 export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
 	hp: number;
@@ -26,7 +26,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
 
 		scene.sys.updateList.add(this);
 		scene.sys.displayList.add(this);
-		this.setScale(2);
+		this.setScale(1.6);
 		scene.physics.world.enableBody(this);
 		this.setImmovable(true);
 		this.setSize(6, 8);

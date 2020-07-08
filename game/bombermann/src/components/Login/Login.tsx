@@ -29,11 +29,12 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
 		}
   };
   
-  public handleSubmit = (event: any): void => {
+  public handleSubmit = async (event: any): Promise<void> => {
     //fetch() send over router to backend
     // get token
-    //setAuthToken('sfsdf')
-    event.preventDefault();
+    //setAuthToken('sfsdf') to router
+		event.preventDefault();
+		// set connection strings to localstorage
     (this.props as any).history.push('/game');
 	};
 

@@ -1,9 +1,8 @@
-import { IPlayerData, IDirection } from "../models/player-models";
+import { IPlayerData } from "../models/player-models";
 
 export const players_data: IPlayerData[] = [
 	{
     sheet_id: 'player',
-    direction: IDirection.down,
 		id: 1,
 		prefix: 'player_1_',
 		count_prefix: '_0',
@@ -20,12 +19,11 @@ export const players_data: IPlayerData[] = [
 		sprite_object: null,
 		start: { x: 100, y: 100 },
 		shot: {
-      direction: IDirection.down,
 			sheet_id: 'player',
 			prefix: 'blob_shot_',
 			animations: {
-				fly: { name: 'blob_shot', sheet: '', min: 0, max: 5 },
-				impact: { name: 'blob_shot_imp', sheet: '', min: 4, max: 5 },
+				fly: { name: 'blob_shot', sheet: '', min: 0, max: 4 },
+				impact: { name: 'blob_shot_imp', sheet: 'imp_', min: 1, max: 5 },
 			},
 			starting_sprite: 'blob_shot_1',
 			sprite_object: null,
@@ -34,7 +32,6 @@ export const players_data: IPlayerData[] = [
 	{
 		id: 2,
     sheet_id: 'player',
-    direction: IDirection.down,
 		prefix: 'player_2_',
 		count_prefix: '_0',
 		min: 0,
@@ -50,7 +47,6 @@ export const players_data: IPlayerData[] = [
 		sprite_object: null,
 		start: { x: 500, y: 700 },
 		shot: {
-      direction: IDirection.down,
 			sheet_id: 'player',
 			prefix: 'blue_shot_',
 			animations: {
@@ -64,7 +60,6 @@ export const players_data: IPlayerData[] = [
 	{
 		id: 3,
     sheet_id: 'player',
-    direction: IDirection.down,
 		prefix: 'player_3_',
 		count_prefix: '_0',
 		min: 0,
@@ -80,7 +75,6 @@ export const players_data: IPlayerData[] = [
 		sprite_object: null,
 		start: { x: 700, y: 200 },
 		shot: {
-      direction: IDirection.down,
 			sheet_id: 'player',
 			prefix: 'red_shot_',
 			animations: {
@@ -94,7 +88,6 @@ export const players_data: IPlayerData[] = [
 	{
 		id: 4,
     sheet_id: 'player',
-    direction: IDirection.down,
 		prefix: 'player_4_',
 		count_prefix: '_0',
 		min: 0,
@@ -110,7 +103,6 @@ export const players_data: IPlayerData[] = [
 		sprite_object: null,
 		start: { x: 300, y: 400 },
 		shot: {
-      direction: IDirection.down,
 			sheet_id: 'player',
 			prefix: 'brown_shot_',
 			animations: {

@@ -15,7 +15,7 @@ export class BulletSprite extends Phaser.Physics.Arcade.Sprite {
 		vel_y: number,
 		frame?: string | number
 	) {
-		super(scene, x + 13, y + 18, texture, frame);
+		super(scene, x + 13, y + 13, texture, frame);
 		this.state = 1;
 		this.damage = 1;
 		this.destroy_sprite = destroy_sprite;

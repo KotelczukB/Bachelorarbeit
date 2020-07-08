@@ -73,7 +73,7 @@ export class MenuScene extends Phaser.Scene {
     ];
     
     this.sound.pauseOnBlur = false;
-    this.sound.play("music")
+    this.sound.play("music", {loop: true, volume: 0.7})
 
 
 		this.add.image(this.game.renderer.width * 0.5, this.game.renderer.height * 0.2, 'header').setDepth(1);
