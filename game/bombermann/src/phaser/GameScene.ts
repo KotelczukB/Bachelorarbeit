@@ -256,12 +256,6 @@ export default class GameScene extends Scene {
 			});
 	}
 	update(time: number, delta: number) {
-		// if(!this.game.input.keyboard.enabled) {
-		// 	this.player.setVelocity(0,0)
-		// 	this.input.keyboard.enabled = false;
-		// } else if( !this.input.keyboard.enabled) {
-		// 	this.input.keyboard.enabled = true;
-		// }
 
 		if (this.connected) {
 			this.updateGameState_io();
