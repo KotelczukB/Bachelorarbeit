@@ -100,6 +100,8 @@ export class MenuScene extends Phaser.Scene {
         sendPlayerSelected(id).then((res: any) => {
           //if(res.seccucced)
             this.scene.start('GAME', { character_id: id});
+          // else
+          this.scene.start('GAME', { character_id: id});
         })
       });
     } else if (this.message !== undefined && !this.message[index]) {
@@ -107,6 +109,7 @@ export class MenuScene extends Phaser.Scene {
     }
 		});
 
+    // on update .... socket io an setting on pointerup and adding pics
 		this.sound.pauseOnBlur = false;
 		//this.sound.play(CST.AUDIO.TITLE, {loop: true})
 	}

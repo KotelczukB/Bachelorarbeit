@@ -19,7 +19,7 @@ export default class GameScene extends Scene {
 	char_id!: number;
 	gui_hearts: Phaser.GameObjects.Image[] = [];
 	won: boolean = false;
-	app: any = (feathers as any)();
+	app:any = (feathers as any)();
 	connected: boolean = false;
 	player_data: IPlayerData[] = players_data;
 
@@ -74,7 +74,7 @@ export default class GameScene extends Scene {
 	};
 	/***************************************** */
 
-	init(data: { character_id: number }) {
+	init(data: { character_id: number , app: any}) {
 		console.log('init', data);
 		this.char_id = data.character_id;
 	}
