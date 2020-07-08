@@ -31,7 +31,17 @@ export class Chat extends React.Component<IChatProps, IChatState> {
 		} catch (error) {
 			console.log(error);
 		}
-	}
+		this.setOnSubmit()
+  }
+  
+  public setOnSubmit = () => {
+    const form = document.getElementById("_form")
+    if(form)
+      form.onsubmit = (event: any) => {
+        this.handleSubmit()
+        event.preventDefault();
+      }
+  }
 
 	public handleSubmit = () => {
 		const elem: any = document.getElementById('_msg-input');
@@ -39,10 +49,7 @@ export class Chat extends React.Component<IChatProps, IChatState> {
 			const chat = this.state.chat;
 			chat.push({
 				intern: true,
-				user: this.props.user_id,
-				time: `${
-					new Date().getHours() < 10 ? '0' + new Date().getHours() : new Date().getHours()
-				} : ${new Date().getMinutes()}`,
+				user: `@${this.props.user_id}`,
 				msg: elem.value,
 			});
 			this.setState({ chat });
@@ -55,23 +62,23 @@ export class Chat extends React.Component<IChatProps, IChatState> {
 
 	public render(): JSX.Element {
 		return (
-			<div className="chat-container" >
+			<div className="chat-container">
 				<div className="chat-whole " id="style-1">
 					{this.state.chat.map((elem) => (
-						<Message msg={elem.msg} time={elem.time} user={elem.user} intern={elem.intern} />
+						<Message msg={elem.msg} user={elem.user} intern={elem.intern} />
 					))}
 				</div>
-				<div className="chat-form">
+				<form className="chat-form" id="_form">
 					<input
 						type="text"
 						id="_msg-input"
 						placeholder="Your message :)"
 						className="form-control custom-control"
 					></input>
-					<button className="btn btn-dark custom-chat-btn" id="_send-btn" onClick={this.handleSubmit}>
+					<button className="btn btn-dark custom-chat-btn" id="_send-btn">
 						Send
 					</button>
-				</div>
+				</form>
 			</div>
 		);
 	}
