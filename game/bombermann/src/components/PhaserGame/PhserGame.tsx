@@ -24,8 +24,10 @@ export class PhaserGame extends React.Component<IGameProps, IGameState> {
         arcade: {
           debug: false
         }
-			}
-		});
+      }
+      
+    });
+    
 	}
 
 	shouldComponentUpdate() {

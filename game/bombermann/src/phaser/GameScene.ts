@@ -39,7 +39,22 @@ export default class GameScene extends Scene {
 			// });
 			this.connected = true;
 		} catch (error) {
-			console.log(error)
+			console.log(error);
+		}
+		// Phaser do not proviedes somethig else to write in input in same document
+		const chat_input = document.getElementById('_chat');
+		if (chat_input) {
+			chat_input.addEventListener("mouseover", () => {
+				this.input.keyboard.keys.forEach(elem => elem.reset())
+				this.input.keyboard.disableGlobalCapture()
+				this.input.keyboard.enabled = false;
+				if(this.player)
+				this.player.setVelocity(0,0)
+			});
+			chat_input.addEventListener("mouseout", () => {
+				this.input.keyboard.enableGlobalCapture()
+				this.input.keyboard.enabled = true;
+			});
 		}
 	}
 
@@ -206,6 +221,7 @@ export default class GameScene extends Scene {
 		this.keyboard = this.input.keyboard.addKeys('W, S, A, D, SPACE, G') as {
 			[idx: string]: Phaser.Input.Keyboard.Key;
 		};
+
 		this.characters.forEach((enemie) => {
 			console.log(enemie);
 			enemie.play(enemie.anima.up.name);
@@ -217,10 +233,7 @@ export default class GameScene extends Scene {
 		}
 
 		// Not Connected
-		if(!this.connected)
-		this.add
-			.image(this.player.body.x, this.player.body.y, 'in_use')
-			.setDepth(10)
+		if (!this.connected) this.add.image(this.player.body.x, this.player.body.y, 'in_use').setDepth(10);
 	}
 	updatePlayerState() {
 		this.cameras.main.flash(200);
@@ -243,6 +256,13 @@ export default class GameScene extends Scene {
 			});
 	}
 	update(time: number, delta: number) {
+		// if(!this.game.input.keyboard.enabled) {
+		// 	this.player.setVelocity(0,0)
+		// 	this.input.keyboard.enabled = false;
+		// } else if( !this.input.keyboard.enabled) {
+		// 	this.input.keyboard.enabled = true;
+		// }
+
 		if (this.connected) {
 			this.updateGameState_io();
 			// Dead Follower update
@@ -264,7 +284,7 @@ export default class GameScene extends Scene {
 				});
 			}
 			// delta 16.66666 60fps
-			if (this.player.hp > 0 && !this.won) {
+			if (this.player.hp > 0 && !this.won && this.input.keyboard.enabled) {
 				this.player.shoot_blocked = this.player.shoot_blocked - delta;
 				let speed: number = 64;
 

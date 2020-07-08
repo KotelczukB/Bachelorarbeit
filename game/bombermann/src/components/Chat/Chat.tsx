@@ -33,6 +33,11 @@ export class Chat extends React.Component<IChatProps, IChatState> {
 		}
 		this.setOnSubmit()
   }
+  componentDidUpdate() {
+    const elem = document.getElementById("style-1")
+    if(elem)
+      elem.scrollTo(0, elem.offsetHeight);
+  }
   
   public setOnSubmit = () => {
     const form = document.getElementById("_form")
@@ -45,7 +50,7 @@ export class Chat extends React.Component<IChatProps, IChatState> {
 
 	public handleSubmit = () => {
 		const elem: any = document.getElementById('_msg-input');
-		if (elem) {
+		if (elem && elem.value !== '') {
 			const chat = this.state.chat;
 			chat.push({
 				intern: true,
@@ -62,8 +67,11 @@ export class Chat extends React.Component<IChatProps, IChatState> {
 
 	public render(): JSX.Element {
 		return (
-			<div className="chat-container">
+			<div className="chat-container" id="_chat">
+        <div className="chat_background"></div>
+        <div className="chat">
 				<div className="chat-whole " id="style-1">
+          
 					{this.state.chat.map((elem) => (
 						<Message msg={elem.msg} user={elem.user} intern={elem.intern} />
 					))}
@@ -79,6 +87,7 @@ export class Chat extends React.Component<IChatProps, IChatState> {
 						Send
 					</button>
 				</form>
+        </div>
 			</div>
 		);
 	}
