@@ -1,13 +1,18 @@
 import sendPlayerSelected from "../modules/send-player-selected";
+import { IUsedChars } from "../models/IUsedChars";
 
 export class MenuScene extends Phaser.Scene {
-  buttons!: Phaser.GameObjects.Sprite[]
+  buttons!: Phaser.GameObjects.Sprite[];
+  message!: IUsedChars | undefined;
 	constructor() {
 		super({
 			key: 'MENU',
 		});
 	}
-  init() {}
+  init(data: { message: IUsedChars | undefined }) {
+		console.log('init_menu', data);
+		this.message = data.message;
+	}
 	create() {
     this.anims.create({
       key: 'player_1',
@@ -71,10 +76,9 @@ export class MenuScene extends Phaser.Scene {
 				.setDepth(1)
 				.setScale(4),
     ];
-    
+
     this.sound.pauseOnBlur = false;
     this.sound.play("music", {loop: true, volume: 0.7})
-
 
 		this.add.image(this.game.renderer.width * 0.5, this.game.renderer.height * 0.2, 'header').setDepth(1);
 
@@ -87,13 +91,20 @@ export class MenuScene extends Phaser.Scene {
     this.buttons.forEach((elem, index) => elem.play(anims[index], true))
 
 		//create audio, disable pauseonblur
-		this.buttons.forEach((elem: Phaser.GameObjects.Image, index: number) => {
-			elem.setInteractive();
+		this.buttons.forEach((elem: Phaser.GameObjects.Sprite, index: number) => {
+      elem.setInteractive();
+      // snd update to server 
+      if(this.message !== undefined && this.message[index]){
 			elem.on('pointerup', () => {
         const id = index + 1;
-        sendPlayerSelected(id)
-				this.scene.start('GAME', { character_id: id});
-			});
+        sendPlayerSelected(id).then((res: any) => {
+          //if(res.seccucced)
+            this.scene.start('GAME', { character_id: id});
+        })
+      });
+    } else if (this.message !== undefined && !this.message[index]) {
+      this.add.image(elem.x, elem.y, 'in_use').setDepth(4);
+    }
 		});
 
 		this.sound.pauseOnBlur = false;

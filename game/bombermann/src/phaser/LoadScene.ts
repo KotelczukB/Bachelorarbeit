@@ -57,6 +57,6 @@ export default class LoadScene extends Scene {
 
 	}
 	create() {
-		this.scene.start("MENU");
+		this.scene.start("MENU", {message: {0: true, 1:true, 2: true, 3: false}});
 	}
 }

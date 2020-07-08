@@ -1,3 +1,3 @@
-export default (char_id: number) => {
+export default async (char_id: number) => {
   
 }

@@ -6,6 +6,7 @@ import send_update from '../modules/send-update';
 import startNewGame from '../modules/start-new-game';
 import io from 'socket.io-client';
 import feathers from '@feathersjs/client';
+import { IPlayerData } from '../models/player-models';
 
 export default class GameScene extends Scene {
 	keyboard!: { [idx: string]: Phaser.Input.Keyboard.Key };
@@ -15,17 +16,17 @@ export default class GameScene extends Scene {
 	follower!: CharacterSprite;
 	follower_pic_1!: Phaser.GameObjects.Image;
 	follower_pic_2!: Phaser.GameObjects.Image;
-	char_id: number;
+	char_id!: number;
 	gui_hearts: Phaser.GameObjects.Image[] = [];
 	won: boolean = false;
 	app: any = (feathers as any)();
 	connected: boolean = false;
+	player_data: IPlayerData[] = players_data;
 
-	constructor(character_id: number) {
+	constructor() {
 		super({
 			key: 'GAME',
 		});
-		this.char_id = character_id;
 		this.characters = [];
 		this.bullets = [];
 		this.gui_hearts = [];
@@ -79,7 +80,7 @@ export default class GameScene extends Scene {
 	}
 	preload() {
 		// create animation for all player
-		players_data.forEach((player) =>
+		this.player_data.forEach((player) =>
 			Object.values(player.animations).forEach((value) =>
 				this.anims.create({
 					key: value.name,
@@ -95,7 +96,7 @@ export default class GameScene extends Scene {
 		);
 
 		// create anim for Bullets
-		players_data.forEach((player) =>
+		this.player_data.forEach((player) =>
 			Object.values(player.shot.animations).forEach((value) =>
 				this.anims.create({
 					key: value.name,
@@ -137,7 +138,7 @@ export default class GameScene extends Scene {
 			map.getObjectLayer('player_4')['objects'][0],
 		];
 		// setting Player & Chars
-		players_data.forEach((character) => {
+		this.player_data.forEach((character) => {
 			const position = playerPos.find((elem: any) => elem.id === character.id);
 			this.characters.push(
 				new CharacterSprite(
