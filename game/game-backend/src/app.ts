@@ -52,6 +52,9 @@ app.configure(channels);
 app.use(express.notFound());
 app.use(express.errorHandler({ logger } as any));
 
+// make reqest to router
+// set connection to app params
+
 app.hooks(appHooks);
 
 export default app;

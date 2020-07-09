@@ -9,7 +9,7 @@
   "authentication": {
     "entity": "user",
     "service": "users",
-    "secret": "8qOuo7Hih1w9BispUbNuY7hMOkc=",
+    "secret": "BI+dkUpH2tLydCxVsiVrTbwntu8=",
     "authStrategies": [
       "jwt",
       "local"
@@ -26,23 +26,7 @@
     "local": {
       "usernameField": "email",
       "passwordField": "password"
-    },
-    "oauth": {
-      "redirect": "/",
-      "google": {
-        "key": "<google oauth key>",
-        "secret": "<google oauth secret>",
-        "scope": [
-          "email",
-          "profile",
-          "openid"
-        ]
-      },
-      "github": {
-        "key": "<github oauth key>",
-        "secret": "<github oauth secret>"
-      }
     }
   },
-  "mongodb": "mongodb://localhost:27017/game_server"
+  "mongodb": "mongodb://localhost:27017/game_backend"
 }

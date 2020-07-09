@@ -1,6 +1,6 @@
-# game-server
+# game-backend
 
-> 
+> Backend for BOMBREMANN
 
 ## About
 
@@ -14,7 +14,7 @@ Getting up and running is as easy as 1, 2, 3.
 2. Install your dependencies
 
     ```
-    cd path/to/game-server
+    cd path/to/game-backend
     npm install
     ```
 
