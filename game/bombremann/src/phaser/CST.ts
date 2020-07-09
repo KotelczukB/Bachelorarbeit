@@ -1,0 +1,118 @@
+import { IPlayerData } from "../models/player-models";
+
+export const players_data: IPlayerData[] = [
+	{
+    sheet_id: 'player',
+		id: 1,
+		prefix: 'player_1_',
+		count_prefix: '_0',
+		min: 0,
+		max: 4,
+		animations: {
+			left: { name: 'player_1_left', sheet: 'side_left' },
+			right: { name: 'player_1_right', sheet: 'side_right' },
+			up: { name: 'player_1_up', sheet: 'back' },
+			down: { name: 'player_1_down', sheet: 'front' },
+			head: { name: 'player_1_dead', sheet: 'head' },
+		},
+		starting_sprite: 'player_1_front_01',
+		sprite_object: null,
+		start: { x: 100, y: 100 },
+		shot: {
+			sheet_id: 'player',
+			prefix: 'blob_shot_',
+			animations: {
+				fly: { name: 'blob_shot', sheet: '', min: 0, max: 4 },
+				impact: { name: 'blob_shot_imp', sheet: 'imp_', min: 1, max: 5 },
+			},
+			starting_sprite: 'blob_shot_1',
+			sprite_object: null,
+		},
+	},
+	{
+		id: 2,
+    sheet_id: 'player',
+		prefix: 'player_2_',
+		count_prefix: '_0',
+		min: 0,
+		max: 4,
+		animations: {
+			left: { name: 'player_2_left', sheet: 'side_left' },
+			right: { name: 'player_2_right', sheet: 'side_right' },
+			up: { name: 'player_2_up', sheet: 'back' },
+			down: { name: 'player_2_down', sheet: 'front' },
+			head: { name: 'player_2_dead', sheet: 'head' },
+		},
+		starting_sprite: 'player_2_front_01',
+		sprite_object: null,
+		start: { x: 500, y: 700 },
+		shot: {
+			sheet_id: 'player',
+			prefix: 'blue_shot_',
+			animations: {
+				fly: { name: 'blue_shot', sheet: '', min: 0, max: 3 },
+				impact: { name: 'blue_shot_imp', sheet: 'imp_', min: 0, max: 4 },
+			},
+			starting_sprite: 'blue_shot_1',
+			sprite_object: null,
+		},
+	},
+	{
+		id: 3,
+    sheet_id: 'player',
+		prefix: 'player_3_',
+		count_prefix: '_0',
+		min: 0,
+		max: 4,
+		animations: {
+			left: { name: 'player_3_left', sheet: 'side_left' },
+			right: { name: 'player_3_right', sheet: 'side_right' },
+			up: { name: 'player_3_up', sheet: 'back' },
+			down: { name: 'player_3_down', sheet: 'front' },
+			head: { name: 'player_3_dead', sheet: 'head' },
+		},
+		starting_sprite: 'player_3_front_01',
+		sprite_object: null,
+		start: { x: 700, y: 200 },
+		shot: {
+			sheet_id: 'player',
+			prefix: 'red_shot_',
+			animations: {
+				fly: { name: 'red_shot', sheet: '', min: 0, max: 4 },
+				impact: { name: 'red_shot_imp', sheet: 'imp_', min: 0, max: 4 },
+			},
+			starting_sprite: 'red_shot_1',
+			sprite_object: null,
+		},
+	},
+	{
+		id: 4,
+    sheet_id: 'player',
+		prefix: 'player_4_',
+		count_prefix: '_0',
+		min: 0,
+		max: 4,
+		animations: {
+			left: { name: 'player_4_left', sheet: 'side_left' },
+			right: { name: 'player_4_right', sheet: 'side_right' },
+			up: { name: 'player_4_up', sheet: 'back' },
+			down: { name: 'player_4_down', sheet: 'front' },
+			head: { name: 'player_4_dead', sheet: 'head' },
+		},
+		starting_sprite: 'player_4_front_01',
+		sprite_object: null,
+		start: { x: 300, y: 400 },
+		shot: {
+			sheet_id: 'player',
+			prefix: 'brown_shot_',
+			animations: {
+				fly: { name: 'brown_shot', sheet: '', min: 0, max: 2 },
+				impact: { name: 'brown_shot_imp', sheet: 'imp_', min: 0, max: 3 },
+			},
+			starting_sprite: 'brown_shot_1',
+			sprite_object: null,
+		},
+	},
+];
+
+
