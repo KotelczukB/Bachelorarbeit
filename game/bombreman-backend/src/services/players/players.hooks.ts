@@ -1,20 +1,23 @@
 
+import prePlayerEvent from '../../hooks/pre-player-event';
+import prePlayerCreateGeneratetoken from '../../hooks/pre-player-create-generatetoken';
+import postPlayerResponse from '../../hooks/post-players-response';
 export default {
   before: {
     all: [],
     find: [],
-    get: [],
-    create: [],
-    update: [],
-    patch: [],
-    remove: []
+    get: [prePlayerEvent()],
+    create: [prePlayerCreateGeneratetoken()],
+    update: [prePlayerEvent()],
+    patch: [prePlayerEvent()],
+    remove: [prePlayerEvent()]
   },
 
   after: {
     all: [],
-    find: [],
+    find: [postPlayerResponse()],
     get: [],
-    create: [],
+    create: [postPlayerResponse()],
     update: [],
     patch: [],
     remove: []

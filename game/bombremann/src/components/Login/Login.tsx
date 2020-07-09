@@ -23,6 +23,7 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
 		const token = getAuthToken();
 		if (token) {
 			// sende an router
+			// backendurl/players
 			// if router ok
       
       (this.props as any).history.push('/game');

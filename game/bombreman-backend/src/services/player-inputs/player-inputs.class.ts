@@ -1,46 +1,87 @@
-import { Id, NullableId, Paginated, Params, ServiceMethods } from '@feathersjs/feathers';
-import { Application } from '../../declarations';
-
-interface Data {}
+import {
+  Id,
+  NullableId,
+  Paginated,
+  Params,
+  ServiceMethods,
+} from "@feathersjs/feathers";
+import { Application } from "../../declarations";
+import { _BasicState } from "../../models/SessionState";
+import { IPlayerInputDTO } from "../../models/IPlayerInputDTO";
+import { ReplSet } from "mongodb";
+import gameSessionCreater from "../../modules/game-session-creater";
 
 interface ServiceOptions {}
 
-export class PlayerInputs implements ServiceMethods<Data> {
+export class PlayerInputs implements ServiceMethods<IPlayerInputDTO> {
   app: Application;
   options: ServiceOptions;
 
-  constructor (options: ServiceOptions = {}, app: Application) {
+  constructor(options: ServiceOptions = {}, app: Application) {
     this.options = options;
     this.app = app;
   }
 
-  async find (params?: Params): Promise<Data[] | Paginated<Data>> {
-    return [];
+  async find(
+    params?: Params
+  ): Promise<IPlayerInputDTO[] | Paginated<IPlayerInputDTO>> {
+    throw new Error("Method not implemented");
   }
 
-  async get (id: Id, params?: Params): Promise<Data> {
-    return {
-      id, text: `A new message with ID: ${id}!`
-    };
+  async get(id: Id, params?: Params): Promise<IPlayerInputDTO> {
+    throw new Error("Method not implemented");
   }
 
-  async create (data: Data, params?: Params): Promise<Data> {
-    if (Array.isArray(data)) {
-      return Promise.all(data.map(current => this.create(current, params)));
+  async create(
+    data: IPlayerInputDTO,
+    params?: Params
+  ): Promise<IPlayerInputDTO> {
+    const application_data = data.app_data;
+    if (application_data.own_game_snapshots.length >= 1) {
+      const running_res: any = await this.app.service("game-session").find({
+        query: {
+          name: application_data.backend_data.game_session,
+          state: _BasicState.active,
+          rt_server: application_data.rt_serverURL,
+          rt_session: application_data.rt_session,
+          player_tokens: application_data.tokens,
+        },
+      });
+      const game_session = running_res.data[0]
+        ? running_res.data[0]
+        : await this.app
+            .service("game-session")
+            .create(gameSessionCreater(application_data));
+
+      await this.app.service("game-session").patch(game_session._id, {
+        $push: { player_inputs: application_data.own_game_snapshots },
+      });
+      return (data = {
+        ...data,
+        app_data: application_data,
+      });
+    } else {
+      throw new Error("Dataset incomplete");
     }
-
-    return data;
   }
 
-  async update (id: NullableId, data: Data, params?: Params): Promise<Data> {
-    return data;
+  async update(
+    id: NullableId,
+    data: IPlayerInputDTO,
+    params?: Params
+  ): Promise<IPlayerInputDTO> {
+    throw new Error("Method not implemented");
   }
 
-  async patch (id: NullableId, data: Data, params?: Params): Promise<Data> {
-    return data;
+  async patch(
+    id: NullableId,
+    data: IPlayerInputDTO,
+    params?: Params
+  ): Promise<IPlayerInputDTO> {
+    throw new Error("Method not implemented");
   }
 
-  async remove (id: NullableId, params?: Params): Promise<Data> {
-    return { id };
+  async remove(id: NullableId, params?: Params): Promise<IPlayerInputDTO> {
+    throw new Error("Method not implemented");
   }
 }

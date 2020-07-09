@@ -1,12 +1,15 @@
 
+import preGameSessionValidatePlayerInput from '../../hooks/pre-game-session-validate-player-input';
+import postGameSessionPatch from '../../hooks/post-game-session-patch';
+import preServerEvent from '../../hooks/pre-player-event';
 export default {
   before: {
     all: [],
     find: [],
     get: [],
-    create: [],
+    create: [preServerEvent()],
     update: [],
-    patch: [],
+    patch: [preGameSessionValidatePlayerInput()],
     remove: []
   },
 
@@ -16,7 +19,7 @@ export default {
     get: [],
     create: [],
     update: [],
-    patch: [],
+    patch: [postGameSessionPatch()],
     remove: []
   },
 

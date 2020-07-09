@@ -1,4 +1,4 @@
 export enum _RealTimeAppType {
-  chat, 
-  app
+  application,
+  chat
 }
