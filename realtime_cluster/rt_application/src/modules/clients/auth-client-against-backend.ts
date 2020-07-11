@@ -35,8 +35,8 @@ export const sendAuthRequest = async (
 
 export const makeRequest = async (fetch: any, client: IClient): Promise<any> =>
   fetch(client.network.backend_server_URL, {
-    method: "get",
-    headers: { Bearer: client.network.backend_auth },
+    method: "GET",
+    body: JSON.stringify(client.network.backend_token),
   }).then((res: Response) => res.json());
 
 export const validateResponses = async (

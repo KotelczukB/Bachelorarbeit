@@ -8,5 +8,4 @@ export interface IClientConnection {
   target_channel: string,
   session_name: string | null,
   backend_token: string
-  backend_auth: boolean
 }

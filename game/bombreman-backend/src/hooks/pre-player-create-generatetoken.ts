@@ -1,11 +1,11 @@
 // Use this hook to manipulate incoming or outgoing data.
 // For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
 import { Hook, HookContext } from "@feathersjs/feathers";
-import { IPlayerDTO } from "../models/IPlayerDTO";
+import { IPlayerLogIn } from "../models/IPlayerLogIn";
 
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
-    const { data } = context as { data: IPlayerDTO };
+    const { data } = context as { data: IPlayerLogIn };
     data.token = `${data.user_name}##${data.user_name
       .split("")
       .reduce((a, b) => {

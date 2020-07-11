@@ -5,16 +5,8 @@ export default function (app: Application) {
   const connection = app.get('mongodb');
   const database = connection.substr(connection.lastIndexOf('/') + 1);
   const mongoClient = MongoClient.connect(connection, { useNewUrlParser: true })
-    .then(client => {
-      client.db(database);
-      // init collections
-      app.service('users').Model = client.db(database)
-        .collection('users');
-      app.service('applications').Model = client.db(database)
-        .collection('applications');
-      app.service('ext-apps').Model = client.db(database)
-        .collection('ext-apps');
-    });
+  .then((client) => client.db(database));
+
 
   app.set('mongoClient', mongoClient);
 }

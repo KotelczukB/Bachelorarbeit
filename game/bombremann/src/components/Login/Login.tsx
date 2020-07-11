@@ -1,13 +1,15 @@
 import React from 'react';
 import './Login.scss'
 import { Header } from '../Header/Header';
-import { getAuthToken, setAuthToken } from '../../modules/auth-token';
+import createLoginBody from '../../modules/create-login-body';
+import { ILoginRegisterAnswer } from '../../models/ILoginRegisterAnswer';
+import { IRTServer } from '../../models/IRTServer';
 
 export interface ILoginProps {}
 
 export interface ILoginState {
 	password: string | null;
-	email: string | null;
+	user_name: string | null;
 }
 
 export class Login extends React.Component<ILoginProps, ILoginState> {
@@ -15,28 +17,30 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
 		super(props);
 		this.state = {
 			password: null,
-			email: null,
+			user_name: null,
 		};
 	}
 
-	componentDidMount = () => {
-		const token = getAuthToken();
-		if (token) {
-			// sende an router
-			// backendurl/players
-			// if router ok
-      
-      (this.props as any).history.push('/game');
-		}
-  };
   
   public handleSubmit = async (event: any): Promise<void> => {
-    //fetch() send over router to backend
-    // get token
-    //setAuthToken('sfsdf') to router
-		event.preventDefault();
-		// set connection strings to localstorage
-    (this.props as any).history.push('/game');
+		if(this.canSubmit()) {
+			// sende an den Router
+			await fetch('localhost:5050/users', {
+				method: 'GET',
+				body: JSON.stringify(createLoginBody(this.state))
+			}).then(async (res) => {
+				if(res.ok) {
+					const body: ILoginRegisterAnswer = await res.json();
+					// setzte server_stuff und token in den localStorage
+					body.rt_servers.forEach((server: IRTServer) => { localStorage.setItem(`rt_server_${server.type}`, server.serverURL) });
+					localStorage.setItem('token', body.token);
+					// weiter zum spiel
+					(this.props as any).history.push('/game');
+				}
+			});
+		} else {
+			event.preventDefault();
+		}
 	};
 
 	public redirect = (): void => {
@@ -45,16 +49,16 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
 
 	public canSubmit = (): boolean =>
 		this.state.password !== null &&
-		this.state.email !== null &&
-		this.validateEmail(this.state.email) &&
+		this.state.user_name !== null &&
+		this.validateEmail(this.state.user_name) &&
 		this.validatePassword(this.state.password);
 
 	public validatePassword = (text: string): boolean =>
-		new RegExp('^(?=.*[A-Za-z])(?=.*d)[A-Za-zd]{8,}$').test(text) ? true : false;
+		new RegExp('/^(?=.*\d).{8,}$/').test(text) ? true : false;
 
-	public validateEmail = (text: string): boolean => text.includes('@');
+	public validateEmail = (text: string): boolean => text.length > 5;
 
-	public setEmail = (event: any) => this.setState({ email: event.target.value });
+	public setUserName = (event: any) => this.setState({ user_name: event.target.value });
 
 	public setPassword = (event: any) => this.setState({ password: event.target.value });
 
@@ -67,15 +71,15 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
 					<div className="form-group">
 						<label>Email address</label>
 						<input
-							type="email"
+							type="text"
 							className="form-control"
-							id="_email"
-							aria-describedby="_emailNote"
-							placeholder="test@fun.org"
-							onChange={this.setEmail}
+							id="_user_name"
+							placeholder="Unicron"
+							aria-describedby="_nameNote"
+							onChange={this.setUserName}
 						/>
-						<small id="_emailNote" className="form-text text-muted">
-							Don't worry, Google has it already
+					<small id="_nameNote" className="form-text text-muted">
+							Min. 5 chars long
 						</small>
 					</div>
 					<div className="form-group">
@@ -84,11 +88,14 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
 							type="password"
 							className="form-control"
 							id="_password"
-							placeholder="VeryStrongPassword"
+							placeholder="Password"
 							onChange={this.setPassword}
 						/>
+						<small id="_nameNote" className="form-text text-muted">
+							Min. 8 chars and 1 digit
+						</small>
 					</div>
-					<button type="submit" className="btn btn-primary btn-lg custom-btn" disabled={this.canSubmit()}>
+					<button type="submit" className="btn btn-primary btn-lg custom-btn">
 						Login
 					</button>
 					<button type="button" className="btn btn-secondary custom-btn" onClick={this.redirect}>

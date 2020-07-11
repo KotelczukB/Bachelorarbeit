@@ -3,7 +3,6 @@ import { addToDefaultParams } from "../helpers/basic-default-service-params";
 
 export default async (
   backendURL: string,
-  client_id: string,
   service: any
 ): Promise<ISessionCreate> =>
   service
@@ -12,7 +11,6 @@ export default async (
       return {
         name: `Session-${+new Date()}`,
         backendURL,
-        client_id,
         interval: res.data[0].interval_value,
         client_max: res.data[0].max_session_clients,
         client_min: res.data[0].min_session_clients,

@@ -5,7 +5,7 @@ import preUserCreate from '../../hooks/pre-user-create';
 export default {
   before: {
     all: [],
-    find: [preUserCreate()],
+    find: [applicationStateCheck(), preUserCreate()],
     get: [],
     create: [applicationStateCheck(), preUserCreate()],
     update: [applicationStateCheck()],

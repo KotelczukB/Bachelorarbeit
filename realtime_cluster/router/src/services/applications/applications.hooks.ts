@@ -1,10 +1,12 @@
 
+import postRtServerFindGetSetup from '../../hooks/post-rt-server-find-get-setup';
+import preApplicationCreateSetState from '../../hooks/pre-application-create-set-state';
 export default {
   before: {
     all: [],
     find: [],
     get: [],
-    create: [],
+    create: [preApplicationCreateSetState()],
     update: [],
     patch: [],
     remove: []
@@ -12,7 +14,7 @@ export default {
 
   after: {
     all: [],
-    find: [],
+    find: [postRtServerFindGetSetup()],
     get: [],
     create: [],
     update: [],

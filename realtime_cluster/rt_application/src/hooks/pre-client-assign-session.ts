@@ -19,7 +19,7 @@ export default (options = {}): Hook => {
         app.service("sessions"),
         path,
         app.service("backends"),
-        createSessionData(data.network.backend_server_URL, data.id, app.service('backends'))
+        createSessionData(data.network.backend_server_URL, app.service('backends'))
       );
       if (!targetChannel)
         throw new Error("no channel exists or can be created");

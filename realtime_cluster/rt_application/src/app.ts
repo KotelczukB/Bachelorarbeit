@@ -8,7 +8,6 @@ import feathers from '@feathersjs/feathers';
 import configuration from '@feathersjs/configuration';
 import express from '@feathersjs/express';
 import socketio from '@feathersjs/socketio'
-import rest from '@feathersjs/rest-client'
 
 import fetch from 'node-fetch'
 import { Application } from './declarations';
@@ -52,10 +51,15 @@ app.use(express.notFound());
 app.use(express.errorHandler({ logger } as any));
 
 // router default REST Client
-const routerRestClient = rest(`http://${app.get('routerHost')}:${app.get('routerPort')}`);
-app.configure(routerRestClient.fetch(fetch));
-const routerSettings = app.service(app.get('routerRegisterService'));
-app.set('routerSettings', routerSettings);
+fetch(`${app.get("routerURL")}/applications`, {
+  method: "POST",
+  body: JSON.stringify({
+    type: app.get("self_type"),
+    connection_string: `http://${app.get("host")}:${app.get("port")}`,
+    state: null
+  }),
+  headers: { "Content-Type": "application/json" },
+})
 
 app.hooks(appHooks);
 

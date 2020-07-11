@@ -46,7 +46,7 @@ describe('Feathers application tests (with jest)', () => {
       } catch (error) {
         const { response } = error;
 
-        expect(response.status).toBe(404);
+        expect(response.state).toBe(404);
         expect(response.data.indexOf('<html>')).not.toBe(-1);
       }
     });
@@ -59,7 +59,7 @@ describe('Feathers application tests (with jest)', () => {
       } catch (error) {
         const { response } = error;
 
-        expect(response.status).toBe(404);
+        expect(response.state).toBe(404);
         expect(response.data.code).toBe(404);
         expect(response.data.message).toBe('Page not found');
         expect(response.data.name).toBe('NotFound');

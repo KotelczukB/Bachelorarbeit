@@ -7,5 +7,6 @@
         "max": 50
     },
     "mongodb": "mongodb://localhost:27017/bombreman_backend",
-    "router_url": "localhost:8050/applications"
+    "router_url": "http://localhost:3080/applications",
+    "min_players": 3
 }

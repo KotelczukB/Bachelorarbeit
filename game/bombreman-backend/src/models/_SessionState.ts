@@ -1,4 +1,4 @@
-export enum _RealTimeAppStatus {
+export enum _BasicState {
   "active" = "active",
   "inactive" = "inactive"
 }

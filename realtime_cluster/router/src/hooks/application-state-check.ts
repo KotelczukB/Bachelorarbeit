@@ -10,7 +10,7 @@ export default (options = {}): Hook => {
     const { app } = context;
     // get old apps and check the state
     // find apps die nicht antworden und endere den zustand
-    updateApplicationsOnHealthCheck(app.service('applications'),  new Date(-1))
+    await updateApplicationsOnHealthCheck(app.service('applications'),  new Date())
     return context;
   };
 };
@@ -25,6 +25,6 @@ export const updateApplicationsOnHealthCheck = async (
       (resp.data as IRealTimeApp[]).forEach(async (item: IRealTimeApp) =>
         fetch(`${item.connection_string}/health`, {
           method: "get",
-        }).then((resp: any) => { if(!resp.succeed) app_service.patch(item._id, {state: _RealTimeAppStatus.inactive})})
+        }).then((resp: any) => { if(!resp.succeed) app_service.patch(item._id, {state: _RealTimeAppStatus.inactive})}).catch((err: any)=> console.log(err))
       )
     );

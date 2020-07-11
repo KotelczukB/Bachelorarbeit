@@ -1,29 +1,37 @@
 // Use this hook to manipulate incoming or outgoing data.
 // For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
-import { Hook, HookContext, Application } from '@feathersjs/feathers';
-import { IClientLogin } from '../models/IClientLogin';
-import fetch from 'node-fetch';
-import createClientLogin from '../modules/create-client-login';
+import { Hook, HookContext, Application } from "@feathersjs/feathers";
+import fetch from "node-fetch";
+import { IClientLoginAnswer } from "../models/IClientLoginAnswer";
 
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
-    const {data, app} = context as {data: IClientLogin, app: Application}
-    const backend_resp = await fetch(data.backend_url, {
-      method: context.method === 'create' ? 'POST' : 'GET',
-      body: JSON.stringify(createClientLogin(data)),
-      headers: {"Accept" : "application/json"}
-    })
-    if(!backend_resp.ok) 
-      throw new Error('Backend Login or Register faild!');
+    const { data, app } = context as { data: IClientLoginAnswer; app: Application };
+    // sende Auth an backend weiter
+    const backend_resp = await fetch(`${data.backend_url}/players`, {
+      method: context.method === "create" ? "POST" : "GET",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!backend_resp.ok) throw new Error("Backend Login or Register faild!");
     const respJSON = await backend_resp.json();
-    if(context.method === 'create')
-      data.rt_server_names = respJSON.rt_serverURLs;
-    if(context.method === 'find') {
-      const user_resp = await app.service('users').find({query: {id: data.id, user_name: data.user_name}})
-      if(user_resp.data.length > 0)
-        await app.service('users').patch(user_resp.data[0]._id, {rt_server_names: respJSON.rt_serverURLs})
+    // setzte backend sein setUp
+    if (context.method === "create") data.rt_servers = respJSON.rt_setUp;
+    data.token = respJSON.token;
+    if (context.method === "find") {
+      const user_resp = await app
+        .service("users")
+        .find({ query: {user_name: data.user_name} });
+      if (user_resp.data.length > 0)
+        await app
+          .service("users")
+          .patch(user_resp.data[0]._id, {
+            rt_servers: respJSON.rt_setUp,
+            token: respJSON.token,
+          });
     }
-    data.password = '';
     return context;
   };
-}
+};

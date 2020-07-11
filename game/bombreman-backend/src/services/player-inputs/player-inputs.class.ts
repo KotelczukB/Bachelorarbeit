@@ -6,9 +6,8 @@ import {
   ServiceMethods,
 } from "@feathersjs/feathers";
 import { Application } from "../../declarations";
-import { _BasicState } from "../../models/SessionState";
-import { IPlayerInputDTO } from "../../models/IPlayerInputDTO";
-import { ReplSet } from "mongodb";
+import { _BasicState } from "../../models/_SessionState";
+import { IPlayerInputDTO } from "../../models/IPlayerInput";
 import gameSessionCreater from "../../modules/game-session-creater";
 
 interface ServiceOptions {}
@@ -40,7 +39,7 @@ export class PlayerInputs implements ServiceMethods<IPlayerInputDTO> {
     if (application_data.own_game_snapshots.length >= 1) {
       const running_res: any = await this.app.service("game-session").find({
         query: {
-          name: application_data.backend_data.game_session,
+          name: application_data.game_session,
           state: _BasicState.active,
           rt_server: application_data.rt_serverURL,
           rt_session: application_data.rt_session,

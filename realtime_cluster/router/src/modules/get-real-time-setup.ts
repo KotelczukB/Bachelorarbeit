@@ -1,40 +1,37 @@
 import { IRealTimeApp } from "../models/real-time/IReatTimeApp";
 import { _RealTimeAppType } from "../models/real-time/_RealTimeAppType";
 import { _RealTimeAppStatus } from "../models/real-time/_RealTimeAppStatus";
-import R from "ramda";
+import { IRTServer } from "../models/real-time/IRTServer";
 
-export default (
+export default async (
   application_service: any
-): Promise<{ serverURL: string; status: _RealTimeAppStatus, type: _RealTimeAppType }[]> =>
-  Promise.all(getSetup(application_service)).then((rtApp) =>
-    getSomeRTApps(rtApp).map((elem) => {
-      return { serverURL: elem.connection_string, status: elem.status, type: elem.type };
-    })
-  );
+): Promise<IRTServer[] | undefined> => await getSetup(application_service);
 
-export const getSetup = (
+export const getSetup = async (
   application_service: any
-): Promise<{ data: IRealTimeApp[]; [idx: string]: any }[]>[] =>
-  Object.keys(_RealTimeAppType).map(
-    async (key: any) =>
-      await application_service.find({
-        query: { type: key, active: _RealTimeAppStatus.active },
-      })
-  );
+): Promise<IRTServer[] | undefined> => await application_service.find();
 
-export const getSomeRTApps = (
-  setup: {
-    data: IRealTimeApp[];
-    [idx: string]: any;
-  }[][]
-): IRealTimeApp[] =>
-  R.flatten(
-    setup.map((obj: { data: IRealTimeApp[]; [idx: string]: any }[]) =>
-      obj.map(getFirst)
-    )
-  );
+// used in service hook
+export const getRTAppOnType = (
+  result: IRealTimeApp[],
+  type: _RealTimeAppType
+): IRealTimeApp | undefined => result.find((elem) => (elem.type === type));
 
-export const getFirst = (setup: {
+export const getTypedArray = (result: {
   data: IRealTimeApp[];
   [idx: string]: any;
-}): IRealTimeApp => setup.data[0];
+}): (IRealTimeApp | undefined)[] =>
+  Object.values(_RealTimeAppType).map((value) =>
+    getRTAppOnType(result.data, value)
+  );
+
+export const mapObject = (
+  application: IRealTimeApp | undefined
+): IRTServer | undefined => {
+  if (application)
+    return {
+      serverURL: application.connection_string,
+      state: application.state,
+      type: application.type,
+    };
+};

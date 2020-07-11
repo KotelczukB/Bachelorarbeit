@@ -16,8 +16,7 @@ import services from "./services";
 import appHooks from "./app.hooks";
 import channels from "./channels";
 import mongodb from "./mongodb";
-import fetch from "node-fetch";
-import { IRTServer } from "./models/IRTServer";
+import { getRTSetup } from "./modules/get-rt-setup-from-router";
 // Don't remove this comment. It's needed to format import lines nicely.
 
 const app: Application = express(feathers());
@@ -53,23 +52,7 @@ app.use(express.errorHandler({ logger } as any));
 
 app.hooks(appHooks);
 
-fetch(app.get("router_url"), {
-  method: "GET",
-})
-  .then((resp) => {
-    resp.json().then((body) =>
-      body.foreach(
-        async (elem: IRTServer) =>
-          await app.service("rt-server").create({
-            serverURL: elem.serverURL,
-            status: elem.status,
-            type: elem.type,
-          })
-      )
-    );
-  })
-  .then((resp: any) => {
-    console.log(`Server on init sendend request to Router ${resp}`);
-  });
+getRTSetup(app);
+
 
 export default app;

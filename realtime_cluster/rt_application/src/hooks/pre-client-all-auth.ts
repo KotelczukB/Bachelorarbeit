@@ -13,10 +13,9 @@ export default (options = {}): Hook => {
   return async (context: HookContext) => {
     const { data, params } = context as {data: IClient, params: Params};
     if(params.provider && params.provider === "server")
-      authClientAgainstBackend(data).then((resp: boolean) => {
+      await authClientAgainstBackend(data).then((resp: boolean) => {
         if(!resp)
           throw new Error('Backend refused Client')
-        data.network.backend_auth = resp;
       });
     return context;
   };
