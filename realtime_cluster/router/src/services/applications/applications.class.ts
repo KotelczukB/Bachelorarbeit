@@ -19,6 +19,6 @@ export class Applications extends Service {
   public async find(params: any): Promise<any[] | Paginated<any>> {
     if(Object.keys(params.query).length < 1)
       return await super.find({query: {state: _RealTimeAppStatus.active, type: { $in: [_RealTimeAppType[_RealTimeAppType.chat], _RealTimeAppType[_RealTimeAppType.application]]}}})
-    return await super.find({query: params.query});
+    return await super.find({query: params.query}); 
   }
 };

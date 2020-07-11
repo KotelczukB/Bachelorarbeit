@@ -21,23 +21,22 @@ export default (options = {}): Hook => {
       app: Application;
     };
     if (result.rt_servers && result.rt_servers.length > 0) {
-      const apps_res: IRealTimeApp[][] = [];
-          await app.service("applications").find({
+      const apps_res: any = await app.service("applications").find({
               query: {
-                connection_string: "host",
+                connection_string: { $in: result.rt_servers.map(elem => elem.serverURL) },
+                state: _RealTimeAppStatus[_RealTimeAppStatus.active],
+                type: {$in: result.rt_servers.map(elem => elem.type) }
               },
-            }).then((res: any) => apps_res.push(res))
-        console.log(apps_res)
-      const apps: IRealTimeApp[] = R.flatten(apps_res);
+            })
       // wenn die vom Backend gesendeten Server nicht mehr aktuell sind
-      if (apps.filter((elem) => elem !== undefined).length < 1) {
+      if (apps_res.data.filter((elem : IRealTimeApp) => elem !== undefined).length < 1) {
         const setup = await getRealTimeSetup(app.service("applications"));
         if (setup) {
           result.rt_servers = setup;
           await updateStateOnBackend(result.backend_url, setup);
         }
       }
-      // Wenn das Backend nicht mitgesendet hat
+      // Wenn das Backend nicht mitgesendet hat 
     } else {
       const setup = await getRealTimeSetup(app.service("applications"));
       if (setup) {
