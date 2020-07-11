@@ -10,7 +10,7 @@ export default async (
 ): Promise<number> =>
   await patchSessions(
     session_service,
-    client.client_data.network.session_name,
+    client.client_data.session_name,
     getPing(client.sended_utc_timestamp)
   );
 

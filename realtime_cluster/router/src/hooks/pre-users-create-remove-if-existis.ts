@@ -4,7 +4,16 @@ import { Hook, HookContext } from '@feathersjs/feathers';
 
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
-    console.log(`service: ${context.path} on ${context.method} throws ${context.error.message}`)
+    const {data, app} = context;
+    const to_remove = await app
+    .service("users")
+    .find(null, { query: { user_name: data.user_name } });
+    console.log(to_remove)
+  await Promise.all(to_remove.data.map(async (elem: any) => {
+    app
+    .service("users")
+    .remove(elem._id);
+  }))
     return context;
   };
 }

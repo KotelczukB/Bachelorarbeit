@@ -9,11 +9,14 @@ export default async (
   sessionData: Promise<ISessionCreate>
 ): Promise<{ user: string; session: string; backend: string } | null> =>
   sessionData.then(
-    async (res: ISessionCreate) =>
-      (await getFreeSession(
-        service_session,
-        res.client_id,
-        kinde,
-        res.backendURL
-      )) ?? (await createSession(service_session, service_backends, res))
-  );
+    async (res: ISessionCreate) => {
+      try{
+      const search = await getFreeSession(service_session, res.client_id,  kinde,  res.backend_url) 
+      if(search === null)
+         return await createSession(service_session, service_backends, res)
+      return search;
+      } catch(err) {
+        console.log(err);
+        return null
+      }
+  })

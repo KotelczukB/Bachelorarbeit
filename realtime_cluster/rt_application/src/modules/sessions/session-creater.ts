@@ -7,28 +7,28 @@ import { default_params, addToDefaultParams } from "../helpers/basic-default-ser
 // *************************************
 
 export const createSession = async (
-  service: any,
-  service_second: any,
+  session_service: any,
+  backend_service: any,
   sessionData: ISessionCreate
 ): Promise<{ user: string; session: string, backend: string} | null> =>
   checkBackendavalible(
-    service_second,
-    sessionData.backendURL
+    backend_service,
+    sessionData.backend_url
   ).then(async (valid: boolean) =>
-    valid ? await createNewSession(service, sessionData) : null
+    valid ? await createNewSession(session_service, sessionData) : null
   );
 
 export const createNewSession = async (
   service: any,
   sessionData: ISessionCreate
 ): Promise<{ user: string; session: string, backend: string}> =>
-  service.create(sessionData, default_params).then(getSessionName());
+  service.create(sessionData).then(getSessionName());
 
 export const checkBackendavalible = async (
-  service: any,
-  backendURL: string
+  backend_service: any,
+  backend_url: string
 ): Promise<boolean> =>
-  service.find(addToDefaultParams({query: { ownURL: backendURL }})).then((elem: any) => elem !== undefined);
+  backend_service.find(addToDefaultParams({query: { ownURL: backend_url }})).then((elem: any) => elem !== undefined && elem.length > 0);
 
 export const getSessionName = () => (
   session: ISession

@@ -1,8 +1,9 @@
-import { IClient } from "../../models/Interfaces/clients/IClient";
+import { IClientConnection } from "../../models/Interfaces/clients/IClientConnection";
 
-export default (app: IClient , session: string, channel: string): IClient => {
-  app.network = {
-    ...app.network,
+
+export default (app: IClientConnection , session: string, channel: string): IClientConnection => {
+  app = {
+    ...app,
     target_channel: channel,
     session_name: session
   }

@@ -16,7 +16,7 @@ export class Sessions extends Service {
       this.Model = db.collection('sessions');
     });
   }
-  public async create(data: ISessionCreate, params: any): Promise<any> {
+  public async create(data: ISessionCreate): Promise<any> {
     const session: ISession = {
       createdAt: new Date(),
       session_name: data.name,
@@ -27,10 +27,10 @@ export class Sessions extends Service {
       interval_value: data.interval,
       state: SessionState.active,
       clients: [data.client_id],
-      backend: [data.backendURL],
+      backend: [data.backend_url],
       syncPing: 0,
       newest_update: getTimeStamp()
     }
-    return super.create(session, params)
+    return super.create(session)
   } 
 };

@@ -1,6 +1,6 @@
 import ISession from "./ISession";
 import { Application } from "@feathersjs/feathers";
-import { IClient } from "../clients/IClient";
+import { IClientConnection } from "../clients/IClientConnection";
 
 export interface ISessionSwitcher {
   [idx: string]: { [idx: string]: (arg: any) => any };
@@ -45,7 +45,7 @@ export interface ISwitcherSessionNameProps {
 }
 
 export interface ISwitcherClientProps {
-  clients: IClient[] | null;
+  clients: IClientConnection[] | null;
   target_channel_name: string | undefined;
   app: Application;
 }

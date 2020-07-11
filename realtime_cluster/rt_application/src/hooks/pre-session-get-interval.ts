@@ -9,8 +9,8 @@ export default (options = {}): Hook => {
   return async (context: HookContext) => {
     const {data, app} = context as {data: ISessionCreate, app: Application}
     /// Functional
-    const result = await app.service('backends').find(addToDefaultParams({query: {ownURL: data.backendURL}}))
-    const backend: IBackend = result.data[0];
+    const result = await app.service('backends').find(addToDefaultParams({query: {ownURL: data.backend_url}}))
+    const backend: IBackend = result[0];
     data.interval = backend.interval_value;
     data.client_max = backend.max_session_clients;
     data.client_min = backend.min_session_clients;

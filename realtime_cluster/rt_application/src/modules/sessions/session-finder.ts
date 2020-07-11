@@ -1,19 +1,18 @@
 import R from "ramda";
 import ISession from "../../models/Interfaces/session/ISession";
 import { default_params } from "../helpers/basic-default-service-params";
-import { Service } from "feathers-mongodb/types";
 // ***************************************
 // Sucht eine Session die bereits erstellt worden ist mit dem gleichem Backend
 // ***************************************
 export const getFreeSession = async (
-  service: any,
+  session_service: any,
   client_id: string,
   userType: string,
   targetURL: string
 ): Promise<{ user: string; session: string; backend: string } | null> =>
-  filterSessions(service, userType, targetURL)
+  filterSessions(session_service, userType, targetURL)
     .then((elem) =>
-      getNameAndPatchSession(R.head(elem.data), service, client_id, userType)
+      getNameAndPatchSession(R.head(elem.data), session_service, client_id, userType)
     )
     .catch((error) => { return null} );
 
@@ -25,7 +24,7 @@ export const getNameAndPatchSession = async (
 ): Promise<{ user: string; session: string; backend: string } | null> =>
   service
     .patch(session._id, { $push: { clients: client_id } }, default_params)
-    .then(() => getJustName(userType)(session));
+    .then(() => getJustName(userType)(session)).catch((err: any) => {console.log(err); return null});
 
 export const filterSessions = async (
   service: any,

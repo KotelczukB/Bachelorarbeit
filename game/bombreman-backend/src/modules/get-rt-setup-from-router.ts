@@ -38,11 +38,11 @@ export const getRTSetup = (app: Application) =>
       )
     )
     .then((resp: any) => {
-      console.log(`Server on init sendend request to Router ${resp}`);
+      console.log(`Server on init sendend request to Router and got new rt_setup`);
     })
     .catch((err: any) =>
     setTimeout(() => {
       console.log(err)
         getRTSetup(app);
-      }, 2000)
+      }, 5000)
     );

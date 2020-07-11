@@ -9,7 +9,6 @@ import { SessionState } from "../../models/enums/SessionState";
 import app from "../../app";
 import fetch, { Response } from "node-fetch";
 import { addToDefaultParams } from "../helpers/basic-default-service-params";
-import { IClient } from "../../models/Interfaces/clients/IClient";
 import { Application } from "@feathersjs/feathers";
 
 export const validateIncreaseSessionState = async (
@@ -53,7 +52,7 @@ export const sendStart = async (
 ): Promise<any | null> =>
   promise.then((obj: ISwitcherClientProps) => {
     return obj.clients && obj.clients.length > 1
-      ? fetch(`${obj.clients[0].network.backend_server_URL}/start`, {
+      ? fetch(`${obj.clients[0].backend_url}/start`, {
           method: "post",
           body: JSON.stringify({
             clients: obj.clients,
@@ -88,7 +87,7 @@ export const sendUpdate = (
 ): Promise<Response | null> =>
   promise.then((obj: ISwitcherClientProps) => {
     return obj.clients && obj.clients.length > 0
-      ? fetch(`${obj.clients[0].network.backend_server_URL}/start`, {
+      ? fetch(`${obj.clients[0].backend_url}/start`, {
           method: "patch",
           body: JSON.stringify({
             clients: obj.clients,

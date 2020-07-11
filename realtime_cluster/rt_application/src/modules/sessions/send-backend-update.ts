@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 
-export default async (backendURL: string, body: string) => fetch(`${backendURL}/sessions`, {
+export default async (backend_url: string, body: string) => fetch(`${backend_url}/sessions`, {
   method: 'update',
   body,
 })

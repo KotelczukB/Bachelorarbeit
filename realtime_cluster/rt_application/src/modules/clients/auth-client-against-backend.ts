@@ -1,11 +1,14 @@
-
 import fetch from "node-fetch";
-import { IClient } from "../../models/Interfaces/clients/IClient";
+import { IBackend } from "../../models/Interfaces/backends/IBackend";
+import { addToDefaultParams } from "../helpers/basic-default-service-params";
+import { IClientConnection } from "../../models/Interfaces/clients/IClientConnection";
 
 export default async (
-  client: IClient
+  backend_service: any,
+  client: IClientConnection
 ): Promise<boolean> =>
   await getAuthState(
+    backend_service,
     client,
     fetch,
     makeRequest,
@@ -13,32 +16,89 @@ export default async (
     sendAuthRequest
   );
 
-export const getAuthState = (
-  client: IClient,
+export const getAuthState = async (
+  backend_service: any,
+  client: IClientConnection,
   fetches: any,
-  mRequest: (fetches: any, client: IClient) => Promise<any>,
-  validate: (prom: Promise<any>) => Promise<boolean>,
+  mRequest: (fetches: any, client: IClientConnection) => Promise<any>,
+  validate: (result: Response, service: any) => Promise<boolean>,
   sendRequest: (
-    client: IClient,
+    backend_service: any,
+    client: IClientConnection,
     fetches: any,
-    valid: (r: Promise<any>) => Promise<boolean>,
-    requestFunc: (fetches: any, client: IClient) => Promise<any>
+    valid: (result: Response, service: any) => Promise<boolean>,
+    requestFunc: (fetches: any, client: IClientConnection) => Promise<any>
   ) => Promise<boolean>
-): Promise<boolean> => sendRequest(client, fetches, validate, mRequest);
+): Promise<boolean> =>
+  await sendRequest(backend_service, client, fetches, validate, mRequest);
 
 export const sendAuthRequest = async (
-  client: IClient,
+  backend_service: any,
+  client: IClientConnection,
   fetch: any,
-  validate: (result: Promise<any>) => Promise<boolean>,
-  makeRequest: (fetch: any, client: IClient) => Promise<any>
-): Promise<boolean> => makeRequest(fetch, client).then(validate);
+  validate: (result: Response, service: any) => Promise<boolean>,
+  makeRequest: (fetch: any, client: IClientConnection) => Promise<any>
+): Promise<boolean> =>
+  await makeRequest(fetch, client).then(async (elem) => await validate(elem, backend_service));
 
-export const makeRequest = async (fetch: any, client: IClient): Promise<any> =>
-  fetch(client.network.backend_server_URL, {
+export const makeRequest = async (
+  fetch: any,
+  client: IClientConnection
+): Promise<any> =>
+  await fetch(`${client.backend_url}/players?token=${client.token}`, {
     method: "GET",
-    body: JSON.stringify(client.network.backend_token),
-  }).then((res: Response) => res.json());
+  });
 
 export const validateResponses = async (
-  promise: Promise<any>
-): Promise<boolean> => promise.then((result: any) => result.data.success);
+  result: Response,
+  backend_service: any
+): Promise<boolean> => result.ok ? result.json().then(updateBackend(backend_service)) : false
+// zwischen methode wenn das Backend nicht existiert (key: url) dann erstelle ein neues
+export const updateBackend = (backend_service: any) => async (
+  body: any
+): Promise<boolean> =>
+  await findBackend(backend_service, body)
+    .then(async (serach: { data: IBackend[]; [idx: string]: any }) =>
+      serach.data !== undefined && serach.data.length > 0
+        ? await updateBackendCall(backend_service, body)
+        : await createBackend(backend_service, body)
+    )
+    .catch((err) => {console.log(err); return false});
+
+// Schau ob das benotigte Backend angelegt ist
+export const findBackend = async (
+  backend_service: any,
+  body: any
+): Promise<{ data: IBackend[]; [idx: string]: any }> =>
+  await backend_service.find(
+    addToDefaultParams({
+      query: {
+        ownURL: body.backend_url,
+      },
+    })
+  );
+
+// erstelle ein neues Backend
+export const createBackend = async (
+  backend_service: any,
+  body: any
+): Promise<{ data: IBackend[]; [idx: string]: any }> =>
+  await backend_service.create({
+    ownURL: body.backend_url,
+    interval_value: body.interval_value,
+    min_session_clients: body.min_players,
+    max_session_clients: body.max_players,
+  });
+
+// Update Backend wenn der gebene min player Wert nicht vorhandnen ist
+export const updateBackendCall = async (backend_service: any, body: any) =>
+  await backend_service.patch(
+    null,
+    { min_session_clients: body.min_players },
+    addToDefaultParams({
+      query: {
+        ownURL: body.backend_url,
+        min_session_clients: { $nin: body.min_players },
+      },
+    })
+  );

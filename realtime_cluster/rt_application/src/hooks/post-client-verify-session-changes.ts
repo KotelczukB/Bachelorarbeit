@@ -10,7 +10,7 @@ import { validateSessionRequierdProps } from "../modules/sessions/validate-sessi
 import ISession from "../models/Interfaces/session/ISession";
 import { SessionState } from "../models/enums/SessionState";
 import { addToDefaultParams } from "../modules/helpers/basic-default-service-params";
-import { IClient } from "../models/Interfaces/clients/IClient";
+import { IClientConnection } from "../models/Interfaces/clients/IClientConnection";
 
 //******************************************************************
 //Prufe vorausgesetzte props von Sessions, prufe anzahl von Clients.
@@ -21,9 +21,9 @@ import { IClient } from "../models/Interfaces/clients/IClient";
 
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
-    const { result, app } = context as { result: IClient; app: Application };
+    const { result, app } = context as { result: IClientConnection; app: Application };
     app.service("sessions")
-      .find(addToDefaultParams({ query: { session_name: result.network.session_name } }))
+      .find(addToDefaultParams({ query: { session_name: result.session_name } }))
       .then((response: { [idx: string]: any, data: ISession }) =>
         validateSessionRequierdProps(response.data as ISession)
           ? validateIncreaseSessionState(

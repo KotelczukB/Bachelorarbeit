@@ -5,11 +5,11 @@ import fetch from "node-fetch";
 export default async (
   client_input_service: any,
   session_name: string,
-  backendURL: string
+  backend_url: string
 ): Promise<void> => {
   await getAllClientMessages(client_input_service, session_name).then(
     (messeges: IClientMessage[]) =>
-      fetch(`${backendURL}/chats`, {
+      fetch(`${backend_url}/chats`, {
         method: "POST",
         body: JSON.stringify(messeges),
       }).catch((err: any) => {
