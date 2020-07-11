@@ -3,7 +3,7 @@ import { Service, MongoDBServiceOptions } from 'feathers-mongodb';
 import { Application } from '../../declarations';
 import ISession from '../../models/Interfaces/session/ISession';
 import ISessionCreate from '../../models/Interfaces/session/ISessionCreate';
-import { SessionState } from '../../models/enums/SessionState';
+import { _SessionState } from '../../models/enums/_SessionState';
 import getTimeStamp from '../../modules/helpers/getTimeStamp';
 
 export class Sessions extends Service {
@@ -25,7 +25,7 @@ export class Sessions extends Service {
       min_clients: data.client_min,
       max_clients: data.client_max,
       interval_value: data.interval,
-      state: SessionState.active,
+      state: _SessionState.active,
       clients: [data.client_id],
       backend: [data.backend_url],
       syncPing: 0,

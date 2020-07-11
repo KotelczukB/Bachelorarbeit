@@ -1,6 +1,7 @@
 import ISession from "./ISession";
 import { Application } from "@feathersjs/feathers";
 import { IClientConnection } from "../clients/IClientConnection";
+import { _SessionState } from "../../enums/_SessionState";
 
 export interface ISessionSwitcher {
   [idx: string]: { [idx: string]: (arg: any) => any };
@@ -11,8 +12,8 @@ export interface ISessionSwitcher {
     getClientsOnSession: (
       obj: ISwitcherSessionNameProps
     ) => Promise<ISwitcherClientProps>;
-    sendStart: (obj: Promise<ISwitcherClientProps>) => Promise<any | null>;
-    changeSessionState: (resp: Promise<any | null>) => Promise<boolean>;
+    //sendStart: (obj: Promise<ISwitcherClientProps>) => Promise<any | null>;
+    changeSessionState: (resp: Promise<ISwitcherSessionNameProps>) => Promise<{backend_session: string, shouldChange: boolean}>;
   };
   running: {
     getSessionName: (
@@ -21,8 +22,8 @@ export interface ISessionSwitcher {
     getClientsOnSession: (
       obj: ISwitcherSessionNameProps
     ) => Promise<ISwitcherClientProps>;
-    sendUpdate: (client: Promise<ISwitcherClientProps>) => Promise<any | null>;
-    changeSessionState: (resp: Promise<any | null>) => Promise<boolean>;
+    //sendUpdate: (client: Promise<ISwitcherClientProps>) => Promise<any | null>;
+    changeSessionState: (resp: Promise<ISwitcherSessionNameProps>) => Promise<{backend_session: string, shouldChange: boolean}>;
   };
   full: {
     rejectChanges: (session: ISession) => void;
@@ -34,18 +35,18 @@ export interface ISessionSwitcher {
 
 // Just for simpler typings
 export interface ISwitcherSessionProps {
-  session: ISession | null;
+  session: ISession | undefined;
   app: Application;
 }
 
 export interface ISwitcherSessionNameProps {
-  name: string | null;
+  name: string | undefined;
   target_channel_name: string | undefined;
   app: Application;
 }
 
 export interface ISwitcherClientProps {
-  clients: IClientConnection[] | null;
+  clients: IClientConnection[] | undefined;
   target_channel_name: string | undefined;
   app: Application;
 }

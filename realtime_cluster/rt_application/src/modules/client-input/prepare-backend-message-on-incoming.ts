@@ -1,5 +1,5 @@
 import IClientMessage from "../../models/Interfaces/clients-inputs/IClientMessage";
-import { Application } from "@feathersjs/feathers";
+import { Application, Paginated } from "@feathersjs/feathers";
 import { Channel } from "@feathersjs/transport-commons/lib/channels/channel/base";
 import { addToDefaultParams } from "../helpers/basic-default-service-params";
 import ISession from "../../models/Interfaces/session/ISession";
@@ -22,7 +22,7 @@ export default async (
   app
     .service("sessions")
     .find(addToDefaultParams({ query: { session_name: data.session_name } }))
-    .then((res: any) =>
+    .then((res: Paginated<ISession>) =>
       res.data.filter((elem: ISession) => elem.interval_value < minInterval)
     )
     .then((sessions: ISession[]) => {
@@ -31,7 +31,7 @@ export default async (
         getNewestInputsOnSession(
           app.service("client-inputs"),
           session.session_name,
-          -1
+          -1 // sort direction
         )
           .then(clientInputsRtModifications)
           .then((resp: IMessageToBackend) =>

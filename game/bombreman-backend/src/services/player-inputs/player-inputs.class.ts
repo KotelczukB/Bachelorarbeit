@@ -9,6 +9,7 @@ import { Application } from "../../declarations";
 import { _BasicState } from "../../models/_SessionState";
 import { IPlayerInputDTO } from "../../models/IPlayerInput";
 import gameSessionCreater from "../../modules/game-session-creater";
+import { IGameSesion } from "../../models/IGameSession";
 
 interface ServiceOptions {}
 
@@ -36,23 +37,27 @@ export class PlayerInputs implements ServiceMethods<IPlayerInputDTO> {
     params?: Params
   ): Promise<IPlayerInputDTO> {
     const application_data = data.app_data;
-    if (application_data.own_game_snapshots.length >= 1) {
-      const running_res: any = await this.app.service("game-session").find({
-        query: {
-          name: application_data.game_session,
-          state: _BasicState.active,
-          rt_server: application_data.rt_serverURL,
-          rt_session: application_data.rt_session,
-          player_tokens: application_data.tokens,
-        },
-      });
-      const game_session = running_res.data[0]
-        ? running_res.data[0]
-        : await this.app
-            .service("game-session")
-            .create(gameSessionCreater(application_data));
+    if (application_data.own_game_snapshots.length >= this.app.get('min_players')) {
 
-      await this.app.service("game-session").patch(game_session._id, {
+      // const running_res: any[] | Paginated<IGameSesion> = await this.app.service("game-session").find({
+      //   query: {
+      //     name: application_data.game_session,
+      //     state: _BasicState.active,
+      //     rt_server: application_data.rt_serverURL,
+      //     rt_session: application_data.rt_session,
+      //     player_tokens: application_data.tokens,
+      //   },
+      // });
+      // const game_session = (running_res as Paginated<IGameSesion>).data[0]
+      //   ? (running_res as Paginated<IGameSesion>).data[0]
+      //   : await this.app
+      //       .service("game-session")
+      //       .create(gameSessionCreater(application_data));
+
+
+      // Get Game Session on backend_session_name
+      //put id into patch
+      await this.app.service("game-session").patch(null, {
         $push: { player_inputs: application_data.own_game_snapshots },
       });
       return (data = {

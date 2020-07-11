@@ -11,5 +11,6 @@ export default interface IClientMessage {
   session_name: string;
   target_channel_name: string;
   app: IExternalAppData;
+  token: string
   [idx: string]: any;
 }

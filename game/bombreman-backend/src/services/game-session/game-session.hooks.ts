@@ -5,12 +5,12 @@ import preServerEvent from '../../hooks/pre-player-event';
 export default {
   before: {
     all: [],
-    find: [],
-    get: [],
-    create: [preServerEvent()],
-    update: [],
+    find: [preServerEvent()],
+    get: [preServerEvent()],
+    create: [],
+    update: [preServerEvent()],
     patch: [preGameSessionValidatePlayerInput()],
-    remove: []
+    remove: [preServerEvent()]
   },
 
   after: {

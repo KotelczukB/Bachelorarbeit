@@ -4,5 +4,4 @@ export const validateSessionRequierdProps = (session: ISession) =>
   session.backend &&
   session.clients_channel &&
   session.clients_channel &&
-  session.clients &&
-  session.active;
+  session.clients;

@@ -3,7 +3,7 @@
 import { Hook, HookContext, Application } from "@feathersjs/feathers";
 import { IBackendInput } from "../models/Interfaces/backend-inputs/IBackendInput";
 import { addToDefaultParams } from "../modules/helpers/basic-default-service-params";
-import { SessionState } from "../models/enums/SessionState";
+import { _SessionState } from "../models/enums/_SessionState";
 
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
@@ -13,7 +13,7 @@ export default (options = {}): Hook => {
         .service("sessions")
         .patch(
           {},
-          { state: SessionState.closed },
+          { state: _SessionState.closed },
           addToDefaultParams({
             query: { session_name: data.session_name, backend: data.ownURL },
           })

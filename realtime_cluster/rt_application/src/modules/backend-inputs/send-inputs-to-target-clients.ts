@@ -5,18 +5,18 @@ import { Channel } from "@feathersjs/transport-commons/lib/channels/channel/base
 import { Application } from "@feathersjs/feathers";
 import backendInputAppRtModifications from "../rtFunctions/backend-input-app-rt-modifications";
 import { _AppType } from "../../models/Interfaces/_AppType";
-import { SessionState } from "../../models/enums/SessionState";
+import { _SessionState } from "../../models/enums/_SessionState";
 
 export default async (
   input: IBackendInput,
   session_service: any,
   app: Application,
   appType: _AppType
-): Promise<(Channel | null)[]> =>
+): Promise<(Channel)[]> =>
   session_service
     .find(
       addToDefaultParams({
-        query: { session_name: input.session_name, backend: input.ownURL, state: {$lt: SessionState.closed}},
+        query: { session_name: input.session_name, backend: input.ownURL, state: {$lt: _SessionState.closed}},
       })
     )
     .then((res: any) =>

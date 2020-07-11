@@ -37,7 +37,7 @@ export default function (app: Application) {
         ? app
             .channel(data.target_channel_name)
             .send(clientInputsChatConverter(data))
-        : await prepareBackendMessageOnIncoming(data, app, interval)
+        : await prepareBackendMessageOnIncoming(data, app, interval) // returns backend channel somit publish nicht an die clients
     );
   // Setzt ein um das Interval varzoggerten publish von client-inputs an das Backend
   app.service("backend-inputs").publish("created", async (data: IBackendInput, context) =>
@@ -48,7 +48,7 @@ export default function (app: Application) {
           interval,
           appType
         )
-    );
+    );// returs client channels somit gehen messages an clietns raus
 
   // Preventing area
   app.service("health").publish(() => {

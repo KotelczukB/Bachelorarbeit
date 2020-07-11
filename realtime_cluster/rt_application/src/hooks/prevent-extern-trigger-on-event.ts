@@ -4,10 +4,8 @@ import { Hook, HookContext } from '@feathersjs/feathers';
 
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
-    const {app, params, data} = context;
-    // Check if comming from outside
-    if(params.connection && params.connection.user)
-      throw new Error('Method forbidden');
+    if(context.params.provider !== undefined && context.params.provider !== 'server')
+      throw new Error('Method not allowed')
     return context;
   };
 }

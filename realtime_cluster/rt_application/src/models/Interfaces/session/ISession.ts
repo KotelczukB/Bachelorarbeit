@@ -1,9 +1,9 @@
-import { SessionState } from "../../enums/SessionState";
+import { _SessionState } from "../../enums/_SessionState";
 
 export default interface ISession {
   createdAt: Date;
   session_name: string;
-  state: SessionState; // active, running, full, closed
+  state: _SessionState; // active, running, full, closed
   min_clients: number;
   max_clients: number;
   clients_channel: string;

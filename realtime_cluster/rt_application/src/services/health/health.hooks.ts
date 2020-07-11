@@ -1,3 +1,4 @@
+import preventExternTriggerOnEvent from "../../hooks/prevent-extern-trigger-on-event";
 
 export default {
   before: {
@@ -5,8 +6,8 @@ export default {
     find: [],
     get: [],
     create: [],
-    update: [],
-    patch: [],
+    update: [preventExternTriggerOnEvent()],
+    patch: [preventExternTriggerOnEvent()],
     remove: []
   },
 

@@ -1,15 +1,13 @@
-import preBackendAuth from "../../hooks/pre-backend-all-auth"
+import preventExternTriggerOnEvent from "../../hooks/prevent-extern-trigger-on-event";
 
 export default {
   before: {
-    all: [],
+    all: [preventExternTriggerOnEvent()],
     find: [],
     get: [],
-    create: [
-      preBackendAuth()
-    ],
-    update: [preBackendAuth()],
-    patch: [preBackendAuth()],
+    create: [],
+    update: [],
+    patch: [],
     remove: [],
   },
 

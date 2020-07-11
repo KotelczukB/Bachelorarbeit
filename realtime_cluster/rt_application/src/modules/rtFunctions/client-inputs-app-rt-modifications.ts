@@ -3,7 +3,7 @@ import { IMessageToBackend } from "../../models/Interfaces/backend-inputs/IMessa
 
 export default (param: IClientMessage[]): IMessageToBackend => createBackendInput(param);
 
-export const createBackendInput = (param: IClientMessage[]) => {
+export const createBackendInput = (param: IClientMessage[]): IMessageToBackend => {
   return {
     client_inputs: param,
     session_name: param[0].session_name,

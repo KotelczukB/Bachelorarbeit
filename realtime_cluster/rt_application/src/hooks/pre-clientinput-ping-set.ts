@@ -14,7 +14,7 @@ export default (options = {}): Hook => {
   return async (context: HookContext) => {
     const { data, app } = context as {data: IClientMessage, app: Application};
     if (!validateClientForm(data, app))
-      throw new Error("Input does not satisfied basic requirements");
+      throw new Error("Client-input do not satisfies basic requirements");
     data.ping = await createPing(data, app.service("sessions"));
     return context;
   };

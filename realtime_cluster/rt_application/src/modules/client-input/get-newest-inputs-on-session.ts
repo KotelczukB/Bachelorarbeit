@@ -1,5 +1,6 @@
 import IClientMessage from "../../models/Interfaces/clients-inputs/IClientMessage";
 import { addToDefaultParams } from "../helpers/basic-default-service-params";
+import { Paginated } from "@feathersjs/feathers";
 
 export default async (
   service: any,
@@ -15,7 +16,7 @@ export default async (
     })
   ).then(initializeRang);
 
-export const initializeRang = (inputs: IClientMessage[]): IClientMessage[] => inputs.sort(compareInputs).map(setRang)
+export const initializeRang = (inputs: Paginated<IClientMessage>): IClientMessage[] => inputs.data.sort(compareInputs).map(setRang)
 
 export const setRang = (input: IClientMessage, idx: number) => {
   return {

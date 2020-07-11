@@ -6,9 +6,10 @@ export interface IGameSesion {
   name: string;
   min_player: number;
   state: _BasicState;
-  rt_session: string[];
-  rt_serverURL: IRTServer[];
+  game_channels: string[];
+  rt_server: IRTServer[];
   player_tokens: string[];
   chars_in_use: number[];
   player_inputs: IPlayerGameState[];
+  [idx: string]: any
 }
