@@ -9,5 +9,5 @@ export default async (
   switches: ISessionSwitcher,
   session: ISession,
   app: Application
-): Promise<{ backend_session: string; shouldChange: boolean }> =>
+): Promise<{ session_name: string; shouldChange: boolean }> =>
     await pipe(...R.values(switches[_SessionState[session.state]]))({session, app});

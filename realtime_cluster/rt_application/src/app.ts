@@ -50,8 +50,18 @@ app.configure(channels);
 app.use(express.notFound());
 app.use(express.errorHandler({ logger } as any));
 
+// dirty middleware da feathers hier die types nicht hat. 
+app.configure(socketio(function(io) {
+  io.use(function (socket: any, next) {
+    socket.feathers.target_channel = socket.handshake.query.target_channel;
+    socket.feathers.user_name = socket.handshake.query.user_name;
+    socket.feathers.own_url = socket.handshake.query.own_url;
+    socket.feathers.type = socket.handshake.query.type;
+    next();
+  });
+}));
 // router default REST Client
-fetch(`${app.get("routerURL")}/applications`, {
+fetch(`${app.get("routerURL")}`, {
   method: "POST",
   body: JSON.stringify({
     type: app.get("self_type"),
@@ -59,7 +69,7 @@ fetch(`${app.get("routerURL")}/applications`, {
     state: null
   }),
   headers: { "Content-Type": "application/json" },
-})
+}).then(resp => resp.json()).then(console.log)
 
 app.hooks(appHooks);
 

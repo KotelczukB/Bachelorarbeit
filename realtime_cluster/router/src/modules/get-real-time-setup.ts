@@ -1,15 +1,15 @@
 import { IRealTimeApp } from "../models/real-time/IReatTimeApp";
 import { _RealTimeAppType } from "../models/real-time/_RealTimeAppType";
 import { _RealTimeAppStatus } from "../models/real-time/_RealTimeAppStatus";
-import { IRTServer } from "../models/real-time/IRTServer";
+import { IRTServerSetupApp } from "../models/real-time/IRTServerSetupApp";
 
 export default async (
   application_service: any
-): Promise<IRTServer[] | undefined> => await getSetup(application_service);
+): Promise<IRTServerSetupApp[] | undefined> => await getSetup(application_service);
 
 export const getSetup = async (
   application_service: any
-): Promise<IRTServer[] | undefined> => await application_service.find();
+): Promise<IRTServerSetupApp[] | undefined> => await application_service.find();
 
 // used in service hook
 export const getRTAppOnType = (
@@ -27,7 +27,7 @@ export const getTypedArray = (result: {
 
 export const mapObject = (
   application: IRealTimeApp | undefined
-): IRTServer | undefined => {
+): IRTServerSetupApp | undefined => {
   if (application)
     return {
       serverURL: application.connection_string,

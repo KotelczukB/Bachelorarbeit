@@ -1,5 +1,5 @@
 export enum _ExternType {
-  client,
-  backend,
-  server
+  client ="client",
+  backend = "backend",
+  server = "server"
 }

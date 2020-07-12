@@ -11,9 +11,6 @@ export default (options = {}): Hook => {
     result.password = null;
     result.rt_setUp = rt_server.data.length > 1? rt_server.data : null;
     result.backend_url = `http://${app.get("host")}:${app.get("port")}`
-    result.min_players = +app.get("min_players");
-    result.max_players = +app.get("max_players");
-    result.interval = +app.get("custom_interval");
     return context;
   };
 };

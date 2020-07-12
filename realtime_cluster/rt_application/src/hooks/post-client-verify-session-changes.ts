@@ -31,7 +31,7 @@ export default (options = {}): Hook => {
       result: IClientConnection;
       app: Application;
     };
-    const backend_session = await app
+    const session_name = await app
       .service("sessions")
       .find(
         addToDefaultParams({ query: { session_name: result.session_name } })
@@ -48,24 +48,24 @@ export default (options = {}): Hook => {
                   session: ISession
                 ) => Promise<{
                   new_state: _SessionState;
-                  backend_session: string;
+                  session_name: string;
                 }>
               ) =>
                 await res(response.data[0]).then(
                   async (state: {
                     new_state: _SessionState;
-                    backend_session: string;
+                    session_name: string;
                   }) => {
                     await updateSession(app, response.data, state.new_state);
-                    return state.backend_session;
+                    return state.session_name;
                   }
                 )
             )
           : null
       )
       .catch((error: any) => console.log(error));
-    console.log(backend_session);
-    await updateClientOnBackendWithBackendChannel(result.backend_url, backend_session, result.token, app);
+    console.log(session_name);
+    await updateClientOnBackendWithBackendChannel(result.backend_url, session_name, result.token, app);
     return context;
   };
 };

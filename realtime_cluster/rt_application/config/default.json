@@ -10,5 +10,6 @@
     "mongodb": "mongodb://localhost:27017/rtAppserver",
     "client_required": ["created_utc_timestamp", "sended_utc_timestamp", "client_id", "session_name", "app"],
     "min_rt_interval": 30,
-    "self_type": "application"
+    "self_type": "application",
+    "waiting_channel": "unsigned"
 }

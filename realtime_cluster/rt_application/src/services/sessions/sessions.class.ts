@@ -20,7 +20,7 @@ export class Sessions extends Service {
     const session: ISession = {
       createdAt: new Date(),
       session_name: data.name,
-      backends_channel: `backend_${data.name}`,
+      backends_channel: `backend_${data.backend_url}`,
       clients_channel: `clinet_${data.name}`,
       min_clients: data.client_min,
       max_clients: data.client_max,

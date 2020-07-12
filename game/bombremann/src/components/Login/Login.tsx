@@ -25,7 +25,7 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
   public handleSubmit = async (event: any): Promise<void> => {
 		if(this.canSubmit()) {
 			// sende an den Router
-			await fetch('localhost:5050/users', {
+			await fetch('localhost:3080/users', {
 				method: 'GET',
 				body: JSON.stringify(createLoginBody(this.state))
 			}).then(async (res) => {
@@ -34,6 +34,9 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
 					// setzte server_stuff und token in den localStorage
 					body.rt_servers.forEach((server: IRTServer) => { localStorage.setItem(`rt_server_${server.type}`, server.serverURL) });
 					localStorage.setItem('token', body.token);
+					// melde dich beim RtServer an
+
+
 					// weiter zum spiel
 					(this.props as any).history.push('/game');
 				}

@@ -8,6 +8,9 @@ import IClientMessage from "./models/Interfaces/clients-inputs/IClientMessage";
 import { IBackendInput } from "./models/Interfaces/backend-inputs/IBackendInput";
 import sendDataToClientsAndTriggerInterval from "./modules/backend-inputs/send-data-to-clients-and-trigger-interval";
 import getEnvTYPE from "./modules/helpers/get-env-TYPE";
+import { IConnection } from "./models/IConnection";
+import { _ExternType } from "./models/Interfaces/_ExternType";
+import idetifyBackendServer from "./modules/helpers/idetify-backend-server";
 
 export default function (app: Application) {
   if (typeof app.channel !== "function") {
@@ -19,16 +22,23 @@ export default function (app: Application) {
   // aus docker holen
   const appType: _AppType = (<any>_AppType)[getEnvTYPE(app)];
 
-  app.on("connection", (connection: any) => {
+  app.on("connection", async (connection: IConnection) => 
     // On a new real-time connection, add it to the anonymous channel
-    getConnectionObject(connection, app).then((obj: any) => {
-      if (obj.data[0]) {
-        return app.channel(`${connection.targetChannel}`).join(connection);
+    await getConnectionObject(connection, app).then((obj: (void | { backend_channel: string; client_channel: string })) => {
+      if (obj) {
+        const backend_connection = idetifyBackendServer(connection, app.channel(app.get("waiting_channel")).connections);
+        console.log(app.channel(app.get("waiting_channel")).connections);
+        console.log(backend_connection);
+        if(!backend_connection)
+          throw new Error('requested Backendserver could not be found');
+        return [app.channel(`${obj.client_channel}`).join(connection), app.channel(`${obj.backend_channel}`).join(backend_connection)];
       } else {
-        throw new Error("Client not registerd yet.");
+        console.log(app.channel(app.get("waiting_channel")).connections)
+        if(!app.channel(app.get("waiting_channel")).connections.find(elem => elem.own_url === connection.own_url))
+          return app.channel(app.get("waiting_channel")).join(connection);
       }
-    });
-  });
+    })
+  );
 
   // publish alle Client-inputs an das Backend nur dann wenn es kein Intervall gibt
   // chat type -> convert input, push

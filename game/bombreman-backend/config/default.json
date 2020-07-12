@@ -10,5 +10,6 @@
     "router_url": "http://localhost:3080/applications",
     "min_players": 2,
     "max_players": 4,
-    "custom_interval": 0
+    "custom_interval": 0,
+    "rt_game_backend_service": "backend-inputs"
 }

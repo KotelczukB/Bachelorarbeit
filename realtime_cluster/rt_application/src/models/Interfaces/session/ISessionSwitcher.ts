@@ -9,21 +9,21 @@ export interface ISessionSwitcher {
     checkMinClientsCount: (
       obj: ISwitcherSessionProps
     ) => ISwitcherSessionNameProps;
-    getClientsOnSession: (
-      obj: ISwitcherSessionNameProps
-    ) => Promise<ISwitcherClientProps>;
+    // getClientsOnSession: (
+    //   obj: ISwitcherSessionNameProps
+    // ) => Promise<ISwitcherClientProps>;
     //sendStart: (obj: Promise<ISwitcherClientProps>) => Promise<any | null>;
-    changeSessionState: (resp: Promise<ISwitcherSessionNameProps>) => Promise<{backend_session: string, shouldChange: boolean}>;
+    changeSessionState: (resp: Promise<ISwitcherSessionNameProps>) => Promise<{session_name: string, shouldChange: boolean}>;
   };
   running: {
     getSessionName: (
       session: ISwitcherSessionProps
     ) => ISwitcherSessionNameProps;
-    getClientsOnSession: (
-      obj: ISwitcherSessionNameProps
-    ) => Promise<ISwitcherClientProps>;
+    // getClientsOnSession: (
+    //   obj: ISwitcherSessionNameProps
+    // ) => Promise<ISwitcherClientProps>;
     //sendUpdate: (client: Promise<ISwitcherClientProps>) => Promise<any | null>;
-    changeSessionState: (resp: Promise<ISwitcherSessionNameProps>) => Promise<{backend_session: string, shouldChange: boolean}>;
+    changeSessionState: (resp: Promise<ISwitcherSessionNameProps>) => Promise<{session_name: string, shouldChange: boolean}>;
   };
   full: {
     rejectChanges: (session: ISession) => void;

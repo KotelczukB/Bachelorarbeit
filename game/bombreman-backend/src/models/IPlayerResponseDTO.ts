@@ -6,7 +6,4 @@ export interface IPlayerResponseDTO {
   token: string;
   password: string | null;
   backend_url: string;
-  min_players: number;
-  max_players: number;
-  interval: number;
 }

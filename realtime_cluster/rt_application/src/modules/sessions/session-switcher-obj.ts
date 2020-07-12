@@ -17,9 +17,9 @@ import { IClientConnection } from "../../models/Interfaces/clients/IClientConnec
 //******************************************** */
 
 export const validateIncreaseSessionState = async (
-  should_switch: (switches: ISessionSwitcher, session: ISession, app: Application) => Promise<{backend_session: string, shouldChange: boolean}>,  switcher: ISessionSwitcher, app: Application) => async (session: ISession): Promise<{new_state: _SessionState, backend_session: string}> =>
-  await should_switch(switcher, session, app).then((answer: {backend_session: string, shouldChange: boolean}) =>
-    answer.shouldChange ? { new_state: session.state + 1, backend_session: answer.backend_session} : { new_state: session.state, backend_session: answer.backend_session} 
+  should_switch: (switches: ISessionSwitcher, session: ISession, app: Application) => Promise<{session_name: string, shouldChange: boolean}>,  switcher: ISessionSwitcher, app: Application) => async (session: ISession): Promise<{new_state: _SessionState, session_name: string}> =>
+  await should_switch(switcher, session, app).then((answer: {session_name: string, shouldChange: boolean}) =>
+    answer.shouldChange ? { new_state: session.state + 1, session_name: answer.session_name} : { new_state: session.state, session_name: answer.session_name} 
   );
 
 // active
@@ -32,24 +32,24 @@ export const checkMinClientsCount = (
         ? obj.session?.session_name
         : undefined
       : undefined,
-    target_channel_name: obj.session?.backends_channel,
+    target_channel_name: obj.session?.session_name,
     app: obj.app,
   };
 };
 
-export const getClientsOnSession = async (
-  obj: ISwitcherSessionNameProps
-): Promise<ISwitcherClientProps> =>
-  await obj.app
-    .service("clients")
-    .find(addToDefaultParams({ query: { session_name: obj.name } }))
-    .then((resp: Paginated<IClientConnection>) => {
-      return {
-        clients: resp.data,
-        app: obj.app,
-        target_channel_name: obj.target_channel_name,
-      };
-    });
+// export const getClientsOnSession = async (
+//   obj: ISwitcherSessionNameProps
+// ): Promise<ISwitcherClientProps> =>
+//   await obj.app
+//     .service("clients")
+//     .find(addToDefaultParams({ query: { session_name: obj.name } }))
+//     .then((resp: Paginated<IClientConnection>) => {
+//       return {
+//         clients: resp.data,
+//         app: obj.app,
+//         target_channel_name: obj.target_channel_name,
+//       };
+//     });
 
 // export const sendStart = async (
 //   promise: Promise<ISwitcherClientProps>
@@ -73,7 +73,7 @@ export const getClientsOnSession = async (
 
 export const changeSessionState = (
   resp: Promise<ISwitcherSessionNameProps>
-): Promise<{backend_session: string, shouldChange: boolean}> => resp.then((data: any) => {return{ backend_session: data.target_channel_name, shouldChange: data.name !== undefined }});
+): Promise<{session_name: string, shouldChange: boolean}> => resp.then((data: ISwitcherSessionNameProps) => {return{ session_name: data.target_channel_name+'', shouldChange: data.name !== undefined }});
 
 // running
 export const getSessionName = (
@@ -82,7 +82,7 @@ export const getSessionName = (
   return {
     name: obj.session ? obj.session.session_name : undefined,
     app: obj.app,
-    target_channel_name: obj.session?.backends_channel,
+    target_channel_name: obj.session?.session_name,
   };
 };
 
@@ -114,13 +114,13 @@ export const rejectChanges = (session: ISession): void => {
 export const switcher: ISessionSwitcher = {
   active: {
     checkMinClientsCount,
-    getClientsOnSession,
+    //getClientsOnSession,
   //  sendStart,
     changeSessionState,
   },
   running: {
     getSessionName,
-    getClientsOnSession,
+   // getClientsOnSession,
   //  sendUpdate,
     changeSessionState,
   },

@@ -61,7 +61,7 @@ export const updateBackend = (backend_service: any) => async (
     .then(async (serach: { data: IBackend[]; [idx: string]: any }) =>
       serach.data !== undefined && serach.data.length > 0
         ? await updateBackendCall(backend_service, body)
-        : await createBackend(backend_service, body)
+        : new Error('backend not connected to the realtime server!')
     )
     .catch((err) => {console.log(err); return false});
 
@@ -78,17 +78,6 @@ export const findBackend = async (
     })
   );
 
-// erstelle ein neues Backend
-export const createBackend = async (
-  backend_service: any,
-  body: any
-): Promise<{ data: IBackend[]; [idx: string]: any }> =>
-  await backend_service.create({
-    ownURL: body.backend_url,
-    interval_value: body.interval_value,
-    min_session_clients: body.min_players,
-    max_session_clients: body.max_players,
-  });
 
 // Update Backend wenn der gebene min player Wert nicht vorhandnen ist
 export const updateBackendCall = async (backend_service: any, body: any) =>

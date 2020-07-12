@@ -17,7 +17,8 @@ export const appServerClientsInputs = (input: IBackendInput | IClientMessage): I
     app: {
       ...input.externalAppData
     },
-    target_channel_name: '' 
+    target_channel_name: '' ,
+    token: ''
   }
 }
 
@@ -35,6 +36,7 @@ export const chatServerClientsInputs = (input: IBackendInput | IClientMessage): 
       variable: null,
       constant: null
     },
-    target_channel_name: '' 
+    target_channel_name: '' ,
+    token: ''
   }
 }

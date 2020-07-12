@@ -6,6 +6,6 @@ export default (param: IClientMessage[]): IMessageToBackend => createBackendInpu
 export const createBackendInput = (param: IClientMessage[]): IMessageToBackend => {
   return {
     client_inputs: param,
-    session_name: param[0].session_name,
+    backend_session_name: param[0].session_name,
   };
 };

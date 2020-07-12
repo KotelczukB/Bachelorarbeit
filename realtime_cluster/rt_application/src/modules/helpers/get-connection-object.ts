@@ -1,28 +1,47 @@
-import IClientMessage from "../../models/Interfaces/clients-inputs/IClientMessage";
-import { IBackendInput } from "../../models/Interfaces/backend-inputs/IBackendInput";
 import { _ExternType } from "../../models/Interfaces/_ExternType";
-import { Application } from "@feathersjs/feathers";
+import { Application, Paginated } from "@feathersjs/feathers";
 import { addToDefaultParams } from "./basic-default-service-params";
+import { IBackend } from "../../models/Interfaces/backends/IBackend";
+import { IConnection } from "../../models/IConnection";
+import ISession from "../../models/Interfaces/session/ISession";
 
-export default async (
-  connection: IClientMessage | IBackendInput,
-  app: Application
-) =>
-  connection.type === _ExternType.client
-    ? await app
-        .service("clients")
-        .find(
-          addToDefaultParams({
-            query: {
-              id: (connection as IClientMessage).client_id,
-              session_name: (connection as IClientMessage).session_name,
-            },
-          })
-        )
-    : await app
-        .service("backends")
-        .find(
-          addToDefaultParams({
-            query: { ownURL: (connection as IBackendInput).ownURL },
-          })
-        );
+export default async (connection: IConnection, app: Application): Promise<void | { backend_channel: string; client_channel: string }> =>
+  connection.type === _ExternType[_ExternType.client]
+    ? await handleClientConnection(connection, app.service('sessions'))
+    : await handleBackendSocketConnection(connection, app.service("backends"));
+
+export const handleBackendSocketConnection = async (
+  connection: IConnection,
+  backend_service: any
+): Promise<void> => {
+  await createBackend(backend_service, connection);
+};
+
+// Get Session die fur den Client zugewiesen wurde und hole backend_channel und client_channel raus
+export const handleClientConnection = async (
+  connection: IConnection,
+  session_service: any
+): Promise<{ backend_channel: string; client_channel: string }> =>
+  await session_service
+    .find(
+      addToDefaultParams({query: { backend: connection.backend_url, clients: connection.user_name }})
+    )
+    .then((res: Paginated<ISession>) => res.data.shift())
+    .then((elem: ISession) => {
+      return {
+        backend_channel: elem.backends_channel,
+        client_channel: elem.clients_channel,
+      };
+    }).catch((err: any) => console.log(`Client not registert for socket connection Error: ${err}`));
+
+// erstelle ein neues Backend
+export const createBackend = async (
+  backend_service: any,
+  data: IConnection
+): Promise<Paginated<IBackend>> =>
+  await backend_service.create({
+    ownURL: data.own_url,
+    interval_value: data.interval,
+    min_session_clients: data.min_players,
+    max_session_clients: data.max_players,
+  });
