@@ -3,15 +3,15 @@ import { IUsedChars } from "../models/IUsedChars";
 
 export class MenuScene extends Phaser.Scene {
   buttons!: Phaser.GameObjects.Sprite[];
-  message!: IUsedChars | undefined;
+  client!: any;
 	constructor() {
 		super({
 			key: 'MENU',
 		});
 	}
-  init(data: { message: IUsedChars | undefined }) {
+  init(data: { client: any}) {
 		console.log('init_menu', data);
-		this.message = data.message;
+		this.client = data.client;
 	}
 	create() {
     this.anims.create({
@@ -77,9 +77,6 @@ export class MenuScene extends Phaser.Scene {
 				.setScale(4),
     ];
 
-    this.sound.pauseOnBlur = false;
-    this.sound.play("music", {loop: true, volume: 0.7})
-
 		this.add.image(this.game.renderer.width * 0.5, this.game.renderer.height * 0.2, 'header').setDepth(1);
 
     this.add.image(this.game.renderer.width * 0.5, this.game.renderer.height * 0.35, 'select_header').setDepth(1);
@@ -94,19 +91,19 @@ export class MenuScene extends Phaser.Scene {
 		this.buttons.forEach((elem: Phaser.GameObjects.Sprite, index: number) => {
       elem.setInteractive();
       // snd update to server 
-      if(this.message !== undefined && this.message[index]){
+     // if(this.client !== undefined && this.client[index]){
 			elem.on('pointerup', () => {
         const id = index + 1;
-        sendPlayerSelected(id).then((res: any) => {
+       // sendPlayerSelected(id).then((res: any) => {
           //if(res.seccucced)
-            this.scene.start('GAME', { character_id: id});
+            this.scene.start('GAME', {character_id: id, client: this.client});
           // else
-          this.scene.start('GAME', { character_id: id});
-        })
+         // this.scene.start('GAME');
+      //  })
       });
-    } else if (this.message !== undefined && !this.message[index]) {
-      this.add.image(elem.x, elem.y, 'in_use').setDepth(4);
-    }
+   // } else if (this.message !== undefined && !this.message[index]) {
+   //   this.add.image(elem.x, elem.y, 'in_use').setDepth(4);
+  //  }
 		});
 
     // on update .... socket io an setting on pointerup and adding pics

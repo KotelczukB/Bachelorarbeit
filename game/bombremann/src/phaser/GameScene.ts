@@ -4,8 +4,6 @@ import { CharacterSprite } from '../models/CharacterSprite';
 import { BulletSprite } from '../models/BulletSprite';
 import send_update from '../modules/send-update';
 import startNewGame from '../modules/start-new-game';
-import io from 'socket.io-client';
-import feathers from '@feathersjs/client';
 import { IPlayerData } from '../models/player-models';
 
 export default class GameScene extends Scene {
@@ -19,7 +17,6 @@ export default class GameScene extends Scene {
 	char_id!: number;
 	gui_hearts: Phaser.GameObjects.Image[] = [];
 	won: boolean = false;
-	app:any = (feathers as any)();
 	connected: boolean = false;
 	player_data: IPlayerData[] = players_data;
 
@@ -30,18 +27,6 @@ export default class GameScene extends Scene {
 		this.characters = [];
 		this.bullets = [];
 		this.gui_hearts = [];
-		const socket = io(localStorage.getItem('rt_game_connection') ?? ''); /*'http://localhost:3030'*/
-
-		this.app.configure(feathers.socketio(socket));
-		this.app.configure(feathers.authentication());
-		try {
-			// this.app.service('client-inputs').create({
-			// 	data: { client_input: null }, // 'Say hello and send selected player',
-			// });
-			this.connected = true;
-		} catch (error) {
-			console.log(error);
-		}
 		// Phaser do not proviedes somethig else to write in input in same document
 		const chat_input = document.getElementById('_chat');
 		if (chat_input) {
@@ -74,9 +59,10 @@ export default class GameScene extends Scene {
 	};
 	/***************************************** */
 
-	init(data: { character_id: number , app: any}) {
+	init(data: { character_id: number , client: any}) {
 		console.log('init', data);
 		this.char_id = data.character_id;
+		this.connected = true;
 	}
 	preload() {
 		// create animation for all player

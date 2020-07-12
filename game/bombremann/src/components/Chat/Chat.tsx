@@ -10,6 +10,7 @@ export interface IChatState {
 
 export interface IChatProps {
 	user_id: string;
+	client: any;
 }
 
 export class Chat extends React.Component<IChatProps, IChatState> {

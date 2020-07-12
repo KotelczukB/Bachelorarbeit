@@ -2,16 +2,16 @@ import { Scene } from 'phaser';
 import sendPlayerSelected from '../modules/send-player-selected';
 
 export default class LoadScene extends Scene {
-  char_id!: number
+  client!: any
   constructor(){
     super({
       key: 'LOAD'
   })
   }
 
-  init(data: {character_id: number}) {
-		console.log('init', data);
-		this.char_id = data.character_id
+  init(data: {client: any}) {
+    console.log('init', data);
+    this.client = data.client;
   }
 	preload() {
 
@@ -26,7 +26,8 @@ export default class LoadScene extends Scene {
     this.load.image('grounds', '/assets/map/tiledsets/grounds.png');
     this.load.image('street', '/assets/map/tiledsets/street.png');
     this.load.image('walls', '/assets/map/tiledsets/walls.png');
-    this.load.image('basic', '/assets/map/tiledsets/basic.png')
+    this.load.image('basic', '/assets/map/tiledsets/basic.png');
+    
     // Player 1
     //this.load.spritesheet('player_1', '/assets/player/player_1/player.png', {frameHeight: 16, frameWidth: 16});
     this.load.atlas('player','/assets/player/player.png', '/assets/player/player_atlas.json');
@@ -37,6 +38,7 @@ export default class LoadScene extends Scene {
     this.load.image('play_again', '/assets/gui/play_again.png');
 
     // menu imgs
+    this.load.spritesheet('start', 'start.png', {frameWidth: 270, frameHeight: 119});
     this.load.atlas('select','assets/player/select/player_select.png', 'assets/player/select/player_select_atlas.json');
 		this.load.image('header', 'header_pic.png');
     this.load.image('select_header', 'scene_select.png');
@@ -57,6 +59,6 @@ export default class LoadScene extends Scene {
 
 	}
 	create() {
-		this.scene.start("MENU", {message: {0: true, 1:true, 2: true, 3: false}});
+		this.scene.start("START", {client: this.client});
 	}
 }

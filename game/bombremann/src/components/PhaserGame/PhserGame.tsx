@@ -3,19 +3,26 @@ import Phaser from 'phaser';
 import LoadScene from '../../phaser/LoadScene';
 import GameScene from '../../phaser/GameScene';
 import { MenuScene } from '../../phaser/MenuScene';
+import { StartScene } from '../../phaser/StartScene';
 
-export interface IGameProps {}
+export interface IGameProps {
+	client: any
+}
 
 export interface IGameState {}
 
 export class PhaserGame extends React.Component<IGameProps, IGameState> {
+	constructor(props: Readonly<IGameProps>) {
+		super(props)
+	}
+
 	componentDidMount() {
 		const game = new Phaser.Game({
 			type: Phaser.AUTO,
 			width: '100%',
 			height: '100%',
 			parent: 'phaser-game',
-			scene: [LoadScene, MenuScene, GameScene],
+			scene: [LoadScene, StartScene, MenuScene, GameScene],
       render: {
         pixelArt: true
       },
@@ -27,7 +34,7 @@ export class PhaserGame extends React.Component<IGameProps, IGameState> {
       }
       
     });
-    
+    game.scene.start('LOAD', {client: this.props.client})
 	}
 
 	shouldComponentUpdate() {
