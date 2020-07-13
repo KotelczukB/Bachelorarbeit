@@ -9,7 +9,7 @@ export default {
     all: [preRestrictExternCall()],
     find: [],
     get: [],
-    create: [preSessionCreate(), preSessionGetInterval()],
+    create: [/*preSessionCreate()*/ preSessionGetInterval()],
     update: [preventExternTriggerOnEvent()],
     patch: [preventExternTriggerOnEvent()],
     remove: []

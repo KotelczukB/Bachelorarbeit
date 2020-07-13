@@ -18,7 +18,7 @@ export default (options = {}): Hook => {
       result.rt_setUp = rt_server.data.length > 1 ? rt_server.data : null;
       result.backend_url = `http://${app.get("host")}:${app.get("port")}`;
     } else {
-      if(context.params.provider !== undefined && context.params.provider !== 'server')
+      if(context.params.provider !== undefined && context.params.provider !== 'server' && (result as any).data.length > 0)
       (result as any).data[0].rt_setUp = rt_server.data.length > 1 ? rt_server.data : null;
     }
     return context;

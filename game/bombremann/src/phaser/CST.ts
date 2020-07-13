@@ -1,9 +1,10 @@
 import { IPlayerData } from "../models/player-models";
 
-export const players_data: IPlayerData[] = [
+export const players_sprite_data: IPlayerData[] = [
 	{
     sheet_id: 'player',
 		id: 1,
+		name: 'player_1',
 		prefix: 'player_1_',
 		count_prefix: '_0',
 		min: 0,
@@ -33,6 +34,7 @@ export const players_data: IPlayerData[] = [
 		id: 2,
     sheet_id: 'player',
 		prefix: 'player_2_',
+		name: 'player_2',
 		count_prefix: '_0',
 		min: 0,
 		max: 4,
@@ -59,6 +61,7 @@ export const players_data: IPlayerData[] = [
 	},
 	{
 		id: 3,
+		name: 'player_3',
     sheet_id: 'player',
 		prefix: 'player_3_',
 		count_prefix: '_0',
@@ -87,6 +90,7 @@ export const players_data: IPlayerData[] = [
 	},
 	{
 		id: 4,
+		name: 'player_4',
     sheet_id: 'player',
 		prefix: 'player_4_',
 		count_prefix: '_0',

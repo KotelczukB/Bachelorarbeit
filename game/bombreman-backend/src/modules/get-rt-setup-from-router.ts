@@ -55,9 +55,9 @@ export const getRTSetup = (app: Application) =>
         query: {
           own_url: `http://${app.get('host')}:${app.get('port')}`,
           type: 'backend',
-          min_players: +app.get("min_players"),
-          max_players: +app.get("max_players"),
-          interval: +app.get("custom_interval"),
+          min_players: app.get("min_players"),
+          max_players: app.get("max_players"),
+          interval: app.get("custom_interval"),
         }
       });
       client.configure(socketio(socket));
@@ -65,7 +65,7 @@ export const getRTSetup = (app: Application) =>
       rt_input_service.on('created', (data: any) => {
         // update game stuff
       })
-      console.log(`Sever connected to rt_application Server with socket`);
+      console.log(`Server connected to rt_application Server with socket`);
       
     })
     .catch((err: any) =>

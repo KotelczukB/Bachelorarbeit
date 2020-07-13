@@ -36,7 +36,6 @@ app.use('/', express.static(app.get('public')));
 // Set up Plugins and providers
 app.configure(express.rest());
 app.configure(socketio());
-
 app.configure(mongodb);
 
 // Configure other middleware (see `middleware/index.js`)
@@ -56,7 +55,12 @@ app.configure(socketio(function(io) {
     socket.feathers.target_channel = socket.handshake.query.target_channel;
     socket.feathers.user_name = socket.handshake.query.user_name;
     socket.feathers.own_url = socket.handshake.query.own_url;
+    socket.feathers.backend_url = socket.handshake.query.backend_url;
     socket.feathers.type = socket.handshake.query.type;
+    socket.feathers.min_players = socket.handshake.query.min_players;
+    socket.feathers.max_players = socket.handshake.query.max_players;
+    socket.feathers.interval = socket.handshake.query.interval;
+    socket.feathers.session_name = socket.handshake.query.session_name;
     next();
   });
 }));

@@ -1,40 +1,45 @@
-import feathers from "@feathersjs/client";
-import socketio from '@feathersjs/socketio-client';
 import io from 'socket.io-client';
-import { ILoginRegisterAnswer } from "../models/ILoginRegisterAnswer";
-
+import feathers from '@feathersjs/feathers';
+import socketio from '@feathersjs/socketio-client';
+import { ILoginRegisterAnswer } from '../models/ILoginRegisterAnswer';
+import { IRT_AppLoginAnswer } from '../models/IRT_AppLoginAnswer';
 
 export default async (client: ILoginRegisterAnswer) => {
-  const rt_application_login = await fetch(`${client.rt_servers.filter(elem => elem.type === "application")[0].serverURL}/clients`, {
-    method: "POST",
-    body: JSON.stringify({
-      user_name: client.user_name,
-      backend_url: client.backend_url,
-      target_channel: null,
-      session_name: null,
-      token: client.token
-    }),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-  debugger
-  const game_client = (feathers as any)();
+	const login_response = await fetch(
+		`${client.rt_servers.filter((elem) => elem.type === 'application')[0].serverURL}/clients`,
+		{
+			method: 'POST',
+			body: JSON.stringify({
+				user_name: client.user_name,
+				backend_url: client.backend_url,
+				target_channel: null,
+				session_name: null,
+				token: client.token,
+			}),
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		}
+	);
+	if (login_response.ok) {
+		const login_data: IRT_AppLoginAnswer = await login_response.json();
+    const game_client = feathers();
+    console.log(login_data)
 		// initial Data fur verbindung und registierung
-		const game_socket = io(client.rt_servers.filter(elem => elem.type === "application")[0].serverURL, {
+		const game_socket = io(client.rt_servers.filter((elem) => elem.type === 'application')[0].serverURL, {
+      transports: ['websocket'],
 			query: {
-				target_session: "",
-				user_name: "",
-				backend_url: "",
-				type: 'client'
-			}
+        ...login_data,
+        type: 'client'
+			},
 		});
 		game_client.configure(socketio(game_socket));
-		const game_service = game_client.service("app.get('rt_game_backend_service')");
+		const game_service = game_client.service("client-inputs");
 		game_service.on('created', (data: any) => {
-			// update game stuff
-		})
-    console.log(`Sever connected to game_application Server with socket`);
-    return game_client;
-  return ""
-}
+			localStorage.setItem('game_data', JSON.stringify(data));
+		});
+		console.log(`Game connected to game_application Server with socket`);
+		return game_service;
+	}
+	throw new Error('Cannot connect to the realtime server - no socket connection possible!');
+};

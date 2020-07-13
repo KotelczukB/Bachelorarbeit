@@ -1,6 +1,7 @@
 export interface IConnection {
   [idx: string]: any;
-  target_session: string;
+  target_channel: string;
+  session_name: string;
   user_name: string;
   own_url: string;
   backend_url: string;

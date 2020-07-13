@@ -5,6 +5,7 @@ export interface IPlayerData {
 	id: number;
 	sheet_id: string;
 	prefix: string;
+	name: string
 	count_prefix: string;
 	min: number;
 	max: number;

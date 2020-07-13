@@ -3,6 +3,8 @@ export class BulletSprite extends Phaser.Physics.Arcade.Sprite {
 	owner_id: number;
 	state: number;
 	damage: number;
+	created_at: number;
+	id: string;
 	constructor(
 		scene: Phaser.Scene,
 		owner_id: number,
@@ -31,6 +33,8 @@ export class BulletSprite extends Phaser.Physics.Arcade.Sprite {
 		this.owner_id = owner_id;
 		this.setOffset(5, 5);
 		this.setCircle(3);
+		this.created_at = +new Date()
+		this.id = `${this.owner_id}_${this.created_at}`
 	}
 
 	public destroyOnCollision() {

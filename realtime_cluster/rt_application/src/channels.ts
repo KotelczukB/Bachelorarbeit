@@ -25,19 +25,17 @@ export default function (app: Application) {
   app.on("connection", async (connection: IConnection) => 
     // On a new real-time connection, add it to the anonymous channel
     await getConnectionObject(connection, app).then((obj: (void | { backend_channel: string; client_channel: string })) => {
+      // void === backend connection obj === clinet connection
       if (obj) {
         const backend_connection = idetifyBackendServer(connection, app.channel(app.get("waiting_channel")).connections);
-        console.log(app.channel(app.get("waiting_channel")).connections);
-        console.log(backend_connection);
         if(!backend_connection)
           throw new Error('requested Backendserver could not be found');
+        console.log(connection)
         return [app.channel(`${obj.client_channel}`).join(connection), app.channel(`${obj.backend_channel}`).join(backend_connection)];
       } else {
-        console.log(app.channel(app.get("waiting_channel")).connections)
-        if(!app.channel(app.get("waiting_channel")).connections.find(elem => elem.own_url === connection.own_url))
-          return app.channel(app.get("waiting_channel")).join(connection);
+        return app.channel(app.get("waiting_channel")).join(connection);
       }
-    })
+    }).catch(err => console.log(`connection setting error ${err}`))
   );
 
   // publish alle Client-inputs an das Backend nur dann wenn es kein Intervall gibt

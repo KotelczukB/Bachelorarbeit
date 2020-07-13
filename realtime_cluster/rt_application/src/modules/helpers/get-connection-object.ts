@@ -4,6 +4,7 @@ import { addToDefaultParams } from "./basic-default-service-params";
 import { IBackend } from "../../models/Interfaces/backends/IBackend";
 import { IConnection } from "../../models/IConnection";
 import ISession from "../../models/Interfaces/session/ISession";
+import { _SessionState } from "../../models/enums/_SessionState";
 
 export default async (connection: IConnection, app: Application): Promise<void | { backend_channel: string; client_channel: string }> =>
   connection.type === _ExternType[_ExternType.client]
@@ -24,15 +25,18 @@ export const handleClientConnection = async (
 ): Promise<{ backend_channel: string; client_channel: string }> =>
   await session_service
     .find(
-      addToDefaultParams({query: { backend: connection.backend_url, clients: connection.user_name }})
+      addToDefaultParams({query: { clients: connection.user_name}})
     )
-    .then((res: Paginated<ISession>) => res.data.shift())
+    .then((res: Paginated<ISession>) => {
+      return res.data[0]})
     .then((elem: ISession) => {
       return {
         backend_channel: elem.backends_channel,
         client_channel: elem.clients_channel,
       };
-    }).catch((err: any) => console.log(`Client not registert for socket connection Error: ${err}`));
+    }).catch((err: any) => {
+      console.log(`Client not registert for socket connection Error: ${err}`);
+  });
 
 // erstelle ein neues Backend
 export const createBackend = async (

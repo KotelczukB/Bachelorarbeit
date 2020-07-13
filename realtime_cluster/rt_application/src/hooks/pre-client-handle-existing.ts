@@ -1,6 +1,6 @@
 // Use this hook to manipulate incoming or outgoing data.
 // For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
-import { Hook, HookContext } from "@feathersjs/feathers";
+import { Hook, HookContext, Paginated } from "@feathersjs/feathers";
 import findExistingClient from "../modules/clients/find-existing-client";
 import { IClientConnection } from "../models/Interfaces/clients/IClientConnection";
 
@@ -12,9 +12,9 @@ export default (options = {}): Hook => {
   return async (context: HookContext) => {
     const { data, app, path } = context as {data: IClientConnection, app: any, path: string};
     /// Functional
-    const exsists = await findExistingClient(app.service(path), data.user_name);
-    if (exsists)
-      await app.service(path).remove(exsists._id);
+    const exsists: Paginated<IClientConnection> = await app.service('clients').find({query: {user_name: data.user_name, token: data.token}})
+    if (exsists.data && exsists.data.length > 0)
+      await Promise.all(exsists.data.map(async (client: any) => await app.service('clients').remove(client._id)))
     return context;
   };
 };

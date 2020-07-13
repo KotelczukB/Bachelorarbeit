@@ -13,6 +13,7 @@ import { IClientConnection } from "../models/Interfaces/clients/IClientConnectio
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
     const { app, data, path } = context as {app: any, data: IClientConnection, path: string};
+    console.log(data)
     // 1 bedeutet dass es ein neuer Client ist
     if (validateClientSessionProp(data) === 1) {
       const targetChannel: { user: string; session: string, backend: string}  | null = await findOrCreateSession(

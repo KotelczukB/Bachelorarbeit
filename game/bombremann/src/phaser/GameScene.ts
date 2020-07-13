@@ -1,10 +1,13 @@
 import { Scene } from 'phaser';
-import { players_data } from './CST';
+import { players_sprite_data } from './CST';
 import { CharacterSprite } from '../models/CharacterSprite';
 import { BulletSprite } from '../models/BulletSprite';
 import send_update from '../modules/send-update';
 import startNewGame from '../modules/start-new-game';
 import { IPlayerData } from '../models/player-models';
+import { IPlayerObject } from '../models/transfer/IPlayerObject';
+import { IBulletObject } from '../models/transfer/IBulletObject';
+import R from "ramda"
 
 export default class GameScene extends Scene {
 	keyboard!: { [idx: string]: Phaser.Input.Keyboard.Key };
@@ -17,9 +20,8 @@ export default class GameScene extends Scene {
 	char_id!: number;
 	gui_hearts: Phaser.GameObjects.Image[] = [];
 	won: boolean = false;
-	connected: boolean = false;
-	player_data: IPlayerData[] = players_data;
-
+	player_sprite_consts: IPlayerData[] = players_sprite_data;
+	game_data!: any;
 	constructor() {
 		super({
 			key: 'GAME',
@@ -30,15 +32,14 @@ export default class GameScene extends Scene {
 		// Phaser do not proviedes somethig else to write in input in same document
 		const chat_input = document.getElementById('_chat');
 		if (chat_input) {
-			chat_input.addEventListener("mouseover", () => {
-				this.input.keyboard.keys.forEach(elem => elem.reset())
-				this.input.keyboard.disableGlobalCapture()
+			chat_input.addEventListener('mouseover', () => {
+				this.input.keyboard.keys.forEach((elem) => elem.reset());
+				this.input.keyboard.disableGlobalCapture();
 				this.input.keyboard.enabled = false;
-				if(this.player)
-				this.player.setVelocity(0,0)
+				if (this.player) this.player.setVelocity(0, 0);
 			});
-			chat_input.addEventListener("mouseout", () => {
-				this.input.keyboard.enableGlobalCapture()
+			chat_input.addEventListener('mouseout', () => {
+				this.input.keyboard.enableGlobalCapture();
 				this.input.keyboard.enabled = true;
 			});
 		}
@@ -59,14 +60,17 @@ export default class GameScene extends Scene {
 	};
 	/***************************************** */
 
-	init(data: { character_id: number , client: any}) {
+	init(data: { character_id: number; client_service: any }) {
 		console.log('init', data);
 		this.char_id = data.character_id;
-		this.connected = true;
+		const game_state = localStorage.getItem('game_data');
+		if (game_state) {
+			this.game_data = game_state;
+		}
 	}
 	preload() {
 		// create animation for all player
-		this.player_data.forEach((player) =>
+		this.player_sprite_consts.forEach((player) =>
 			Object.values(player.animations).forEach((value) =>
 				this.anims.create({
 					key: value.name,
@@ -82,7 +86,7 @@ export default class GameScene extends Scene {
 		);
 
 		// create anim for Bullets
-		this.player_data.forEach((player) =>
+		this.player_sprite_consts.forEach((player) =>
 			Object.values(player.shot.animations).forEach((value) =>
 				this.anims.create({
 					key: value.name,
@@ -124,7 +128,7 @@ export default class GameScene extends Scene {
 			map.getObjectLayer('player_4')['objects'][0],
 		];
 		// setting Player & Chars
-		this.player_data.forEach((character) => {
+		this.player_sprite_consts.forEach((character) => {
 			const position = playerPos.find((elem: any) => elem.id === character.id);
 			this.characters.push(
 				new CharacterSprite(
@@ -141,11 +145,18 @@ export default class GameScene extends Scene {
 			);
 		});
 
-		this.player = this.characters.find((char) => char.id === this.char_id) as CharacterSprite;
-		this.characters = this.characters.filter((char) => char.id !== this.player.id);
+		// destroy alle chars die nicht gespielt werden. Sobald das spiel begonne hat kann keine mehr dazu kommen
+		this.characters.forEach((char: CharacterSprite) => {
+			const selected = this.game_data.players_selected.find((char_name: string) => char_name === char.name);
+			if (selected === undefined && char.id !== this.char_id) char.destroy();
+		});
+		// hole den Spieler raus
+		this.player = this.characters.find((char: CharacterSprite) => char.id === this.char_id) as CharacterSprite;
+
+		// filter die restliche liste vom player aus
+		this.characters = this.characters.filter((char: CharacterSprite) => char.id !== this.player.id);
 
 		// collision
-
 		layers.forEach((elem) => {
 			elem.setCollisionByProperty({ collision: true });
 			if (elem.layer.name !== 'street')
@@ -218,10 +229,51 @@ export default class GameScene extends Scene {
 		for (let index = 0; index < this.player.hp; index++) {
 			this.gui_hearts.push(this.add.image(0, 0, 'player_health').setDepth(10));
 		}
-
-		// Not Connected
-		if (!this.connected) this.add.image(this.player.body.x, this.player.body.y, 'in_use').setDepth(10);
 	}
+
+	update(time: number, delta: number) {
+		this.game_data = localStorage.getItem('game_data');
+		// own player
+		this.updatePlayer(delta);
+		// Game state from server
+		this.updateGame()
+		// rt communication
+		this.sendUpdateGameState_io();
+		send_update(this.player, this.bullets);
+	}
+	//******************************************************************************************************** */
+	// Updates am Spiel Daten kommen vom Server
+	updateGame() {
+		if(this.game_data) {
+			this.characters.forEach(this.updateEnemiePositionVelocity(this.game_data))
+			this.characters.forEach(this.playAnimation)
+			// bullets ohne duplicate
+			const grupping_by_owner = R.groupBy((bullet: IBulletObject) => bullet.owner_id+'')
+			this.bullets = R.unionWith(R.eqBy((a: BulletSprite) => {return a.id}),this.bullets, this.game_data.bullet_objects)
+			this.updateBulletPositionVelocity()
+		}
+	}
+
+	// create new Bullets die, die ich habe updaten die neuen erstellen!
+
+	updateEnemiePositionVelocity = (game_data: any) => (character: CharacterSprite): CharacterSprite | undefined => {
+		const enemie = game_data.players_objects.find((player: IPlayerObject) => player.name === character.name)
+		if(enemie)
+			return character.setPosition(enemie.pos_x, enemie.pos_y).setVelocity(enemie.vel_x, enemie.vel_y).hp = enemie.hp
+	}
+
+	updateBulletPositionVelocity = (game_data: any, owner: CharacterSprite, bullets: BulletSprite[]): BulletSprite => {
+		const shot = game_data.bullet_objects.filter((projectile: IBulletObject) => projectile.id === bullet.id)
+		if(shot)
+			return bullet.setPosition(shot.pos_x, shot.pos_y);
+	}
+
+	//********************************************************************************************************** */
+	// 	player controlls
+	//    			|
+	//				 \ /
+	//    			v
+	//
 	updatePlayerState() {
 		this.cameras.main.flash(200);
 		this.player.setVelocity(0, 0);
@@ -242,111 +294,111 @@ export default class GameScene extends Scene {
 				startNewGame();
 			});
 	}
-	update(time: number, delta: number) {
 
-		if (this.connected) {
-			this.updateGameState_io();
-			// Dead Follower update
-			if (this.player.hp < 0) {
-				this.follower_pic_1.setPosition(this.follower.body.x, this.follower.body.y - 60);
-				this.follower_pic_2.setPosition(this.follower.body.x, this.follower.body.y + 90);
+	updatePlayer(delta: number) {
+		//******************************* */
+		// Alles Controlls des Spielers
+
+		this.updateGameState_io();
+		// Dead Follower update
+		if (this.player.hp < 0) {
+			this.follower_pic_1.setPosition(this.follower.body.x, this.follower.body.y - 60);
+			this.follower_pic_2.setPosition(this.follower.body.x, this.follower.body.y + 90);
+		}
+		// Winning
+		if (this.characters.filter((char) => char.hp > 0).length < 1 && !this.won) {
+			this.add.image(this.player.body.x, this.player.body.y, 'player_win').setDepth(10);
+			this.player.setVelocity(0, 0);
+			const again_btn = this.add.image(this.player.body.x, this.player.body.y + 60, 'play_again').setDepth(10);
+			this.won = true;
+			again_btn.setInteractive();
+			again_btn.on('pointerup', () => {
+				startNewGame();
+			});
+		}
+		// delta 16.66666 60fps
+		if (this.player.hp > 0 && !this.won && this.input.keyboard.enabled) {
+			this.player.shoot_blocked = this.player.shoot_blocked - delta;
+			let speed: number = 64;
+
+			if (this.keyboard.G.isDown && this.player.stamina > 0) {
+				this.player.stamina = this.player.stamina - 10;
+				speed = speed * 2;
 			}
-			// Winning
-			if (this.characters.filter((char) => char.hp > 0).length < 1 && !this.won) {
-				this.add.image(this.player.body.x, this.player.body.y, 'player_win').setDepth(10);
-				this.player.setVelocity(0, 0);
-				const again_btn = this.add
-					.image(this.player.body.x, this.player.body.y + 60, 'play_again')
-					.setDepth(10);
-				this.won = true;
-				again_btn.setInteractive();
-				again_btn.on('pointerup', () => {
-					startNewGame();
-				});
+
+			if (this.keyboard.G.isUp && this.player.stamina < 300) {
+				this.player.stamina = this.player.stamina + 10;
 			}
-			// delta 16.66666 60fps
-			if (this.player.hp > 0 && !this.won && this.input.keyboard.enabled) {
-				this.player.shoot_blocked = this.player.shoot_blocked - delta;
-				let speed: number = 64;
 
-				if (this.keyboard.G.isDown && this.player.stamina > 0) {
-					this.player.stamina = this.player.stamina - 10;
-					speed = speed * 2;
-				}
+			if (this.keyboard.D.isDown === true) {
+				this.player.setVelocityX(speed);
+			}
 
-				if (this.keyboard.G.isUp && this.player.stamina < 300) {
-					this.player.stamina = this.player.stamina + 10;
-				}
+			if (this.keyboard.A.isDown === true) {
+				this.player.setVelocityX(-speed);
+			}
 
-				if (this.keyboard.D.isDown === true) {
-					this.player.setVelocityX(speed);
-				}
+			if (this.keyboard.A.isUp && this.keyboard.D.isUp) {
+				this.player.setVelocityX(0);
+			}
 
-				if (this.keyboard.A.isDown === true) {
-					this.player.setVelocityX(-speed);
-				}
+			if (this.keyboard.W.isDown === true) {
+				this.player.setVelocityY(-speed);
+			}
 
-				if (this.keyboard.A.isUp && this.keyboard.D.isUp) {
-					this.player.setVelocityX(0);
-				}
+			if (this.keyboard.S.isDown === true) {
+				this.player.setVelocityY(speed);
+			}
 
-				if (this.keyboard.W.isDown === true) {
-					this.player.setVelocityY(-speed);
-				}
-
-				if (this.keyboard.S.isDown === true) {
-					this.player.setVelocityY(speed);
-				}
-
-				if (this.keyboard.W.isUp && this.keyboard.S.isUp) {
-					this.player.setVelocityY(0);
-				}
-				// update life position
-				this.gui_hearts.forEach((heart, idx) => {
-					if (heart)
-						heart.setPosition(
-							this.player.body.x - this.game.renderer.width * 0.13 + idx * 32,
-							this.player.body.y - this.game.renderer.height * 0.13
-						);
-				});
-
-				if (this.keyboard.SPACE.isDown === true && this.player.shoot_blocked < 0) {
-					this.player.shoot_blocked = 500;
-					this.bullets.push(
-						new BulletSprite(
-							this,
-							this.player.id,
-							this.player.x,
-							this.player.y,
-							this.player.sheet_id,
-							this.player.shot_anim_fly,
-							this.player.shot_anim_imp,
-							this.player.body.velocity.x,
-							this.player.body.velocity.y
-						)
+			if (this.keyboard.W.isUp && this.keyboard.S.isUp) {
+				this.player.setVelocityY(0);
+			}
+			// update life position
+			this.gui_hearts.forEach((heart, idx) => {
+				if (heart)
+					heart.setPosition(
+						this.player.body.x - this.game.renderer.width * 0.13 + idx * 32,
+						this.player.body.y - this.game.renderer.height * 0.13
 					);
-				}
+			});
 
-				if (this.player.body.velocity.x > 0) {
-					//moving right
-					this.player.play(this.player.anima.right.name, true);
-				} else if (this.player.body.velocity.x < 0) {
-					//moving left
-					this.player.play(this.player.anima.left.name, true);
-				} else if (this.player.body.velocity.y < 0) {
-					//moving up
-					this.player.play(this.player.anima.up.name, true);
-				} else if (this.player.body.velocity.y > 0) {
-					//moving down
-					this.player.play(this.player.anima.down.name, true);
-				} else if (this.player.body.velocity.y === 0 && this.player.body.velocity.x === 0) {
-					//moving down
-					this.player.play(this.player.anima.down.name, true);
-				}
+			if (this.keyboard.SPACE.isDown === true && this.player.shoot_blocked < 0) {
+				this.player.shoot_blocked = 500;
+				this.bullets.push(
+					new BulletSprite(
+						this,
+						this.player.id,
+						this.player.x,
+						this.player.y,
+						this.player.sheet_id,
+						this.player.shot_anim_fly,
+						this.player.shot_anim_imp,
+						this.player.body.velocity.x,
+						this.player.body.velocity.y
+					)
+				);
 			}
-			// Send Update stuff to server
-			this.sendUpdateGameState_io();
-			send_update(this.player, this.bullets);
+
+			this.playAnimation(this.player)
+		}
+		//******************************* */
+	}
+	playAnimation(character: CharacterSprite) {
+		if (character.body.velocity.x > 0) {
+			//moving right
+			character.play(character.anima.right.name, true);
+		} else if (character.body.velocity.x < 0) {
+			//moving left
+			character.play(character.anima.left.name, true);
+		} else if (character.body.velocity.y < 0) {
+			//moving up
+			character.play(character.anima.up.name, true);
+		} else if (character.body.velocity.y > 0) {
+			//moving down
+			character.play(character.anima.down.name, true);
+		} else if (character.body.velocity.y === 0 && character.body.velocity.x === 0) {
+			//moving down
+			character.play(character.anima.down.name, true);
 		}
 	}
 }

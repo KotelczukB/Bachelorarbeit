@@ -6,7 +6,7 @@ import { Application, Paginated } from "@feathersjs/feathers";
 import { IRTServer } from "../models/IRTServer";
 
 // Create State of GameSession !
-export default async (data: IGameSessionCreation, rt_server: IRTServer): Promise<IGameSesion> => {
+export default (data: IGameSessionCreation, rt_server: IRTServer): IGameSesion => {
   return {
     name: `game_${data.game_channel}`,
     min_player: app.get('min_players'),

@@ -1,24 +1,43 @@
-import feathers from "@feathersjs/client";
-import socketio from '@feathersjs/socketio-client';
 import io from 'socket.io-client';
+import feathers from '@feathersjs/feathers';
+import socketio from '@feathersjs/socketio-client';
+import { ILoginRegisterAnswer } from '../models/ILoginRegisterAnswer';
+import { IRT_AppLoginAnswer } from '../models/IRT_AppLoginAnswer';
 
-export default () => {
-	// const chat_client = (feathers as any)();
-	// 	// initial Data fur verbindung und registierung
-	// 	const chat_socket = io('game_rt.serverURL', {
-	// 		query: {
-	// 			target_session: "",
-	// 			user_name: "",
-	// 			backend_url: "",
-	// 			type: 'client'
-	// 		}
-	// 	});
-	// 	chat_client.configure(socketio(chat_socket));
-	// 	const chat_service = chat_client.service("app.get('rt_game_backend_service')");
-	// 	chat_service.on('created', (data: any) => {
-	// 		// update game stuff
-	// 	})
-  //   console.log(`Sever connected to chat_application Server with socket`);
-  //   return chat_client;
-  return ""
+export default async (client: ILoginRegisterAnswer, app: any) => {
+	const rt_server_url = client.rt_servers.filter((elem) => elem.type === 'chat')[0].serverURL;
+	const login_response = await fetch(
+		`${rt_server_url}/clients`,
+		{
+			method: 'POST',
+			body: JSON.stringify({
+				user_name: client.user_name,
+				backend_url: client.backend_url,
+				target_channel: null,
+				session_name: null,
+				token: client.token,
+			}),
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		}
+	);
+	if (login_response.ok) {
+		const login_data: IRT_AppLoginAnswer = await login_response.json();
+    const chat_client = feathers();
+    console.log(login_data)
+		// initial Data fur verbindung und registierung
+		const game_socket = io(rt_server_url, {
+      transports: ['websocket'],
+			query: {
+        ...login_data,
+        type: 'client'
+			},
+		});
+		// setup connection to service
+		chat_client.configure(socketio(game_socket));
+		const chat_service = chat_client.service("client-inputs");
+		return chat_service;
+	}
+	throw new Error('Cannot connect to the realtime server - no socket connection possible!');
 }
