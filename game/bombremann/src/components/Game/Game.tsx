@@ -2,20 +2,23 @@ import React from 'react';
 import './Game.scss';
 import { Chat } from '../Chat/Chat';
 import { PhaserGame } from '../PhaserGame/PhserGame';
-import feathers from "@feathersjs/client";
-import socketio from '@feathersjs/socketio-client';
 import createGameRtSocket from '../../modules/create-game-rt-socket';
 import createChatRtSocket from '../../modules/create-chat-rt-socket';
+import { ILoginRegisterAnswer } from '../../models/ILoginRegisterAnswer';
 
-export interface IGameProps {}
+export interface IGameProps {
+
+}
 
 export interface IGameState {}
 
 export class Game extends React.Component<IGameProps, IGameState> {
 	game_client: any;
 	chat_client: any;
-	componentDidMount() {
-		this.game_client = createGameRtSocket();
+	async componentDidMount() {
+		
+		const client_data: ILoginRegisterAnswer = (this.props as any).location.state.detail
+		this.game_client = await createGameRtSocket(client_data);
 		this.chat_client = createChatRtSocket()
 	}
 

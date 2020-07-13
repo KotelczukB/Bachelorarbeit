@@ -8,9 +8,7 @@ import {
 } from "@feathersjs/feathers";
 import {
   validateIncreaseSessionState,
-  switcher,
 } from "../modules/sessions/session-switcher-obj";
-import switchSessionState from "../modules/sessions/switch-session-state";
 import { validateSessionRequierdProps } from "../modules/sessions/validate-session";
 import ISession from "../models/Interfaces/session/ISession";
 import { _SessionState } from "../models/enums/_SessionState";
@@ -36,46 +34,19 @@ export default (options = {}): Hook => {
       .find(
         addToDefaultParams({ query: { session_name: result.session_name } })
       )
-      .then(async (response: Paginated<ISession>) =>
-        validateSessionRequierdProps(response.data[0])
-          ? await validateIncreaseSessionState(
-              switchSessionState,
-              switcher,
-              app
-            ).then(
-              async (
-                res: (
-                  session: ISession
-                ) => Promise<{
-                  new_state: _SessionState;
-                  session_name: string;
-                }>
-              ) =>
-                await res(response.data[0]).then(
-                  async (state: {
-                    new_state: _SessionState;
-                    session_name: string;
-                  }) => {
-                    await updateSession(app, response.data, state.new_state);
-                    return state.session_name;
-                  }
-                )
-            )
-          : null
-      )
+      .then(async (response: Paginated<ISession>) => {
+        if (validateSessionRequierdProps(response.data[0]))
+          return await validateIncreaseSessionState(app, response.data[0])
+      })
       .catch((error: any) => console.log(error));
     console.log(session_name);
-    await updateClientOnBackendWithBackendChannel(result.backend_url, session_name, result.token, app);
+    await updateClientOnBackendWithBackendChannel(
+      result.backend_url,
+      session_name,
+      result.token,
+      app
+    );
     return context;
   };
 };
 
-// Helper
-export const updateSession = async (
-  app: Application,
-  sessions: ISession[],
-  state: _SessionState
-) =>
-  sessions[0].state !== state
-    ? await app.service("sessions").patch(sessions[0]._id, { state: state })
-    : {};

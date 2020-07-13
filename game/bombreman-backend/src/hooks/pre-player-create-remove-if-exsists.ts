@@ -7,7 +7,7 @@ export default (options = {}): Hook => {
     const {data, app} = context;
     const to_remove = await app
     .service("players")
-    .find(null, { query: { user_name: data.user_name } });
+    .find({ query: { user_name: data.user_name } });
     console.log(to_remove)
   await Promise.all(to_remove.data.map(async (elem: any) => {
     app

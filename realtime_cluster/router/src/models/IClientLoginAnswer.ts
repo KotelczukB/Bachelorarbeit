@@ -6,5 +6,6 @@ export interface IClientLoginAnswer {
   user_name: string;
   token: string;
   backend_url: string;
+  password: string;
   rt_servers: IRTServerSetupApp[];
 }

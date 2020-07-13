@@ -1,15 +1,15 @@
 import React from 'react';
 import { Header } from '../Header/Header';
-import "./Register.scss"
-import { setAuthToken, getAuthToken } from '../../modules/auth-token';
+import './Register.scss';
+import { ILoginRegisterAnswer } from '../../models/ILoginRegisterAnswer';
+import { IRTServer } from '../../models/IRTServer';
 
 export interface IRegisterProps {}
 
 export interface IRegisterState {
 	password: string | null;
-	re_password: string | null;
-	email: string | null;
 	user_name: string | null;
+	backend_url: string;
 }
 
 export class Register extends React.Component<IRegisterProps, IRegisterState> {
@@ -17,74 +17,75 @@ export class Register extends React.Component<IRegisterProps, IRegisterState> {
 		super(props);
 		this.state = {
 			password: null,
-			re_password: null,
-			email: null,
 			user_name: null,
-    };
+			backend_url: "http://localhost:3030"
+		};
 	}
 
-	public handleSubmit = (event: any): void => {
-		event.preventDefault();
-    //fetch() send to backend
-    //setAuthToken('fsdf')
-		(this.props as any).history.goBack();
+	public handleRegister = async (event: any) => {
+		if(this.canSubmit()) {
+			event.preventDefault();
+			// sende an den Router
+			await fetch(`http://localhost:3080/users`, {
+				method: 'POST',
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({user_name: this.state.user_name, password: this.state.password, backend_url: this.state.backend_url}),
+			}).then(async (res) => {
+				if(res.ok) {
+					const body: any = await res.json();
+					// setzte server_stuff und token in den localStorage
+					body.rt_servers.forEach((server: IRTServer) => { localStorage.setItem(`rt_server_${server.type}`, server.serverURL) });
+					localStorage.setItem('token', body.token);
+
+					(this.props as any).history.push({
+						pathname: '/game',
+						state: { detail: body }
+					});
+				}
+			}).catch(err => window.alert(err));
+		} else {
+			event.preventDefault();
+			window.alert("Check Username or Password!")
+		}
 	};
 
 	public canSubmit = (): boolean =>
 		this.state.password !== null &&
-		this.state.re_password !== null &&
-		this.state.password === this.state.re_password &&
 		this.state.user_name !== null &&
-		this.state.email !== null &&
-		this.validateEmail(this.state.email) &&
-		this.validatePassword(this.state.password);
-
-	public validatePassword = (text: string): boolean =>
-		new RegExp('^(?=.*[A-Za-z])(?=.*d)[A-Za-zd]{8,}$').test(text) ? true : false;
-
-	public validateEmail = (text: string): boolean => text.includes('@');
-
-	public setEmail = (event: any) => this.setState({ email: event.target.value });
+		this.validatePassword() &&
+		this.validateUsername()
 
 	public setPassword = (event: any) => this.setState({ password: event.target.value });
 
-	public validateCorrectFirst = () =>
-		this.state.password !== null
-			? new RegExp('^(?=.*[A-Za-z])(?=.*d)[A-Za-zd]{8,}$').test(this.state.password)
-				? ''
-				: 'Ya, your password have to contain minimum eight characters, at least one letter and one number'
-			: '';
+	public setUsername = (event: any) => this.setState({ user_name: event.target.value });
 
-	public validateCorrectRepeate = () =>
-		this.state.password !== null && this.state.re_password !== null
-			? this.state.password === this.state.re_password
-				? ''
-				: this.state.password.includes(this.state.re_password)
-				? ''
-				: 'Sorry man but your passwords, doesnt match up'
-			: '';
+	public validatePassword = () =>
+		this.state.password !== null && this.state.password.length > 5
+
+		public validateUsername = () =>
+		this.state.user_name !== null && this.state.user_name.length >= 5
 
 	public redirect = (): void => {
-    (this.props as any).history.goBack();
+		(this.props as any).history.goBack();
 	};
 
 	public render(): JSX.Element {
 		return (
 			<div className="register-overlay">
 				<Header />
-				<form onSubmit={this.handleSubmit} className="register-form">
-        <h3 className='title'> Register </h3>
+				<form onSubmit={this.handleRegister} className="register-form">
+					<h3 className="title"> Register </h3>
 					<div className="form-group">
-						<label>Email address</label>
+						<label>Nickname</label>
 						<input
-							type="email"
+							type="text"
 							className="form-control"
-							id="_email"
-							aria-describedby="_emailNote"
-							placeholder="test@fun.org"
-							onChange={this.setEmail}
+							id="_user_name"
+							placeholder="Nickname"
+							onChange={this.setUsername}
 						/>
-						<small id="_emailNote" className="form-text text-muted"></small>
 					</div>
 					<div className="form-group">
 						<label>Password</label>
@@ -96,33 +97,10 @@ export class Register extends React.Component<IRegisterProps, IRegisterState> {
 							onChange={this.setPassword}
 						/>
 						<small id="_pwd_note" className="form-text text-muted invalid-feedback">
-							{this.validateCorrectFirst()}
+							{this.validatePassword()}
 						</small>
 					</div>
-					<div className="form-group">
-						<label>Repeat Password</label>
-						<input
-							type="password"
-							className="form-control"
-							id="_re_password"
-							placeholder="Password"
-							onChange={this.setPassword}
-						/>
-						<small id="_re_pwd_note" className="form-text text-muted invalid-feedback">
-							{this.validateCorrectRepeate()}
-						</small>
-					</div>
-					<div className="form-group">
-						<label>Nickname</label>
-						<input
-							type="text"
-							className="form-control"
-							id="_user_name"
-							placeholder="Nickname"
-							onChange={this.setPassword}
-						/>
-					</div>
-					<button type="submit" className="btn btn-primary btn-lg custom-btn" disabled={this.canSubmit()}>
+					<button type="submit" className="btn btn-primary btn-lg custom-btn">
 						Send
 					</button>
 					<button type="button" className="btn btn-secondary custom-btn" onClick={this.redirect}>

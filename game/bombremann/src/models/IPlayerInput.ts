@@ -1,6 +1,6 @@
 import { IUsedChars } from "./IUsedChars";
 
-export interface IPlayerDTO {
+export interface IPlayerInput {
   backend_data: IGameData;
   rt_session: string;
   id: string;

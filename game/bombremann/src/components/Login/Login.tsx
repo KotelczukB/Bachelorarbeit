@@ -10,6 +10,7 @@ export interface ILoginProps {}
 export interface ILoginState {
 	password: string | null;
 	user_name: string | null;
+	backend_url: string;
 }
 
 export class Login extends React.Component<ILoginProps, ILoginState> {
@@ -18,31 +19,36 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
 		this.state = {
 			password: null,
 			user_name: null,
+			backend_url: "http://localhost:3030"
 		};
 	}
 
   
-  public handleSubmit = async (event: any): Promise<void> => {
+  public handleLogin = async (event: any): Promise<void> => {
 		if(this.canSubmit()) {
+			event.preventDefault();
 			// sende an den Router
-			await fetch('localhost:3080/users', {
+			await fetch(`http://localhost:3080/users?user_name=${this.state.user_name}&password=${this.state.password}&backend_url=${this.state.backend_url}`, {
 				method: 'GET',
-				body: JSON.stringify(createLoginBody(this.state))
+				headers: {
+					"Access-Control-Allow-Origin": "*"
+				}
 			}).then(async (res) => {
 				if(res.ok) {
-					const body: ILoginRegisterAnswer = await res.json();
-					// setzte server_stuff und token in den localStorage
-					body.rt_servers.forEach((server: IRTServer) => { localStorage.setItem(`rt_server_${server.type}`, server.serverURL) });
-					localStorage.setItem('token', body.token);
-					// melde dich beim RtServer an
-
-
-					// weiter zum spiel
-					(this.props as any).history.push('/game');
+					const body: any = await res.json();
+					if(body.data.length < 1)
+						throw new Error('You have to register first')
+					body.data[0].rt_servers.forEach((server: IRTServer) => { localStorage.setItem(`rt_server_${server.type}`, server.serverURL) });
+					localStorage.setItem('token', body.data[0].token);
+					(this.props as any).history.push({
+						pathname: '/game',
+						state: { detail: body.data[0] }
+					});
 				}
-			});
+			}).catch(err => window.alert(err));
 		} else {
 			event.preventDefault();
+			window.alert("Check Username or Password!")
 		}
 	};
 
@@ -53,15 +59,15 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
 	public canSubmit = (): boolean =>
 		this.state.password !== null &&
 		this.state.user_name !== null &&
-		this.validateEmail(this.state.user_name) &&
+		this.validateUsername(this.state.user_name) &&
 		this.validatePassword(this.state.password);
 
 	public validatePassword = (text: string): boolean =>
-		new RegExp('/^(?=.*\d).{8,}$/').test(text) ? true : false;
+		text.length > 6;
 
-	public validateEmail = (text: string): boolean => text.length > 5;
+	public validateUsername = (text: string): boolean => text.length >= 5;
 
-	public setUserName = (event: any) => this.setState({ user_name: event.target.value });
+	public setUserName = (event: any) => {this.setState({ user_name: event.target.value }); console.log(event.target.value)}
 
 	public setPassword = (event: any) => this.setState({ password: event.target.value });
 
@@ -69,7 +75,7 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
 		return (
 			<div className="login-overlay">
         <Header/>
-				<form onSubmit={this.handleSubmit} className='login-form'>
+				<form onSubmit={this.handleLogin} className='login-form'>
           <h3 className="title"> Login </h3>
 					<div className="form-group">
 						<label>Email address</label>

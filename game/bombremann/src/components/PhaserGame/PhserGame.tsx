@@ -12,10 +12,6 @@ export interface IGameProps {
 export interface IGameState {}
 
 export class PhaserGame extends React.Component<IGameProps, IGameState> {
-	constructor(props: Readonly<IGameProps>) {
-		super(props)
-	}
-
 	componentDidMount() {
 		const game = new Phaser.Game({
 			type: Phaser.AUTO,

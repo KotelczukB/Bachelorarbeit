@@ -45,8 +45,11 @@ export const makeRequest = async (
   fetch: any,
   client: IClientConnection
 ): Promise<any> =>
-  await fetch(`${client.backend_url}/players?token=${client.token}`, {
+  await fetch(`${client.backend_url}/players?user_name=${client.user_name}&token=${client.token}`, {
     method: "GET",
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
   });
 
 export const validateResponses = async (
