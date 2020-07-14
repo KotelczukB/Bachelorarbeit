@@ -2,12 +2,12 @@ import { Scene } from 'phaser';
 import { players_sprite_data } from './CST';
 import { CharacterSprite } from '../models/CharacterSprite';
 import { BulletSprite } from '../models/BulletSprite';
-import send_update from '../modules/send-update';
 import startNewGame from '../modules/start-new-game';
 import { IPlayerData } from '../models/player-models';
 import { IPlayerObject } from '../models/transfer/IPlayerObject';
 import { IBulletObject } from '../models/transfer/IBulletObject';
-import R from "ramda"
+import R from 'ramda';
+import { createNewGameInput } from '../modules/createNewClientInput';
 
 export default class GameScene extends Scene {
 	keyboard!: { [idx: string]: Phaser.Input.Keyboard.Key };
@@ -22,6 +22,7 @@ export default class GameScene extends Scene {
 	won: boolean = false;
 	player_sprite_consts: IPlayerData[] = players_sprite_data;
 	game_data!: any;
+	client_service!: any;
 	constructor() {
 		super({
 			key: 'GAME',
@@ -47,16 +48,15 @@ export default class GameScene extends Scene {
 
 	// Feathers communication
 	/**************************************** */
-	updateGameState_io = () => {
-		// this.app.service('client-inputs').on('created', (data: any) => {
-		// 	// update Game state
-		// });
-	};
 
 	sendUpdateGameState_io = () => {
-		// this.app.service('client-inputs').create({
-		// 	data: {client_input: null} // 'Send new awesome stuff !only own stuff',
-		// });
+		this.client_service.create(
+			createNewGameInput(
+				this.player,
+				this.bullets.filter((bullet) => bullet.owner_id === this.player.id),
+				this.game_data
+			)
+		);
 	};
 	/***************************************** */
 
@@ -233,40 +233,76 @@ export default class GameScene extends Scene {
 
 	update(time: number, delta: number) {
 		this.game_data = localStorage.getItem('game_data');
+
+		// Game state from server
+		this.updateGame();
 		// own player
 		this.updatePlayer(delta);
-		// Game state from server
-		this.updateGame()
 		// rt communication
 		this.sendUpdateGameState_io();
-		send_update(this.player, this.bullets);
 	}
+
 	//******************************************************************************************************** */
 	// Updates am Spiel Daten kommen vom Server
 	updateGame() {
-		if(this.game_data) {
-			this.characters.forEach(this.updateEnemiePositionVelocity(this.game_data))
-			this.characters.forEach(this.playAnimation)
-			// bullets ohne duplicate
-			const grupping_by_owner = R.groupBy((bullet: IBulletObject) => bullet.owner_id+'')
-			this.bullets = R.unionWith(R.eqBy((a: BulletSprite) => {return a.id}),this.bullets, this.game_data.bullet_objects)
-			this.updateBulletPositionVelocity()
+		if (this.game_data) {
+			this.characters.forEach(this.updateEnemiePositionVelocity(this.game_data));
+			this.characters.forEach(this.playAnimation);
+
+			// neue bullets suchen und hinzufugen da bullets latenz und bis auf erstellen user input unabhangig sind
+			const just_new_bullets: IBulletObject[] = this.game_data.bullet_objects
+				.map(this.getJustNewBulles)
+				.filter((bullet: IBulletObject | undefined) => bullet !== undefined);
+			this.bullets.concat(this.createNewBullets(just_new_bullets));
 		}
 	}
 
-	// create new Bullets die, die ich habe updaten die neuen erstellen!
+	getJustNewBulles = (server_bullet: IBulletObject) => {
+		this.bullets.find((old) => old.id === server_bullet.id);
+	};
+
+	destroyOldBullets = () => {
+		this.bullets.forEach((bullet) => bullet.destroy());
+	};
+
+	createNewBullets = (new_bullets: IBulletObject[]): BulletSprite[] => {
+		const grupping_by_owner = R.groupBy((bullet: IBulletObject) => bullet.owner_id + '');
+		const new_sprites: BulletSprite[] = [];
+		const grupped = grupping_by_owner(new_bullets);
+		Object.keys(grupped).forEach((key) => {
+			if (this.player.id === +key) {
+				new_sprites.concat(this.newBulletSprite(this.player, grupped[key]));
+			} else {
+				const char = this.characters.find((char) => char.id === +key);
+				if (char) new_sprites.concat(this.newBulletSprite(char, grupped[key]));
+			}
+		});
+		return new_sprites;
+	};
+
+	newBulletSprite = (character: CharacterSprite, bullets: IBulletObject[]): BulletSprite[] => {
+		return bullets.map((bullet) => {
+			return new BulletSprite(
+				this,
+				bullet.owner_id,
+				bullet.pos_y,
+				bullet.pos_x,
+				character.sheet_id,
+				character.shot_anim_fly,
+				character.shot_anim_imp,
+				bullet.vel_x,
+				bullet.vel_y,
+				bullet.id
+			);
+		});
+	};
 
 	updateEnemiePositionVelocity = (game_data: any) => (character: CharacterSprite): CharacterSprite | undefined => {
-		const enemie = game_data.players_objects.find((player: IPlayerObject) => player.name === character.name)
-		if(enemie)
-			return character.setPosition(enemie.pos_x, enemie.pos_y).setVelocity(enemie.vel_x, enemie.vel_y).hp = enemie.hp
-	}
-
-	updateBulletPositionVelocity = (game_data: any, owner: CharacterSprite, bullets: BulletSprite[]): BulletSprite => {
-		const shot = game_data.bullet_objects.filter((projectile: IBulletObject) => projectile.id === bullet.id)
-		if(shot)
-			return bullet.setPosition(shot.pos_x, shot.pos_y);
-	}
+		const enemie = game_data.players_objects.find((player: IPlayerObject) => player.name === character.name);
+		if (enemie)
+			return (character.setPosition(enemie.pos_x, enemie.pos_y).setVelocity(enemie.vel_x, enemie.vel_y).hp =
+				enemie.hp);
+	};
 
 	//********************************************************************************************************** */
 	// 	player controlls
@@ -299,7 +335,6 @@ export default class GameScene extends Scene {
 		//******************************* */
 		// Alles Controlls des Spielers
 
-		this.updateGameState_io();
 		// Dead Follower update
 		if (this.player.hp < 0) {
 			this.follower_pic_1.setPosition(this.follower.body.x, this.follower.body.y - 60);
@@ -374,12 +409,13 @@ export default class GameScene extends Scene {
 						this.player.shot_anim_fly,
 						this.player.shot_anim_imp,
 						this.player.body.velocity.x,
-						this.player.body.velocity.y
+						this.player.body.velocity.y,
+						null
 					)
 				);
 			}
 
-			this.playAnimation(this.player)
+			this.playAnimation(this.player);
 		}
 		//******************************* */
 	}

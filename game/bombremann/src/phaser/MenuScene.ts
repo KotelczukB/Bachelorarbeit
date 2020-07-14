@@ -95,12 +95,8 @@ export class MenuScene extends Phaser.Scene {
 		this.buttons.forEach((elem: Phaser.GameObjects.Sprite, index: number) => {
 			elem.on('pointerup', () => {
 				const id = index + 1;
-				const data = "ne"//localStorage.getItem('game_data');
-				if (data) {
-          // const data_to_send = JSON.parse(data).client.player_selected = id;
-					// this.client_service.create(data_to_send);
-					this.scene.start('GAME', { character_id: id, client: this.client_service });
-				}
+				// this.client_service.create(createNewInput(id));
+				this.scene.start('GAME', { character_id: id, client: this.client_service });
 			});
 		});
 	}

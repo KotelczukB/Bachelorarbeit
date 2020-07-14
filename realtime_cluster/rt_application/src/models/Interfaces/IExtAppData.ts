@@ -4,8 +4,5 @@ import { IConstExtAppData } from "./IConstExtAppData";
 
 
 export interface IExternalAppData {
-  variable: IVarExtAppData;
-  chatData: IChatExtAppData;
-  constant: IConstExtAppData;
   [idx: string]: any;
 }

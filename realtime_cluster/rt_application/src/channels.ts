@@ -40,6 +40,8 @@ export default function (app: Application) {
 
   // publish alle Client-inputs an das Backend nur dann wenn es kein Intervall gibt
   // chat type -> convert input, push
+  // hier subscribet das backend
+  // hier pushen die clients
   app.service("client-inputs").publish("created", async (data: IClientMessage, context) =>
       appType === _AppType.chat
         ? app
@@ -48,6 +50,8 @@ export default function (app: Application) {
         : await prepareBackendMessageOnIncoming(data, app, interval) // returns backend channel somit publish nicht an die clients
     );
   // Setzt ein um das Interval varzoggerten publish von client-inputs an das Backend
+  // hier pushed das backend
+  // hier subscriben die clients 
   app.service("backend-inputs").publish("created", async (data: IBackendInput, context) =>
         await sendDataToClientsAndTriggerInterval(
           data,

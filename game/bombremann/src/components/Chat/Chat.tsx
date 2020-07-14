@@ -24,7 +24,7 @@ export class Chat extends React.Component<IChatProps, IChatState> {
 	}
 	componentDidMount = async () => {
 		if(!this.chat_service)
-		// createChatRtSocket(this.props.client_data, this).then((service) => {
+		 createChatRtSocket(this.props.client_data, this).then((service) => {
 		// 	service.on('created', (data: any) => {
 		// 		const tempChat = this.state.chat;
 		// 		tempChat.push(data);
@@ -32,7 +32,7 @@ export class Chat extends React.Component<IChatProps, IChatState> {
 		// 	});
 		// 	console.log('connection to realtime app created');
 		// 	this.chat_service = service;
-		// });
+		});
 		try {
 			this.chat_service.create({
 				// send data here
