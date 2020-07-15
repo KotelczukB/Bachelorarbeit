@@ -8,7 +8,6 @@
     },
     "routerURL": "http://localhost:3080/applications",
     "mongodb": "mongodb://localhost:27017/realtime_application_app",
-    "client_required": ["created_utc_timestamp", "sended_utc_timestamp", "client_id", "session_name", "app"],
     "min_rt_interval": 30,
     "self_type": "application",
     "waiting_channel": "unsigned"

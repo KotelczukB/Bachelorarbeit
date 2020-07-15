@@ -6,7 +6,8 @@ import { MenuScene } from '../../phaser/MenuScene';
 import { StartScene } from '../../phaser/StartScene';
 
 export interface IGameProps {
-	client_service : any
+	client_service : Promise<any>;
+	token: string;
 }
 
 export interface IGameState {}
@@ -29,13 +30,14 @@ export class PhaserGame extends React.Component<IGameProps, IGameState> {
         }
       }
       
-    });
-		game.scene.start('LOAD', {client: this.props.client_service })
+		});
+		console.log('phaser', this.props.client_service)
+		game.scene.start('LOAD', {client: this.props.client_service, token: this.props.token })
 		
 	}
 
 	shouldComponentUpdate() {
-		return false;
+		return true;
 	}
 
 	public render = (): JSX.Element => {

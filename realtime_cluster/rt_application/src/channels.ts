@@ -30,7 +30,6 @@ export default function (app: Application) {
         const backend_connection = idetifyBackendServer(connection, app.channel(app.get("waiting_channel")).connections);
         if(!backend_connection)
           throw new Error('requested Backendserver could not be found');
-        console.log(connection)
         return [app.channel(`${obj.client_channel}`).join(connection), app.channel(`${obj.backend_channel}`).join(backend_connection)];
       } else {
         return app.channel(app.get("waiting_channel")).join(connection);

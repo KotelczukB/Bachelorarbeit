@@ -11,7 +11,6 @@ import validateSessionCreate from '../modules/sessions/validate-session-create';
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
     const {data, app} = context as {data: ISessionCreate, app: Application};
-    console.log(data)
     if(validateSessionCreate(data))
       throw new Error('Session faild on create, not all props provided');
     return context;

@@ -2,14 +2,16 @@ import { Scene } from 'phaser';
 
 export default class LoadScene extends Scene {
   client!: any
+  token: string = ''
   constructor(){
     super({
       key: 'LOAD'
   })
   }
 
-  init(data: {client: any}) {
+  init(data: {client: any, token: string}) {
     this.client = data.client;
+    this.token = data.token;
   }
 	preload() {
 
@@ -58,6 +60,7 @@ export default class LoadScene extends Scene {
 
 	}
 	create() {
-		this.scene.start("START", {client: this.client});
+    console.log('load', this.client)
+		this.scene.start("MENU", {client: this.client, token: this.token});
 	}
 }

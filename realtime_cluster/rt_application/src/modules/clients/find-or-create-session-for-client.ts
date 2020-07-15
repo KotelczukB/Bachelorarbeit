@@ -11,7 +11,8 @@ export default async (
   sessionData.then(
     async (res: ISessionCreate) => {
       try{
-      const search = await getFreeSession(service_session, res.client_id,  kinde,  res.backend_url) 
+      const search = await getFreeSession(service_session, res.client_id,  kinde,  res.backend_url)
+      console.log('AHA SESSION', search)
       if(search === null)
          return await createSession(service_session, service_backends, res)
       return search;

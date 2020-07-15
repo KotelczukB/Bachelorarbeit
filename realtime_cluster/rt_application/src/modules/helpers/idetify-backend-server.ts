@@ -6,7 +6,6 @@ export default (
   connection: IConnection,
   backend_connections: RealTimeConnection
 ): RealTimeConnection | undefined => {
-  console.log(backend_connections)
   return backend_connections.find(
     (elem: any) =>
       elem.own_url === connection.backend_url

@@ -39,7 +39,6 @@ export default (options = {}): Hook => {
           return await validateIncreaseSessionState(app, response.data[0])
       })
       .catch((error: any) => console.log(error));
-    console.log(session_name);
     await updateClientOnBackendWithBackendChannel(
       result.backend_url,
       session_name,

@@ -24,7 +24,6 @@ export default async (client: ILoginRegisterAnswer) => {
 	if (login_response.ok) {
 		const login_data: IRT_AppLoginAnswer = await login_response.json();
     const game_client = feathers();
-    console.log(login_data)
 		// initial Data fur verbindung und registierung
 		const game_socket = io(client.rt_servers.filter((elem) => elem.type === 'application')[0].serverURL, {
       transports: ['websocket'],

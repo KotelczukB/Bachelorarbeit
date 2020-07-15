@@ -6,8 +6,8 @@ import startNewGame from '../modules/start-new-game';
 import { IPlayerData } from '../models/player-models';
 import { IPlayerObject } from '../models/transfer/IPlayerObject';
 import { IBulletObject } from '../models/transfer/IBulletObject';
-import R from 'ramda';
 import { createNewGameInput } from '../modules/createNewClientInput';
+import * as R from 'ramda';
 
 export default class GameScene extends Scene {
 	keyboard!: { [idx: string]: Phaser.Input.Keyboard.Key };
@@ -23,6 +23,7 @@ export default class GameScene extends Scene {
 	player_sprite_consts: IPlayerData[] = players_sprite_data;
 	game_data!: any;
 	client_service!: any;
+	token: string = '';
 	constructor() {
 		super({
 			key: 'GAME',
@@ -54,15 +55,17 @@ export default class GameScene extends Scene {
 			createNewGameInput(
 				this.player,
 				this.bullets.filter((bullet) => bullet.owner_id === this.player.id),
-				this.game_data
+				this.game_data,
+				this.token
 			)
 		);
 	};
 	/***************************************** */
 
-	init(data: { character_id: number; client_service: any }) {
+	init(data: { character_id: number; client_service: any, token: string }) {
 		console.log('init', data);
 		this.char_id = data.character_id;
+		this.token = data.token
 		const game_state = localStorage.getItem('game_data');
 		if (game_state) {
 			this.game_data = game_state;
@@ -145,7 +148,7 @@ export default class GameScene extends Scene {
 			);
 		});
 
-		// destroy alle chars die nicht gespielt werden. Sobald das spiel begonne hat kann keine mehr dazu kommen
+		// destroy alle chars die nicht gespielt werden. Sobald das spiel begonnen hat kann keine mehr dazu kommen
 		this.characters.forEach((char: CharacterSprite) => {
 			const selected = this.game_data.players_selected.find((char_name: string) => char_name === char.name);
 			if (selected === undefined && char.id !== this.char_id) char.destroy();
@@ -214,14 +217,15 @@ export default class GameScene extends Scene {
 			(player as CharacterSprite).setVelocityY(1);
 		});
 
+		// camera on player
 		this.cameras.main.startFollow(this.player).zoom = 2.5;
 
+		// set keys
 		this.keyboard = this.input.keyboard.addKeys('W, S, A, D, SPACE, G') as {
 			[idx: string]: Phaser.Input.Keyboard.Key;
 		};
 
 		this.characters.forEach((enemie) => {
-			console.log(enemie);
 			enemie.play(enemie.anima.up.name);
 		});
 

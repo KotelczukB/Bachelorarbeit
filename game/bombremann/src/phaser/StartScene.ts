@@ -1,20 +1,22 @@
 export class StartScene extends Phaser.Scene {
-  client!: any;
+	client_service!: any;
+	character_id!: number;
   can_start: boolean = false;
   start!: Phaser.GameObjects.Sprite;
-  wait!: Phaser.GameObjects.Sprite;
+	wait!: Phaser.GameObjects.Sprite;
+	token: string = ''
 	constructor() {
 		super({
 			key: 'START',
 		});
 	}
-	init(data: { client: any }) {
+	init(data: { character_id: number,  client: any, token: string }) {
 		console.log('init_start', data);
-		this.client = data.client;
+		this.client_service = data.client;
+		this.character_id = data.character_id;
+		this.token = data.token
 	}
 	create() {
-		this.sound.pauseOnBlur = false;
-		this.sound.play('music', { loop: true, volume: 0.7 });
 
 		this.anims.create({
 			key: 'blink',
@@ -34,7 +36,7 @@ export class StartScene extends Phaser.Scene {
 			.sprite(this.game.renderer.width * 100, this.game.renderer.height * 100, 'start', 1)
 			.setInteractive()
 			.on('pointerup', () => {
-				this.scene.start('MENU', { client: this.client });
+				this.scene.start('GAME', { character_id: this.character_id, client: this.client_service, token: this.token});
       });
       
       this.wait = this.add

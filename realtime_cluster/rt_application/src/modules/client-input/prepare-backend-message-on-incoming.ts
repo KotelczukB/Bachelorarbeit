@@ -33,7 +33,7 @@ export default async (
           session.session_name,
           -1 // sort direction
         )
-          .then(clientInputsRtModifications)
+          .then(clientInputsRtModifications(`http://${app.get('host')}:${app.get('port')}`))
           .then((resp: IMessageToBackend) =>
             app.channel(session.backends_channel).send({
               resp,

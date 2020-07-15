@@ -31,7 +31,6 @@ export class Sessions extends Service {
       syncPing: 0,
       newest_update: getTimeStamp()
     }
-    console.log(session)
     return super.create(session)
   } 
 };

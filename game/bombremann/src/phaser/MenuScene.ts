@@ -1,19 +1,28 @@
+import { createNewInput } from "../modules/createNewClientInput";
+
 export class MenuScene extends Phaser.Scene {
 	buttons!: Phaser.GameObjects.Sprite[];
 	vorbittens!: Phaser.GameObjects.Image[];
 	client_service!: any;
 	players_selected!: string[];
 	anims_list: string[] = ['player_1', 'player_2', 'player_3', 'player_4'];
+	token: string = ''
 	constructor() {
 		super({
 			key: 'MENU',
 		});
 	}
-	init(data: { client: any }) {
+	init(data: { client: any, token: string}) {
 		console.log('init_menu', data);
 		this.client_service = data.client;
+		this.token = data.token;
 	}
 	create() {
+
+		this.sound.pauseOnBlur = false;
+		this.sound.play('music', { loop: true, volume: 0.7 });
+
+
 		this.anims.create({
 			key: 'player_1',
 			frameRate: 10,
@@ -95,8 +104,12 @@ export class MenuScene extends Phaser.Scene {
 		this.buttons.forEach((elem: Phaser.GameObjects.Sprite, index: number) => {
 			elem.on('pointerup', () => {
 				const id = index + 1;
-				// this.client_service.create(createNewInput(id));
-				this.scene.start('GAME', { character_id: id, client: this.client_service });
+				console.log('sending data')
+				console.log(this.client_service)
+				this.client_service.create(createNewInput(id, this.token, localStorage.getItem('game_data'))).then(() => {
+					this.scene.start('START', { character_id: id, client: this.client_service, token: this.token});
+				});
+				
 			});
 		});
 	}

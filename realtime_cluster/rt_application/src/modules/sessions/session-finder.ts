@@ -1,6 +1,7 @@
 import R from "ramda";
 import ISession from "../../models/Interfaces/session/ISession";
-import { default_params } from "../helpers/basic-default-service-params";
+import { default_params, addToDefaultParams } from "../helpers/basic-default-service-params";
+import { Paginated } from "@feathersjs/feathers";
 // ***************************************
 // Sucht eine Session die bereits erstellt worden ist mit dem gleichem Backend
 // ***************************************
@@ -10,9 +11,11 @@ export const getFreeSession = async (
   userType: string,
   targetURL: string
 ): Promise<{ user: string; session: string; backend: string } | null> =>
-  filterSessions(session_service, userType, targetURL)
-    .then((elem) =>
-      getNameAndPatchSession(R.head(elem.data), session_service, client_id, userType)
+  filterSessions(session_service, targetURL)
+    .then((elem: ISession) => {
+      console.log("Find Session", elem)
+      return getNameAndPatchSession(elem, session_service, client_id, userType)
+    }
     )
     .catch((error) => { return null} );
 
@@ -28,10 +31,10 @@ export const getNameAndPatchSession = async (
 
 export const filterSessions = async (
   service: any,
-  userType: string,
   targetURL: string
 ): Promise<ISession> =>
-  await service.find(buildQuery(userType, targetURL));
+// weil feathers $where & $exists nicht unterstutzt ... 
+  await service.find(addToDefaultParams({query: {backend: targetURL}})).then((res: Paginated<ISession>) => { console.log("Founded Session",res); return res.data.find((sess: ISession) => sess.clients.length < (+sess.max_clients))});
 
 export const getJustName = (user_type: string) => (
   session: ISession
@@ -44,14 +47,3 @@ export const getJustName = (user_type: string) => (
       }
     : null;
 
-export const buildQuery = (
-  userType: string,
-  targetURL: string
-): {} => {
-  return {
-    [userType]: { $exists: true },
-    $where: `this.${userType}.length<this.max_clients`,
-    state: { $lt: 2 },
-    backends: targetURL,
-  };
-};
