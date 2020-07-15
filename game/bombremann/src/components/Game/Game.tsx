@@ -4,6 +4,7 @@ import { Chat } from '../Chat/Chat';
 import { PhaserGame } from '../PhaserGame/PhserGame';
 import createGameRtSocket from '../../modules/create-game-rt-socket';
 import { ILoginRegisterAnswer } from '../../models/ILoginRegisterAnswer';
+import { createInitInput } from '../../modules/createNewClientInput';
 
 export interface IGameProps {
 
@@ -33,7 +34,8 @@ export class Game extends React.Component<IGameProps, IGameState> {
 	}
 	
 	componentDidMount = () => {
-			createGameRtSocket(this.client_data).then(value => { this.setState({game_service: value, loaded: true})})
+			createGameRtSocket(this.client_data).then(value => { 
+				value.create(createInitInput(localStorage.getItem('token'))).then(() => this.setState({game_service: value, loaded: true}))})
 	}
 
 	shouldComponentUpdate() {

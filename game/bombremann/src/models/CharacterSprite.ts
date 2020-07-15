@@ -11,8 +11,10 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
 	stamina: number;
 	y_heart_offset: number = 130;
 	x_heart_offset: number = 200;
+	name: string;
 	constructor(
 		scene: Phaser.Scene,
+		name: string,
 		id: number,
 		x: number,
 		y: number,
@@ -23,7 +25,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
 		frame?: string | number
 	) {
 		super(scene, x, y, texture, frame);
-
+		this.name = name;
 		scene.sys.updateList.add(this);
 		scene.sys.displayList.add(this);
 		this.setScale(1.6);

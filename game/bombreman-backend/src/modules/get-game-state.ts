@@ -1,6 +1,8 @@
 import { IGameSnapShot } from "../models/IGameSnapShot";
 import { Application } from "@feathersjs/feathers";
 import { IGameSesion } from "../models/IGameSession";
+import { IBulletObject } from "../models/GameObjects/IBulletObject";
+import { IPlayerObject } from "../models/GameObjects/IPlayerObject";
 
 //***************************************** */
 // where hole magic happens
@@ -11,19 +13,37 @@ import { IGameSesion } from "../models/IGameSession";
 // gebe es zuruck
 //***************************************** */
 
-export default (game_session_id: any, app: Application): IGameSnapShot => {
-  const game: IGameSesion = app.service('game-session').get(game_session_id);
-  const player_objects = game.player_inputs.map(elem => elem?.app.player_data)
-  const bullet_objects = game.player_inputs.map(elem => elem?.app.bullets_data)
+export default async (game_session_id: any, app: Application): Promise<IGameSnapShot> => {
+  const game: IGameSesion = await app.service('game-session').get(game_session_id);
+  const player_objects = getPlayerObjects(game)
+  const bullet_objects = getBulletObjects(game)
+  const ended = getEnded(game)
   const selected = game.player_inputs.map(elem => elem?.app.client_selected)
-  const ended = game.player_inputs.map(elem => elem ? elem.app.player_data.hp <= 0 : false).every(elem => elem === true)
+  const game_can_start = game.players_selected.length === game.player_tokens.length &&  game.players_selected.length >= game.min_player;
   return {
-    game_can_start: game.players_selected.length >= game.min_player,
+    game_can_start,
     players_selected: selected,
     players_objects: player_objects,
     bullet_objects: bullet_objects,
     game_ended: ended,
     session_name: game.game_session,
-    type: 'backend'
+    type: 'backend',
+    game_started: player_objects !== undefined && player_objects.length > 0
   };
 };
+
+export const getPlayerObjects = (game: IGameSesion): (IPlayerObject | undefined)[] => {
+  if(game.player_inputs.length > 0)
+    return game.player_inputs.map(elem => elem?.app.player_data)
+  return [];
+}
+
+export const getBulletObjects = (game: IGameSesion): (IBulletObject | undefined)[] => {
+  if(game.player_inputs.length > 0)
+  return game.player_inputs.map(elem => elem?.app.bullets_data)
+return [];
+}
+
+export const getEnded = (game: IGameSesion): boolean => {
+  return game.player_inputs.length > 1 ? game.player_inputs.map(elem => elem ? elem.app.player_data !== undefined ? elem.app.player_data.hp <= 0 : false : false).every(elem => elem === true) : false
+}

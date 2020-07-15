@@ -64,11 +64,13 @@ export const getRTSetup = (app: Application) =>
       });
       client.configure(socketio(socket));
       const rt_input_service = client.service('client-inputs');
-      client.service('client-inputs').on('created', (data: any) => {
+      client.service('client-inputs').on('created', async (data: any) => {
         // Game RULEZ magic
-        app.service('player-inputs').create(data);
-        const game_snapshot = getGameState(data.game.id, app)
-        client.service('backend-inputs').create(game_snapshot)
+        console.log("MY DATA", data)
+        const player_input = await app.service('player-inputs').create(data)
+        const game_snapshot = await getGameState(player_input.game_id, app).catch((err: any) => console.log(err))
+        await client.service('backend-inputs').create(game_snapshot).then((stuff: any) => console.log(stuff)).catch((err: any) => console.log(err))
+
       })
       console.log(`Server connected to rt_application Server with socket`);
       

@@ -6,6 +6,7 @@ export interface IPlayerInput {
   rt_server: string,
   backend_channel: string,
   client_inputs: IClientInput[]
+  game_id: any;
   [idx: string]: any;
 }
 

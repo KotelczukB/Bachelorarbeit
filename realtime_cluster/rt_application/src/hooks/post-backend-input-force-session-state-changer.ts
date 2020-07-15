@@ -1,23 +1,18 @@
 // Use this hook to manipulate incoming or outgoing data.
 // For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
-import { Hook, HookContext, Application } from "@feathersjs/feathers";
+import { Hook, HookContext, Application, Paginated } from "@feathersjs/feathers";
 import { IBackendInput } from "../models/Interfaces/backend-inputs/IBackendInput";
 import { addToDefaultParams } from "../modules/helpers/basic-default-service-params";
 import { _SessionState } from "../models/enums/_SessionState";
+import ISession from "../models/Interfaces/session/ISession";
 
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
-    const { data, app } = context as { data: IBackendInput; app: Application };
-    if (data.close_session)
-      await app
-        .service("sessions")
-        .patch(
-          {},
-          { state: _SessionState.closed },
-          addToDefaultParams({
-            query: { session_name: data.session_name, backend: data.ownURL },
-          })
-        );
+    const { result, app } = context as { result: IBackendInput; app: Application };
+    if(result.game_started) {
+      const session: Paginated<ISession> = await app.service('sessions').find(addToDefaultParams({query: {session_name: result.session_name}}))
+      await app.service('sessions').patch(session.data[0]._id, {state: _SessionState.closed})
+    }
     return context;
   };
 };

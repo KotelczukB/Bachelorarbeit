@@ -1,4 +1,5 @@
-import { createNewInput } from "../modules/createNewClientInput";
+import { createNewInput, createInitInput } from "../modules/createNewClientInput";
+import getGameData from "../modules/get-game-data";
 
 export class MenuScene extends Phaser.Scene {
 	buttons!: Phaser.GameObjects.Sprite[];
@@ -18,7 +19,6 @@ export class MenuScene extends Phaser.Scene {
 		this.token = data.token;
 	}
 	create() {
-
 		this.sound.pauseOnBlur = false;
 		this.sound.play('music', { loop: true, volume: 0.7 });
 
@@ -107,16 +107,16 @@ export class MenuScene extends Phaser.Scene {
 				console.log('sending data')
 				console.log(this.client_service)
 				this.client_service.create(createNewInput(id, this.token, localStorage.getItem('game_data'))).then(() => {
-					this.scene.start('START', { character_id: id, client: this.client_service, token: this.token});
+					this.scene.start('START', { character_id: id, client_service: this.client_service, token: this.token});
 				});
 				
 			});
 		});
 	}
 	update() {
-		const local_data = "ne"//localStorage.getItem('game_data');
+		const local_data = getGameData()
 		if (local_data !== null) {
-			this.players_selected = ['player_1', 'player_2']//JSON.parse(local_data).players_selected;
+			this.players_selected = local_data.players_selected
 			// sortout used
 			const anims = this.anims_list.map((animation) =>
 				this.players_selected.find((name) => name === animation) !== undefined ? null : animation

@@ -8,6 +8,7 @@ import { IPlayerObject } from '../models/transfer/IPlayerObject';
 import { IBulletObject } from '../models/transfer/IBulletObject';
 import { createNewGameInput } from '../modules/createNewClientInput';
 import * as R from 'ramda';
+import getGameData from '../modules/get-game-data';
 
 export default class GameScene extends Scene {
 	keyboard!: { [idx: string]: Phaser.Input.Keyboard.Key };
@@ -24,6 +25,8 @@ export default class GameScene extends Scene {
 	game_data!: any;
 	client_service!: any;
 	token: string = '';
+	frame: number = 0
+	player_pos: any[] = [];
 	constructor() {
 		super({
 			key: 'GAME',
@@ -53,6 +56,7 @@ export default class GameScene extends Scene {
 	sendUpdateGameState_io = () => {
 		this.client_service.create(
 			createNewGameInput(
+				this.char_id,
 				this.player,
 				this.bullets.filter((bullet) => bullet.owner_id === this.player.id),
 				this.game_data,
@@ -66,9 +70,10 @@ export default class GameScene extends Scene {
 		console.log('init', data);
 		this.char_id = data.character_id;
 		this.token = data.token
+		this.client_service = data.client_service;
 		const game_state = localStorage.getItem('game_data');
 		if (game_state) {
-			this.game_data = game_state;
+			this.game_data = getGameData();
 		}
 	}
 	preload() {
@@ -124,40 +129,14 @@ export default class GameScene extends Scene {
 		];
 
 		// player map Objects always [0] becouse in tiled I made 4 Objects for every player .. there cannot be more
-		const playerPos = [
+		this.player_pos = [
 			map.getObjectLayer('player_1')['objects'][0],
 			map.getObjectLayer('player_2')['objects'][0],
 			map.getObjectLayer('player_3')['objects'][0],
 			map.getObjectLayer('player_4')['objects'][0],
 		];
 		// setting Player & Chars
-		this.player_sprite_consts.forEach((character) => {
-			const position = playerPos.find((elem: any) => elem.id === character.id);
-			this.characters.push(
-				new CharacterSprite(
-					this,
-					character.id,
-					position ? (position.x as number) : character.start.x,
-					position ? (position.y as number) : character.start.y,
-					character.sheet_id,
-					character.animations,
-					character.shot.animations.fly.name,
-					character.shot.animations.impact.name,
-					26
-				)
-			);
-		});
-
-		// destroy alle chars die nicht gespielt werden. Sobald das spiel begonnen hat kann keine mehr dazu kommen
-		this.characters.forEach((char: CharacterSprite) => {
-			const selected = this.game_data.players_selected.find((char_name: string) => char_name === char.name);
-			if (selected === undefined && char.id !== this.char_id) char.destroy();
-		});
-		// hole den Spieler raus
-		this.player = this.characters.find((char: CharacterSprite) => char.id === this.char_id) as CharacterSprite;
-
-		// filter die restliche liste vom player aus
-		this.characters = this.characters.filter((char: CharacterSprite) => char.id !== this.player.id);
+		this.setChars();
 
 		// collision
 		layers.forEach((elem) => {
@@ -236,14 +215,19 @@ export default class GameScene extends Scene {
 	}
 
 	update(time: number, delta: number) {
-		this.game_data = localStorage.getItem('game_data');
+		this.frame = this.frame + 1;
+		if(this.game_data.players_selected.length > this.characters.length)
+	//	this.setChars()
 
-		// Game state from server
-		this.updateGame();
+		this.game_data = getGameData();
 		// own player
 		this.updatePlayer(delta);
+		this.updateGame();
 		// rt communication
-		this.sendUpdateGameState_io();
+		if(this.frame === 30) {
+			// Game state from server
+			this.sendUpdateGameState_io();
+		}
 	}
 
 	//******************************************************************************************************** */
@@ -302,7 +286,7 @@ export default class GameScene extends Scene {
 	};
 
 	updateEnemiePositionVelocity = (game_data: any) => (character: CharacterSprite): CharacterSprite | undefined => {
-		const enemie = game_data.players_objects.find((player: IPlayerObject) => player.name === character.name);
+		const enemie = game_data.players_objects.find((enemie: IPlayerObject) => enemie ? enemie.name === character.name : false);
 		if (enemie)
 			return (character.setPosition(enemie.pos_x, enemie.pos_y).setVelocity(enemie.vel_x, enemie.vel_y).hp =
 				enemie.hp);
@@ -345,7 +329,7 @@ export default class GameScene extends Scene {
 			this.follower_pic_2.setPosition(this.follower.body.x, this.follower.body.y + 90);
 		}
 		// Winning
-		if (this.characters.filter((char) => char.hp > 0).length < 1 && !this.won) {
+		if (this.characters.filter((char) => char.hp > 0).length < 1 && !this.won && this.game_data.game_ended) {
 			this.add.image(this.player.body.x, this.player.body.y, 'player_win').setDepth(10);
 			this.player.setVelocity(0, 0);
 			const again_btn = this.add.image(this.player.body.x, this.player.body.y + 60, 'play_again').setDepth(10);
@@ -440,5 +424,43 @@ export default class GameScene extends Scene {
 			//moving down
 			character.play(character.anima.down.name, true);
 		}
+	}
+
+	setChars() {
+		this.player_sprite_consts.forEach((character) => {
+			const position = this.player_pos.find((elem: any) => elem.id === character.id);
+			this.characters.push(
+				new CharacterSprite(
+					this,
+					character.name,
+					character.id,
+					position ? (position.x as number) : character.start.x,
+					position ? (position.y as number) : character.start.y,
+					character.sheet_id,
+					character.animations,
+					character.shot.animations.fly.name,
+					character.shot.animations.impact.name,
+					26
+				)
+			);
+		});
+
+		// destroy alle chars die nicht gespielt werden. Sobald das spiel begonnen hat kann keine mehr dazu kommen
+		const tempChars: CharacterSprite[] = [];
+		this.characters.forEach((char: CharacterSprite) => {
+			const selected = this.game_data.players_selected.find((char_name: string) => char_name === char.name);
+			if (selected === undefined && char.id !== this.char_id) {
+				char.destroy();
+			} else {
+				tempChars.push(char);
+			}
+		});
+
+		this.characters = tempChars;
+		// hole den Spieler raus
+		this.player = this.characters.find((char: CharacterSprite) => char.id === this.char_id) as CharacterSprite;
+
+		// filter die restliche liste vom player aus
+		this.characters = this.characters.filter((char: CharacterSprite) => char.id !== this.player.id);
 	}
 }

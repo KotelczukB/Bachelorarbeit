@@ -8,7 +8,7 @@ export default (options = {}): Hook => {
   return async (context: HookContext) => {
     const {result, app} = context as {result: IClientMessage, app: Application}
     const data = await prepareBackendMessageOnIncoming(result, app, 0);
-    console.log('HERE COMES JOHNY', data)
+   // console.log('HERE COMES JOHNY', data)
     context.result = data
     return context;
   };

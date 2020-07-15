@@ -1,3 +1,5 @@
+import getGameData from "../modules/get-game-data";
+
 export class StartScene extends Phaser.Scene {
 	client_service!: any;
 	character_id!: number;
@@ -10,9 +12,9 @@ export class StartScene extends Phaser.Scene {
 			key: 'START',
 		});
 	}
-	init(data: { character_id: number,  client: any, token: string }) {
+	init(data: { character_id: number,  client_service: any, token: string }) {
 		console.log('init_start', data);
-		this.client_service = data.client;
+		this.client_service = data.client_service;
 		this.character_id = data.character_id;
 		this.token = data.token
 	}
@@ -36,7 +38,7 @@ export class StartScene extends Phaser.Scene {
 			.sprite(this.game.renderer.width * 100, this.game.renderer.height * 100, 'start', 1)
 			.setInteractive()
 			.on('pointerup', () => {
-				this.scene.start('GAME', { character_id: this.character_id, client: this.client_service, token: this.token});
+				this.scene.start('GAME', { character_id: this.character_id, client_service: this.client_service, token: this.token});
       });
       
       this.wait = this.add
@@ -44,9 +46,9 @@ export class StartScene extends Phaser.Scene {
 			.play('await')
 	}
 	update() {
-		const local_data = "ne" //localStorage.getItem('game_data');
+		const local_data = getGameData()
 		if (local_data !== null) {
-			this.can_start = true//JSON.parse(local_data).game_can_start;
+			this.can_start = local_data.game_can_start;
     }
     if(this.can_start) {
       this.wait.destroy();

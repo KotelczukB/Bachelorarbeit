@@ -1,12 +1,12 @@
-import { IExternalAppData } from "../IExtAppData";
 import { _ExternType } from "../_ExternType";
 
 export interface IBackendInput {
+  [idx: string]: any;
   created_at: number;
   type: _ExternType;
-  externalAppData: IExternalAppData;
-  ownURL: string;
+  game_can_start: boolean;
+  game_started: boolean
+  game_ended: boolean;
   session_name: string;
-  close_session: boolean;
-  traget_channel_name: string;
+  message: string;
 }

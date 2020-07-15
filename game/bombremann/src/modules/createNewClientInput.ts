@@ -1,17 +1,44 @@
 import { CharacterSprite } from "../models/CharacterSprite";
 import { BulletSprite } from "../models/BulletSprite";
 import IClientMessage from "../models/transfer/IClientMessage";
+import { IPlayerObject } from "../models/transfer/IPlayerObject";
+import { IBulletObject } from "../models/transfer/IBulletObject";
 
-export const createNewGameInput = (player: CharacterSprite, player_bullets: BulletSprite[], game_data: any, token: string): IClientMessage => {
+export const createNewGameInput = (char_id: number, player: CharacterSprite, player_bullets: BulletSprite[], game_data: any, token: string): IClientMessage => {
+  const player_object: IPlayerObject = {
+    pos_x: player.body.x,
+    pos_y: player.body.y,
+    vel_x: player.body.velocity.x,
+    vel_y: player.body.velocity.y,
+    hp: player.hp,
+    name: player.name
+  }
+
+  const bullets_objects: IBulletObject[] = player_bullets.map(bullet => {return {
+    pos_x: bullet.body.x,
+    pos_y: bullet.body.y,
+    vel_x: bullet.body.velocity.x,
+    vel_y: bullet.body.velocity.y,
+    owner_id: bullet.owner_id,
+    created_at: bullet.created_at,
+    id: bullet.id
+  }})
   return {
     ...setDefault(token),
     app: {
-      player_data: player,
-      bullets_data: player_bullets
+      player_data: player_object,
+      bullets_data: bullets_objects,
+      client_selected: `player_${char_id}`
     }
   }
 }
 
+export const createInitInput = (token: string | null): IClientMessage => {
+  return {
+    ...setDefault(token),
+    app: {}
+  }
+}
 
 export const createNewInput = (client_id: number, token: string, game_data: any): IClientMessage => {
   return {
@@ -22,7 +49,7 @@ export const createNewInput = (client_id: number, token: string, game_data: any)
   }
 }
 
-export const  setDefault = (token: string): IClientMessage => {
+export const  setDefault = (token: string | null): IClientMessage => {
   return {
     id: +new Date(),
     rang: NaN,

@@ -10,7 +10,6 @@ import { _BasicState } from "../../models/_SessionState";
 import { IPlayerInput, IClientInput } from "../../models/IPlayerInput";
 import { IGameSesion } from "../../models/IGameSession";
 import * as R from "ramda";
-import check_on_cheat from "../../modules/check_on_hacker";
 
 interface ServiceOptions {}
 
@@ -40,7 +39,7 @@ export class PlayerInputs implements ServiceMethods<IPlayerInput> {
       .find({
         query: {
           game_session: data.session_name,
-          state: _BasicState[_BasicState.active],
+          state: _BasicState.active,
         },
       })) as Paginated<IGameSesion>;
     // den letzten stand holen
@@ -51,12 +50,14 @@ export class PlayerInputs implements ServiceMethods<IPlayerInput> {
     );
     const grupped = groupping(game_state.player_inputs);
     // Check ob jemand cheatet
-    const new_state = check_on_cheat(grupped, data.client_inputs);
+      // get all selected char 
+    const selected = data.client_inputs.map(input => { if(input && input.app) return input.app.client_selected})
       // setzte neuen state in die DB
     await this.app.service("game-session").patch(result.data[0]._id, {
-      player_inputs: new_state,
+      player_inputs: game_state.player_inputs,
+      players_selected: selected
     });
-    data.game.id = result.data[0]._id;
+    data.game_id = result.data[0]._id;
     return data;
   }
 
