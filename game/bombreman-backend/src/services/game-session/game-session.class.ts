@@ -3,7 +3,7 @@ import { Service, MongoDBServiceOptions } from 'feathers-mongodb';
 import { Application } from '../../declarations';
 import { Paginated } from '@feathersjs/feathers';
 import { IGameSesion } from '../../models/IGameSession';
-import { IGameSessionCreation } from '../../models/IGameData';
+import { IGameSessionCreation } from '../../models/IGameSessionCreation';
 import gameSessionCreater from '../../modules/game-session-creater';
 import { IRTServer } from '../../models/IRTServer';
 
@@ -23,7 +23,6 @@ export class GameSession extends Service {
     const game_session: Paginated<IGameSesion> = await super.find({query: {game_session: data.game_session}}) as Paginated<IGameSesion>;
     if(game_session.data !== undefined && game_session.data.length > 0){
       if(!game_session.data[0].player_tokens.find(elem => elem === data.token))
-      console.log("THIS IS THE NEW ONE",game_session.data[0] )
         super.patch(game_session.data[0]._id, { $push: {player_tokens: data.token}})
       return game_session.data[0];
     }

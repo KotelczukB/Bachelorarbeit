@@ -17,7 +17,7 @@ export const createNewInput = (client_id: number, token: string, game_data: any)
   return {
     ...setDefault(token),
     app: {
-      client_selected: client_id
+      client_selected: `player_${client_id}`
     }
   }
 }

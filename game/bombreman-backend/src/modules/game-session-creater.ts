@@ -1,6 +1,6 @@
 import { IGameSesion } from "../models/IGameSession";
 import { _BasicState } from "../models/_SessionState";
-import { IGameSessionCreation } from "../models/IGameData";
+import { IGameSessionCreation } from "../models/IGameSessionCreation";
 import app from "../app";
 import { Application, Paginated } from "@feathersjs/feathers";
 import { IRTServer } from "../models/IRTServer";

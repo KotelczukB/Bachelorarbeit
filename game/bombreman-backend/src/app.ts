@@ -52,6 +52,7 @@ app.use(express.errorHandler({ logger } as any));
 
 app.hooks(appHooks);
 
+// Get Realtime app setup and connect to application rt_server
 getRTSetup(app);
 
 

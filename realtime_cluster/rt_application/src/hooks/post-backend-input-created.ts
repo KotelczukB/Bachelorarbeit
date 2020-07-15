@@ -4,9 +4,6 @@ import { Hook, HookContext } from '@feathersjs/feathers';
 
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
-    // check if all props there
-    // check if player data
-    // 
     return context;
   };
 }

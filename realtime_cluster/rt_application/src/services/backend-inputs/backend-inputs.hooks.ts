@@ -1,6 +1,7 @@
 
 import postBackendInputForceSessionStateChanger from '../../hooks/post-backend-input-force-session-state-changer';
 import preventExternTriggerOnEvent from '../../hooks/prevent-extern-trigger-on-event';
+import postBackendInputCreated from '../../hooks/post-backend-input-created';
 export default {
   before: {
     all: [],
@@ -16,7 +17,7 @@ export default {
     all: [],
     find: [],
     get: [],
-    create: [postBackendInputForceSessionStateChanger()],
+    create: [postBackendInputForceSessionStateChanger(), postBackendInputCreated()],
     update: [],
     patch: [],
     remove: []

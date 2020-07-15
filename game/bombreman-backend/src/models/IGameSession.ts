@@ -1,6 +1,6 @@
 import { _BasicState } from "./_SessionState";
 import { IRTServer } from "./IRTServer";
-import { IPlayerGameState } from "./IPlayerGameState";
+import { IPlayerInput, IClientInput } from "./IPlayerInput";
 
 export interface IGameSesion {
   name: string;
@@ -10,6 +10,6 @@ export interface IGameSesion {
   rt_server: IRTServer;
   player_tokens: string[];
   players_selected: number[];
-  player_inputs: IPlayerGameState[];
+  player_inputs: (IClientInput | null)[];
   [idx: string]: any
 }

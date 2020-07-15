@@ -7,11 +7,14 @@ import {
 } from "@feathersjs/feathers";
 import { Application } from "../../declarations";
 import { _BasicState } from "../../models/_SessionState";
-import { IPlayerInputDTO } from "../../models/IPlayerInput";
+import { IPlayerInput, IClientInput } from "../../models/IPlayerInput";
+import { IGameSesion } from "../../models/IGameSession";
+import * as R from "ramda";
+import check_on_cheat from "../../modules/check_on_hacker";
 
 interface ServiceOptions {}
 
-export class PlayerInputs implements ServiceMethods<IPlayerInputDTO> {
+export class PlayerInputs implements ServiceMethods<IPlayerInput> {
   app: Application;
   options: ServiceOptions;
 
@@ -22,68 +25,58 @@ export class PlayerInputs implements ServiceMethods<IPlayerInputDTO> {
 
   async find(
     params?: Params
-  ): Promise<IPlayerInputDTO[] | Paginated<IPlayerInputDTO>> {
+  ): Promise<IPlayerInput[] | Paginated<IPlayerInput>> {
     throw new Error("Method not implemented");
   }
 
-  async get(id: Id, params?: Params): Promise<IPlayerInputDTO> {
+  async get(id: Id, params?: Params): Promise<IPlayerInput> {
     throw new Error("Method not implemented");
   }
 
-  async create(
-    data: IPlayerInputDTO,
-    params?: Params
-  ): Promise<IPlayerInputDTO> {
-    const application_data = data.app_data;
-    if (application_data.own_game_snapshots.length >= this.app.get('min_players')) {
-
-      // const running_res: any[] | Paginated<IGameSesion> = await this.app.service("game-session").find({
-      //   query: {
-      //     name: application_data.game_session,
-      //     state: _BasicState.active,
-      //     rt_server: application_data.rt_serverURL,
-      //     rt_session: application_data.rt_session,
-      //     player_tokens: application_data.tokens,
-      //   },
-      // });
-      // const game_session = (running_res as Paginated<IGameSesion>).data[0]
-      //   ? (running_res as Paginated<IGameSesion>).data[0]
-      //   : await this.app
-      //       .service("game-session")
-      //       .create(gameSessionCreater(application_data));
-
-
-      // Get Game Session on backend_session_name
-      //put id into patch
-      await this.app.service("game-session").patch(null, {
-        $push: { player_inputs: application_data.own_game_snapshots },
-      });
-      return (data = {
-        ...data,
-        app_data: application_data,
-      });
-    } else {
-      throw new Error("Dataset incomplete");
-    }
+  // Patch session, player inputs werden nicht in den Stack gespeichet
+  async create(data: IPlayerInput, params?: Params): Promise<IPlayerInput> {
+    const result: Paginated<IGameSesion> = (await this.app
+      .service("game-session")
+      .find({
+        query: {
+          game_session: data.session_name,
+          state: _BasicState[_BasicState.active],
+        },
+      })) as Paginated<IGameSesion>;
+    // den letzten stand holen
+    const game_state = result.data[0];
+    // grupiere nach player
+    const groupping = R.groupBy(
+      (elem: IClientInput | null) => elem?.token ?? "null"
+    );
+    const grupped = groupping(game_state.player_inputs);
+    // Check ob jemand cheatet
+    const new_state = check_on_cheat(grupped, data.client_inputs);
+      // setzte neuen state in die DB
+    await this.app.service("game-session").patch(result.data[0]._id, {
+      player_inputs: new_state,
+    });
+    data.game.id = result.data[0]._id;
+    return data;
   }
 
   async update(
     id: NullableId,
-    data: IPlayerInputDTO,
+    data: IPlayerInput,
     params?: Params
-  ): Promise<IPlayerInputDTO> {
+  ): Promise<IPlayerInput> {
     throw new Error("Method not implemented");
   }
 
   async patch(
     id: NullableId,
-    data: IPlayerInputDTO,
+    data: IPlayerInput,
     params?: Params
-  ): Promise<IPlayerInputDTO> {
+  ): Promise<IPlayerInput> {
     throw new Error("Method not implemented");
   }
 
-  async remove(id: NullableId, params?: Params): Promise<IPlayerInputDTO> {
+  async remove(id: NullableId, params?: Params): Promise<IPlayerInput> {
     throw new Error("Method not implemented");
   }
 }

@@ -1,13 +1,11 @@
 import prePlayerEvent from "../../hooks/pre-player-event";
 
-import prePlayerInputValidateRtServer from '../../hooks/pre-player-input-validate-rt-server';
-
 export default {
   before: {
     all: [],
     find: [prePlayerEvent()],
     get: [prePlayerEvent()],
-    create: [prePlayerInputValidateRtServer()],
+    create: [],
     update: [prePlayerEvent()],
     patch: [prePlayerEvent()],
     remove: [prePlayerEvent()]

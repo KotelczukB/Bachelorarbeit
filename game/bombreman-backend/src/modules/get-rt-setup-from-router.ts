@@ -6,6 +6,7 @@ import { _RTServerType } from "../models/_RTServerType";
 import io from 'socket.io-client';
 import feathers from '@feathersjs/feathers';
 import socketio from '@feathersjs/socketio-client';
+import getGameState from "./get-game-state";
 
 //************************************** */
 // Remove old rt_servers -> connect to router -> save new Servers -> connect to rt_server over socket
@@ -64,7 +65,10 @@ export const getRTSetup = (app: Application) =>
       client.configure(socketio(socket));
       const rt_input_service = client.service('client-inputs');
       client.service('client-inputs').on('created', (data: any) => {
-        console.log("Recived DATA", data)
+        // Game RULEZ magic
+        app.service('player-inputs').create(data);
+        const game_snapshot = getGameState(data.game.id, app)
+        client.service('backend-inputs').create(game_snapshot)
       })
       console.log(`Server connected to rt_application Server with socket`);
       
