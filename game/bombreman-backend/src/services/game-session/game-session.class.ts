@@ -20,9 +20,10 @@ export class GameSession extends Service {
   }
 
   public create = async (data: IGameSessionCreation): Promise<IGameSesion> => {
-    const game_session: Paginated<IGameSesion> = await super.find({query: {rt_session: data.game_channel}}) as Paginated<IGameSesion>;
+    const game_session: Paginated<IGameSesion> = await super.find({query: {game_session: data.game_session}}) as Paginated<IGameSesion>;
     if(game_session.data !== undefined && game_session.data.length > 0){
       if(!game_session.data[0].player_tokens.find(elem => elem === data.token))
+      console.log("THIS IS THE NEW ONE",game_session.data[0] )
         super.patch(game_session.data[0]._id, { $push: {player_tokens: data.token}})
       return game_session.data[0];
     }

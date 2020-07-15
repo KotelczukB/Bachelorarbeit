@@ -8,8 +8,6 @@ import {
 import { Application } from "../../declarations";
 import { _BasicState } from "../../models/_SessionState";
 import { IPlayerInputDTO } from "../../models/IPlayerInput";
-import gameSessionCreater from "../../modules/game-session-creater";
-import { IGameSesion } from "../../models/IGameSession";
 
 interface ServiceOptions {}
 

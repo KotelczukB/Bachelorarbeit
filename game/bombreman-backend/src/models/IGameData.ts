@@ -12,7 +12,7 @@ export interface IGameData {
 }
 
 export interface IGameSessionCreation {
-  game_channel: string;
+  game_session: string;
   rt_serverURL: string;
   token: string;
 }
