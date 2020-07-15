@@ -8,16 +8,18 @@ export default async (
   service_backends: any,
   sessionData: Promise<ISessionCreate>
 ): Promise<{ user: string; session: string; backend: string } | null> =>
-  sessionData.then(
-    async (res: ISessionCreate) => {
-      try{
-      const search = await getFreeSession(service_session, res.client_id,  kinde,  res.backend_url)
-      console.log('AHA SESSION', search)
-      if(search === null)
-         return await createSession(service_session, service_backends, res)
-      return search;
-      } catch(err) {
-        console.log(err);
-        return null
-      }
-  })
+  sessionData.then(async (res: ISessionCreate) => {
+    try {
+      return (
+        (await getFreeSession(
+          service_session,
+          res.client_id,
+          kinde,
+          res.backend_url
+        )) ?? (await createSession(service_session, service_backends, res))
+      );
+    } catch (err) {
+      console.log(err);
+      return null;
+    }
+  });

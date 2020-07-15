@@ -12,10 +12,7 @@ export const getFreeSession = async (
   targetURL: string
 ): Promise<{ user: string; session: string; backend: string } | null> =>
   filterSessions(session_service, targetURL)
-    .then((elem: ISession) => {
-      console.log("Find Session", elem)
-      return getNameAndPatchSession(elem, session_service, client_id, userType)
-    }
+    .then((elem: ISession) => getNameAndPatchSession(elem, session_service, client_id, userType)
     )
     .catch((error) => { return null} );
 
@@ -34,7 +31,7 @@ export const filterSessions = async (
   targetURL: string
 ): Promise<ISession> =>
 // weil feathers $where & $exists nicht unterstutzt ... 
-  await service.find(addToDefaultParams({query: {backend: targetURL}})).then((res: Paginated<ISession>) => { console.log("Founded Session",res); return res.data.find((sess: ISession) => sess.clients.length < (+sess.max_clients))});
+  await service.find(addToDefaultParams({query: {backend: targetURL}})).then((res: Paginated<ISession>) => res.data.find((sess: ISession) => sess.clients.length < (+sess.max_clients)));
 
 export const getJustName = (user_type: string) => (
   session: ISession

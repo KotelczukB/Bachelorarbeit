@@ -1,13 +1,14 @@
 
 import preInputCreate from '../../hooks/pre-clientinput-create';
-import clientInputPingCheck from '../../hooks/pre-clientinput-ping-and-set-data';
 import preventExternTriggerOnEvent from '../../hooks/prevent-extern-trigger-on-event';
+import preClientinputPingAndSetData from '../../hooks/pre-clientinput-ping-and-set-data';
 export default {
   before: {
     all: [],
     find: [],
     get: [],
-    create: [preInputCreate(), clientInputPingCheck()],
+    create: [preInputCreate(), 
+      preClientinputPingAndSetData()],
     update: [preventExternTriggerOnEvent()],
     patch: [preventExternTriggerOnEvent()],
     remove: []

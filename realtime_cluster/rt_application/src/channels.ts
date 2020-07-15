@@ -43,6 +43,7 @@ export default function (app: Application) {
   // hier pushen die clients
   app.service("client-inputs").publish("created", async (data: IClientMessage, context) =>
       appType === _AppType.chat
+      // fix chat
         ? app
             .channel(data.target_channel_name)
             .send(clientInputsChatConverter(data))

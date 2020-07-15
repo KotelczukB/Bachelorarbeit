@@ -19,7 +19,7 @@ export default async (
   app: Application,
   minInterval: number
 ): Promise<Channel[] | void> =>
-  app
+  await app
     .service("sessions")
     .find(addToDefaultParams({ query: { session_name: data.session_name } }))
     .then((res: Paginated<ISession>) =>
@@ -27,17 +27,18 @@ export default async (
     )
     .then((sessions: ISession[]) => {
       sessions.forEach((session: ISession) => 
-      setTimeout(() => 
-        getNewestInputsOnSession(
+      setTimeout(async () => 
+        await getNewestInputsOnSession(
+          app.service('sessions'),
           app.service("client-inputs"),
           session.session_name,
           -1 // sort direction
         )
-          .then(clientInputsRtModifications(`http://${app.get('host')}:${app.get('port')}`))
-          .then((resp: IMessageToBackend) =>
+          .then( async (stuff) => await clientInputsRtModifications(`http://${app.get('host')}:${app.get('port')}`)(stuff))
+          .then((resp: IMessageToBackend | null) =>
             app.channel(session.backends_channel).send({
               resp,
             })
-          ), session.syncPing
+          ).catch(err => {console.log('clientinptus err', err)}), session.syncPing
       ));
     }).catch((err: any) => {console.log(err)});

@@ -28,12 +28,13 @@ export default async (
         setTimeout(
           () =>
             getNewestInputsOnSession(
+              app.service('sessions'),
               app.service("client-inputs"),
               session.session_name,
               -1
             )
-              .then(clientInputsRtModifications(`http://${app.get('host')}:${app.get('port')}`))
-              .then((resp: IMessageToBackend) =>
+              .then( async (stuff) => await clientInputsRtModifications(`http://${app.get('host')}:${app.get('port')}`)(stuff))
+              .then((resp: IMessageToBackend | null) =>
                 app.channel(session.backends_channel).send({
                   resp,
                 })
