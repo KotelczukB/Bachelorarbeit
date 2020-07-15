@@ -11,6 +11,7 @@ import getEnvTYPE from "./modules/helpers/get-env-TYPE";
 import { IConnection } from "./models/IConnection";
 import { _ExternType } from "./models/Interfaces/_ExternType";
 import idetifyBackendServer from "./modules/helpers/idetify-backend-server";
+import { IMessageToBackend } from "./models/Interfaces/backend-inputs/IMessageToBackend";
 
 export default function (app: Application) {
   if (typeof app.channel !== "function") {
@@ -25,7 +26,7 @@ export default function (app: Application) {
   app.on("connection", async (connection: IConnection) => 
     // On a new real-time connection, add it to the anonymous channel
     await getConnectionObject(connection, app).then((obj: (void | { backend_channel: string; client_channel: string })) => {
-      // void === backend connection obj === clinet connection
+      // void === backend connection; obj === clinet connection
       if (obj) {
         const backend_connection = idetifyBackendServer(connection, app.channel(app.get("waiting_channel")).connections);
         if(!backend_connection)
@@ -41,13 +42,9 @@ export default function (app: Application) {
   // chat type -> convert input, push
   // hier subscribet das backend
   // hier pushen die clients
-  app.service("client-inputs").publish("created", async (data: IClientMessage, context) =>
-      appType === _AppType.chat
-      // fix chat
-        ? app
-            .channel(data.target_channel_name)
-            .send(clientInputsChatConverter(data))
-        : await prepareBackendMessageOnIncoming(data, app, interval) // returns backend channel somit publish nicht an die clients
+  app.service("client-inputs").publish("created", async (data: IMessageToBackend, context) =>
+  // Chat handling
+      app.channel(data.backend_channel).send(data)// returns backend channel somit publish nicht an die clients
     );
   // Setzt ein um das Interval varzoggerten publish von client-inputs an das Backend
   // hier pushed das backend

@@ -11,5 +11,5 @@
     "min_players": 2,
     "max_players": 4,
     "custom_interval": 0,
-    "rt_game_backend_service": "backend-inputs"
+    "rt_game_backend_service": "client-inputs"
 }

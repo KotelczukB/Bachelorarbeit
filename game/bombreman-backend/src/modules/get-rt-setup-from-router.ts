@@ -8,7 +8,7 @@ import feathers from '@feathersjs/feathers';
 import socketio from '@feathersjs/socketio-client';
 
 //************************************** */
-// Remove old rt_servers -> connect to router -> save new Servers
+// Remove old rt_servers -> connect to router -> save new Servers -> connect to rt_server over socket
 //************************************** */
 export const getRTSetup = (app: Application) =>
   fetch(app.get("router_url"), {
@@ -52,6 +52,7 @@ export const getRTSetup = (app: Application) =>
       const client = feathers();
       // initial Data fur verbindung und registierung
       const socket = io(game_rt.serverURL, {
+        transports: ['websocket'],
         query: {
           own_url: `http://${app.get('host')}:${app.get('port')}`,
           type: 'backend',
@@ -61,9 +62,9 @@ export const getRTSetup = (app: Application) =>
         }
       });
       client.configure(socketio(socket));
-      const rt_input_service = client.service(app.get('rt_game_backend_service'));
-      rt_input_service.on('created', (data: any) => {
-        // update game stuff
+      const rt_input_service = client.service('client-inputs');
+      client.service('client-inputs').on('created', (data: any) => {
+        console.log("Recived DATA", data)
       })
       console.log(`Server connected to rt_application Server with socket`);
       

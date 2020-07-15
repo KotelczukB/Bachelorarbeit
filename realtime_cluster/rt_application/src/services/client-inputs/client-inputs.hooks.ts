@@ -2,6 +2,7 @@
 import preInputCreate from '../../hooks/pre-clientinput-create';
 import preventExternTriggerOnEvent from '../../hooks/prevent-extern-trigger-on-event';
 import preClientinputPingAndSetData from '../../hooks/pre-clientinput-ping-and-set-data';
+import postClientInputPrepareBackendMessage from '../../hooks/post-client-input-prepare-backend-message';
 export default {
   before: {
     all: [],
@@ -18,7 +19,7 @@ export default {
     all: [],
     find: [],
     get: [],
-    create: [],
+    create: [postClientInputPrepareBackendMessage()],
     update: [],
     patch: [],
     remove: []

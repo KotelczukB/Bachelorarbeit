@@ -1,9 +1,9 @@
 import IClientMessage from "../../models/Interfaces/clients-inputs/IClientMessage";
 import { IMessageToBackend } from "../../models/Interfaces/backend-inputs/IMessageToBackend";
 
-export default (rt_server_url: string) => async (param: Promise<IClientMessage>[]): Promise<IMessageToBackend | null> => await Promise.all(param).then(initializeRang).then(createBackendInput(rt_server_url));
+export default (rt_server_url: string, backend_channel: string) => (param: (IClientMessage | undefined)[]): IMessageToBackend | null => (createBackendInput(rt_server_url, backend_channel, initializeRang(param)));
 
-export const createBackendInput = (url: string) => (param: (IClientMessage | undefined)[]): IMessageToBackend | null => {
+export const createBackendInput = (url: string, backend_channel: string,  param: (IClientMessage | undefined)[]): IMessageToBackend | null => {
   const infos = param.filter(elem => elem !== undefined)
   if(infos.length < 1)
     return null;
@@ -12,16 +12,18 @@ export const createBackendInput = (url: string) => (param: (IClientMessage | und
   return {
     client_inputs: param,
     session_name: infos[0].session_name,
-    rt_server: url
+    rt_server: url,
+    backend_channel
   };
 };
 
 
 export const initializeRang = (
-  inputs: IClientMessage[]
+  inputs: (IClientMessage | undefined)[]
 ): (IClientMessage | undefined)[] => inputs.sort(compareInputs).map(setRang);
 
-export const setRang = (input: IClientMessage, idx: number) => {
+export const setRang = (input: IClientMessage | undefined, idx: number) => {
+  if(input !== undefined)
   return {
     ...input,
     rang: idx,
@@ -29,8 +31,8 @@ export const setRang = (input: IClientMessage, idx: number) => {
 };
 
 export const compareInputs = (
-  input_1: IClientMessage,
-  input_2: IClientMessage
+  input_1: (IClientMessage | undefined),
+  input_2: (IClientMessage | undefined)
 ): number =>
   latency(input_1) < latency(input_2)
     ? -1
@@ -38,4 +40,4 @@ export const compareInputs = (
     ? 1
     : 0;
 
-export const latency = (input: IClientMessage): number => input.ping;
+export const latency = (input: IClientMessage | undefined): number => input !== undefined ? input.ping : 0;
