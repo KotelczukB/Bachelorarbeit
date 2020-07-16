@@ -1,27 +1,26 @@
-version: "3"
-services: 
+version: '3'
+services:
   mongo:
-    container_name: realtime-app-mongo
-    image: mongo
-    ports:
-      - "27017:27017"
+    container_name: mongo
+    restart: always
+    image: mongo:latest
     volumes:
-      - 'mongo:/data/db'
-    environment: 
-      - MONGO_INITDB_DATABASE=realtime-chat
-
+       - mongodbdata:/data/db
+       - ./etc/mongod.conf:/etc/mongo/mongod.conf
+    ports:
+      - '27017:27017'
+    command: --config /etc/mongo/mongod.conf
   web:
-    container_name: rt_app_chat
     restart: always
     environment: 
-      - PORT=8060
       - APP_TYPE=chat
-      - DB_HOST=mongo
     build: .
     ports:
       - "3050:3050"
     depends_on:
-        - mongo
-
-volumes: 
-  mongo:
+      - mongo
+    links:
+      - mongo
+volumes:
+  mongodbdata:
+    external: false

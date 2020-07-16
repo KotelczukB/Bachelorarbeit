@@ -14,7 +14,7 @@ export class Sessions extends Service {
 
     client.then(db => {
       this.Model = db.collection('sessions');
-    });
+    }).catch((err: any) => console.log(err));
   }
   public async create(data: ISessionCreate): Promise<any> {
     const session: ISession = {
