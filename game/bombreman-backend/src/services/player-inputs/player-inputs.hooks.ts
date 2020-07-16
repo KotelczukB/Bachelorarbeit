@@ -1,5 +1,7 @@
 import prePlayerEvent from "../../hooks/pre-player-event";
 
+import postPlayerInputCreated from '../../hooks/post-player-input-created';
+
 export default {
   before: {
     all: [],
@@ -15,7 +17,7 @@ export default {
     all: [],
     find: [],
     get: [],
-    create: [],
+    create: [postPlayerInputCreated()],
     update: [],
     patch: [],
     remove: []

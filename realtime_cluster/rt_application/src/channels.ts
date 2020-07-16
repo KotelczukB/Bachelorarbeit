@@ -48,7 +48,7 @@ export default function (app: Application) {
   // chat type -> convert input, push
   // hier subscribet das backend
   // hier pushen die clients
-  app.service("client-inputs").publish("created", async (data: IMessageToBackend, context) =>
+  app.service("client-inputs").publish("created", (data: IMessageToBackend, context) =>
       //appType === _AppType.chat
       // Chat handling
       app.channel(data.backend_channel).send(data) // returns backend channel somit publish nicht an die clients
@@ -56,8 +56,8 @@ export default function (app: Application) {
   // Setzt ein um das Interval varzoggerten publish von client-inputs an das Backend
   // hier pushed das backend
   // hier subscriben die clients
-  app.service("backend-inputs").publish("created", async (data: IBackendInput, context) => {
-         //('FUCK SEND IT', data.client_channel);
+  app.service("backend-inputs").publish("created", (data: IBackendInput, context) => {
+         console.log('FUCK SEND IT', data.client_channel);
       return app.channel(data.client_channel).send(data)
   }
     ); // returs client channels somit gehen messages an clietns raus

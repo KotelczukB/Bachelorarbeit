@@ -53,8 +53,8 @@ export default class GameScene extends Scene {
 	// Feathers communication
 	/**************************************** */
 
-	sendUpdateGameState_io = () => {
-		this.client_service.create(
+	sendUpdateGameState_io = async () => {
+		await this.client_service.create(
 			createNewGameInput(
 				this.char_id,
 				this.player,
@@ -214,22 +214,25 @@ export default class GameScene extends Scene {
 		}
 	}
 
-	update(time: number, delta: number) {
+	async update(time: number, delta: number) {
 		this.frame = this.frame + 1;
 		if(this.game_data.players_selected.length > this.characters.length)
 	//	this.setChars()
 
-		this.game_data = getGameData();
+		
 		// own player
 		this.updatePlayer(delta);
 		this.updateGame();
 		// rt communication
 		// billig funktioniert aber 
-		if(this.frame === 5) {
+	//	if(this.frame === 5) {
 			// Game state from server
 			this.frame = 0
-			this.sendUpdateGameState_io();
-		}
+			this.sendUpdateGameState_io().then(() => {
+				this.game_data = getGameData();
+			})
+				
+	//	}
 	}
 
 	//******************************************************************************************************** */

@@ -1,6 +1,6 @@
+
 import io from 'socket.io-client';
-import feathers from '@feathersjs/feathers';
-import socketio from '@feathersjs/socketio-client';
+import feathers from '@feathersjs/client';
 import { ILoginRegisterAnswer } from '../models/ILoginRegisterAnswer';
 import { IRT_AppLoginAnswer } from '../models/IRT_AppLoginAnswer';
 
@@ -23,7 +23,7 @@ export default async (client: ILoginRegisterAnswer) => {
 	);
 	if (login_response.ok) {
 		const login_data: IRT_AppLoginAnswer = await login_response.json();
-    const game_client = feathers();
+    const game_client = (feathers as any)();
 		// initial Data fur verbindung und registierung
 		const game_socket = io(client.rt_servers.filter((elem) => elem.type === 'application')[0].serverURL, {
       transports: ['websocket'],
@@ -32,7 +32,7 @@ export default async (client: ILoginRegisterAnswer) => {
         type: 'client'
 			},
 		});
-		game_client.configure(socketio(game_socket));
+		game_client.configure(feathers.socketio(game_socket));
 		game_client.service("backend-inputs").on('created', (data: any) => {
 		//	console.log('RECIVED GAME DATA', data)
 			localStorage.setItem('game_data', JSON.stringify(data));

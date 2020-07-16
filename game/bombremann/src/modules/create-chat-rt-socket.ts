@@ -1,6 +1,6 @@
+
 import io from 'socket.io-client';
-import feathers from '@feathersjs/feathers';
-import socketio from '@feathersjs/socketio-client';
+import feathers from '@feathersjs/client';
 import { ILoginRegisterAnswer } from '../models/ILoginRegisterAnswer';
 import { IRT_AppLoginAnswer } from '../models/IRT_AppLoginAnswer';
 
@@ -24,7 +24,7 @@ export default async (client: ILoginRegisterAnswer, app: any) => {
 	);
 	if (login_response.ok) {
 		const login_data: IRT_AppLoginAnswer = await login_response.json();
-    const chat_client = feathers();
+    const chat_client = (feathers as any)();
     console.log(login_data)
 		// initial Data fur verbindung und registierung
 		const game_socket = io(rt_server_url, {
@@ -35,7 +35,7 @@ export default async (client: ILoginRegisterAnswer, app: any) => {
 			},
 		});
 		// setup connection to service
-		chat_client.configure(socketio(game_socket));
+		chat_client.configure(feathers.socketio(game_socket));
 		const chat_service = chat_client.service("client-inputs");
 		return chat_service;
 	}

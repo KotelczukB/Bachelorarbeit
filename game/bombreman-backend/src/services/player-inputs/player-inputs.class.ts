@@ -7,9 +7,8 @@ import {
 } from "@feathersjs/feathers";
 import { Application } from "../../declarations";
 import { _BasicState } from "../../models/_SessionState";
-import { IPlayerInput, IClientInput } from "../../models/IPlayerInput";
+import { IPlayerInput} from "../../models/IPlayerInput";
 import { IGameSesion } from "../../models/IGameSession";
-import * as R from "ramda";
 
 interface ServiceOptions {}
 
