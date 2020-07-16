@@ -57,7 +57,7 @@ export default function (app: Application) {
   // hier pushed das backend
   // hier subscriben die clients
   app.service("backend-inputs").publish("created", async (data: IBackendInput, context) => {
-         // console.log('FUCK SEND IT', data);
+         //('FUCK SEND IT', data.client_channel);
       return app.channel(data.client_channel).send(data)
   }
     ); // returs client channels somit gehen messages an clietns raus

@@ -224,8 +224,10 @@ export default class GameScene extends Scene {
 		this.updatePlayer(delta);
 		this.updateGame();
 		// rt communication
-		if(this.frame === 30) {
+		// billig funktioniert aber 
+		if(this.frame === 5) {
 			// Game state from server
+			this.frame = 0
 			this.sendUpdateGameState_io();
 		}
 	}

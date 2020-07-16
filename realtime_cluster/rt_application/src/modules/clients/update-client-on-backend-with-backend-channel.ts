@@ -2,7 +2,7 @@ import fetch from "node-fetch"
 import { Application } from "@feathersjs/feathers"
 
 export default async (backend_url: string, session: string, client_token: string, app: Application) => {
-  console.log(`${backend_url} || ${session} || ${client_token}` )
+ // console.log(`${backend_url} || ${session} || ${client_token}` )
   return await fetch(`${backend_url}/game-session`, {
     method: "POST",
     headers: {

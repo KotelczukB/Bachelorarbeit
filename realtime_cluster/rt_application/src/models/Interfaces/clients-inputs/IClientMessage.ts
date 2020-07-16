@@ -1,4 +1,4 @@
-import { IExternalAppData } from "../IExtAppData";
+
 import { _ExternType } from "../_ExternType";
 
 export default interface IClientMessage {
@@ -10,7 +10,7 @@ export default interface IClientMessage {
   client_id: string;
   session_name: string;
   target_channel_name: string;
-  app: IExternalAppData;
+  app: any;
   token: string
   [idx: string]: any;
 }

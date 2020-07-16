@@ -9,7 +9,7 @@ export interface IGameSesion {
   game_session: string;
   rt_server: IRTServer;
   player_tokens: string[];
-  players_selected: string[];
+  players_selected: (string | undefined)[];
   player_inputs: (IClientInput | null)[];
   [idx: string]: any
 }

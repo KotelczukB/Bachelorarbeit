@@ -1,6 +1,6 @@
 // Use this hook to manipulate incoming or outgoing data.
 // For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
-import { Hook, HookContext, Application } from '@feathersjs/feathers';
+import { Hook, HookContext, Application, Paginated } from '@feathersjs/feathers';
 import { validateUser } from '../modules/client-input/auth-on-clientinput';
 import IClientMessage from '../models/Interfaces/clients-inputs/IClientMessage';
 

@@ -29,7 +29,7 @@ export class Game extends React.Component<IGameProps, IGameState> {
 				pathname: '/'
 			});
 		this.client_data = (this.props as any).location.state.detail
-		console.log(this.client_data)
+	//	console.log(this.client_data)
 		this.user_id = this.client_data.user_name;
 	}
 	

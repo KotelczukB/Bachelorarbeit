@@ -39,24 +39,19 @@ export class PlayerInputs implements ServiceMethods<IPlayerInput> {
       .find({
         query: {
           game_session: data.session_name,
-          state: _BasicState.active,
         },
       })) as Paginated<IGameSesion>;
     // den letzten stand holen
     const game_state = result.data[0];
-    // grupiere nach player
-    const groupping = R.groupBy(
-      (elem: IClientInput | null) => elem?.token ?? "null"
-    );
-    const grupped = groupping(game_state.player_inputs);
+    //console.log(game_state)
     // Check ob jemand cheatet
       // get all selected char 
-    const selected = data.client_inputs.map(input => { if(input && input.app) return input.app.client_selected})
+    const selected = data.client_inputs.map(input => { if(input && input.app) return input.app.client_selected })
       // setzte neuen state in die DB
-    await this.app.service("game-session").patch(result.data[0]._id, {
-      player_inputs: game_state.player_inputs,
-      players_selected: selected
-    });
+      game_state.state = game_state.players_selected.length === game_state.player_tokens.length &&  game_state.players_selected.length >= game_state.min_player ? _BasicState.inactive : _BasicState.active
+      game_state.player_inputs = data.client_inputs.filter(elem => elem !== null)
+      game_state.players_selected = selected.filter(elem => elem !== null)
+    await this.app.service("game-session").update(game_state._id, game_state);
     data.game_id = result.data[0]._id;
     return data;
   }

@@ -3,6 +3,7 @@ import { Application } from "@feathersjs/feathers";
 import { IGameSesion } from "../models/IGameSession";
 import { IBulletObject } from "../models/GameObjects/IBulletObject";
 import { IPlayerObject } from "../models/GameObjects/IPlayerObject";
+import { _BasicState } from "../models/_SessionState";
 
 //***************************************** */
 // where hole magic happens
@@ -45,5 +46,5 @@ return [];
 }
 
 export const getEnded = (game: IGameSesion): boolean => {
-  return game.player_inputs.length > 1 ? game.player_inputs.map(elem => elem ? elem.app.player_data !== undefined ? elem.app.player_data.hp <= 0 : false : false).every(elem => elem === true) : false
+  return game.state === _BasicState.inactive ? true : game.player_inputs.length > 1 ? game.player_inputs.map(elem => elem ? elem.app.player_data !== undefined ? elem.app.player_data.hp <= 0 : false : false).every(elem => elem === true) : false
 }

@@ -8,10 +8,9 @@ import { addToDefaultParams } from '../modules/helpers/basic-default-service-par
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
     const {result, app} = context as {result: IBackendInput, app: Application}
-    if(!result.game_ended) {
+
       const session: Paginated<ISession> = await app.service('sessions').find(addToDefaultParams({query: {session_name: result.session_name}}))
       result.client_channel = session.data[0].clients_channel
-    }
     return context;
   };
 }

@@ -73,7 +73,7 @@ fetch(`${app.get("routerURL")}`, {
     state: null
   }),
   headers: { "Content-Type": "application/json" },
-}).then(resp => resp.json()).then(console.log)
+}).then(resp => resp.json())//.then(console.log)
 
 app.hooks(appHooks);
 
