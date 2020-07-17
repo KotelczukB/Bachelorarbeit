@@ -4,5 +4,6 @@ export interface IChatMessage {
   intern: boolean;
   channel: string;
   token: string;
+  created_at: number;
   [idx: string]: any;
 }

@@ -22,17 +22,26 @@ export default (options = {}): Hook => {
     if (getType() !== _AppType[_AppType.chat]) {
       throw new Error("Chat functionality not provided");
     }
-    const client: Paginated<IClientConnection> = await app
-      .service("clients")
-      .find(addToDefaultParams({ query: { token: data.token } }));
-    if (client.data.length < 1 || client.data[0].user_name !== data.user)
-      throw new Error("Requested client not found");
-    const session: Paginated<ISession> = await app
-    .service("sessions")
-    .find(addToDefaultParams({ query: { session_name: client.data[0].session_name, clients: data.user } }));
-    if (session.data.length < 1 || !session.data[0])
-      throw new Error("Requested session not found");
-    context.data.channel = session.data[0].clients_channel
+      const client: Paginated<IClientConnection> = await app
+        .service("clients")
+        .find(addToDefaultParams({ query: { token: data.token } }))
+        .catch((err: any) => console.log(err));
+      if (client.data.length < 1 || client.data[0].user_name !== data.user)
+        throw new Error("Requested client not found");
+      const session: Paginated<ISession> = await app
+        .service("sessions")
+        .find(
+          addToDefaultParams({
+            query: {
+              session_name: client.data[0].session_name,
+              clients: data.user,
+            },
+          })
+        )
+        .catch((err: any) => console.log(err));
+      if (session.data.length < 1 || !session.data[0])
+        throw new Error("Requested session not found");
+      context.data.channel = session.data[0].clients_channel;
     return context;
   };
 };

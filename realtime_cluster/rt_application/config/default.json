@@ -1,14 +1,36 @@
 {
-    "host": "localhost",
-    "port": 3050,
-    "public": "../public/",
-    "paginate": {
-        "default": 10,
-        "max": 50
+  "host": "localhost",
+  "port": 3050,
+  "public": "../public/",
+  "paginate": {
+    "default": 10,
+    "max": 50
+  },
+  "routerURL": "http://localhost:3080/applications",
+  "mongodb": "mongodb://mongo:27017/database",
+  "min_rt_interval": 30,
+  "self_type": "application",
+  "waiting_channel": "unsigned",
+  "authentication": {
+    "entity": "user",
+    "service": "users",
+    "secret": "N6zUJ7JbKTIG8J1phd5DbzXbZsw=",
+    "authStrategies": [
+      "jwt",
+      "local"
+    ],
+    "jwtOptions": {
+      "header": {
+        "typ": "access"
+      },
+      "audience": "https://yourdomain.com",
+      "issuer": "feathers",
+      "algorithm": "HS256",
+      "expiresIn": "1d"
     },
-    "routerURL": "http://localhost:3080/applications",
-    "mongodb": "mongodb://mongo:27017/database",
-    "min_rt_interval": 30,
-    "self_type": "application",
-    "waiting_channel": "unsigned"
+    "local": {
+      "usernameField": "email",
+      "passwordField": "password"
+    }
+  }
 }

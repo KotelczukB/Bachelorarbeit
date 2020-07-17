@@ -224,14 +224,14 @@ export default class GameScene extends Scene {
 		this.updateGame();
 		// rt communication
 		// billig funktioniert aber 
-	//	if(this.frame === 5) {
+		if(this.frame === 7) {
 			// Game state from server
 			this.frame = 0
 			this.sendUpdateGameState_io().then(() => {
 				this.game_data = getGameData();
 			})
 				
-	//	}
+		}
 	}
 
 	//******************************************************************************************************** */

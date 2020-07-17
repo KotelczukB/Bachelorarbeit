@@ -5,6 +5,7 @@ export interface IMessageProps {
 	intern: boolean;
 	user: string;
 	msg: string;
+	timestamp: number;
 }
 export class Message extends React.Component<IMessageProps, {}> {
 	constructor(props: Readonly<IMessageProps>) {
@@ -22,7 +23,7 @@ export class Message extends React.Component<IMessageProps, {}> {
 
 	public render(): JSX.Element {
 		return (
-			<div className="msg-container">
+			<div className="msg-container" key={this.props.timestamp}>
 				<div className={this.setcolor()}>
 					<span
 						className="msg-user-label"

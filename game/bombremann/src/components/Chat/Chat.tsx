@@ -28,6 +28,7 @@ export class Chat extends React.Component<IChatProps, IChatState> {
 		 createChatRtSocket(this.props.client_data, this).then((socket) => {
 			 // subscribe to chat
 			socket.on('chat created', (data: IMessageProps) => {
+				console.log(data)
 				const tempChat: IMessageProps[] = this.state.chat;
 				tempChat.push(data);
 				tempChat.map(elem => elem = {
@@ -55,15 +56,17 @@ export class Chat extends React.Component<IChatProps, IChatState> {
 			};
 	};
 
-	public handleSubmit = async () => {
+	public handleSubmit = () => {
 		const elem: any = document.getElementById('_msg-input');
 		if (elem && elem.value !== '') {
-			await this.chat_socket.emit('create', 'chat', {
+			console.log('TEST')
+			this.chat_socket.emit('create', 'chat', {
 				user: this.props.user_id,
 				msg: elem.value,
 				intern: false,
-				token: this.props.token
-			});
+				token: this.props.token,
+				created_at: +new Date()
+			}, (err: any, data: any) => console.log(err, data));
 			elem.value = '';
 		}
 	};
@@ -76,8 +79,8 @@ export class Chat extends React.Component<IChatProps, IChatState> {
 				<div className="chat_background"></div>
 				<div className="chat">
 					<div className="chat-whole " id="style-1">
-						{this.state.chat.map((elem) => (
-							<Message msg={elem.msg} user={elem.user} intern={elem.intern} />
+						{this.state.chat.map((elem, idx) => (
+							<Message msg={elem.msg} user={elem.user} intern={elem.intern} timestamp={idx} />
 						))}
 					</div>
 					<form className="chat-form" id="_form">

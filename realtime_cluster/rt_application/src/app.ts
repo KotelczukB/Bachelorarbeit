@@ -36,7 +36,16 @@ app.use('/', express.static(app.get('public')));
 
 // Set up Plugins and providers
 app.configure(express.rest());
-app.configure(socketio());
+app.configure(socketio(function(io) {
+  io.use(function (socket: any, next) {
+    socket.feathers.target_channel = socket.handshake.query.target_channel;
+    socket.feathers.user_name = socket.handshake.query.user_name;
+    socket.feathers.backend_url = socket.handshake.query.backend_url;
+    socket.feathers.type = socket.handshake.query.type;
+    socket.feathers.session_name = socket.handshake.query.session_name;
+    next();
+  });
+}));
 app.configure(mongodb);
 
 // Configure other middleware (see `middleware/index.js`)
@@ -51,16 +60,7 @@ app.use(express.notFound());
 app.use(express.errorHandler({ logger } as any));
 
 // dirty middleware da feathers hier die types nicht hat. 
-app.configure(socketio(function(io) {
-  io.use(function (socket: any, next) {
-    socket.feathers.target_channel = socket.handshake.query.target_channel;
-    socket.feathers.user_name = socket.handshake.query.user_name;
-    socket.feathers.backend_url = socket.handshake.query.backend_url;
-    socket.feathers.type = socket.handshake.query.type;
-    socket.feathers.session_name = socket.handshake.query.session_name;
-    next();
-  });
-}));
+
 // router default REST Client
 fetch(`${getRouterConnection()}`, {
   method: "POST",
