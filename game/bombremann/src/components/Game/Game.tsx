@@ -11,7 +11,7 @@ export interface IGameProps {
 }
 
 export interface IGameState {
-	game_service: any
+	game_socket: any
 	loaded: boolean
 }
 
@@ -21,7 +21,7 @@ export class Game extends React.Component<IGameProps, IGameState> {
 	constructor(props: Readonly<IGameProps>) {
 		super(props);
 		this.state = {
-			game_service: undefined,
+			game_socket: undefined,
 			loaded: false
 		}
 		if(!localStorage.getItem('token'))
@@ -33,9 +33,11 @@ export class Game extends React.Component<IGameProps, IGameState> {
 		this.user_id = this.client_data.user_name;
 	}
 	
-	componentDidMount = () => {
-			createGameRtSocket(this.client_data).then(value => { 
-				value.create(createInitInput(localStorage.getItem('token'))).then(() => this.setState({game_service: value, loaded: true}))})
+	componentDidMount = async () => {
+			await createGameRtSocket(this.client_data).then(socket => { 
+				socket.emit( 'create','client-inputs', createInitInput(localStorage.getItem('token')))
+				this.setState({game_socket: socket, loaded: true})
+			})
 	}
 
 	shouldComponentUpdate() {
@@ -46,7 +48,7 @@ export class Game extends React.Component<IGameProps, IGameState> {
 		return (
 			this.state.loaded ? <div className="login-overlay">
 				<Chat token={this.client_data.token} user_id={this.user_id} client_data={this.client_data}/>
-				<PhaserGame token={this.client_data.token} client_service={this.state.game_service}/>
+				<PhaserGame token={this.client_data.token} socket={this.state.game_socket}/>
 				<div className="attribution-block credits"><a href="http://dig.ccmixter.org/files/destinazione_altrove/53756">Funk Interlude</a> by Dysfunction_AL (c) copyright 2016 Licensed under a Creative Commons <a href="http://creativecommons.org/licenses/by-nc/3.0/">Attribution Noncommercial  (3.0)</a> license. Ft: Fourstones - Scomber ( Bonus Track )</div>
 			</div> : <div></div>
 		);

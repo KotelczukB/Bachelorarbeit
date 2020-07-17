@@ -15,7 +15,7 @@ export interface IChatProps {
 }
 
 export class Chat extends React.Component<IChatProps, IChatState> {
-	chat_service: any;
+	chat_socket: any;
 	constructor(props: Readonly<IChatProps>) {
 		super(props);
 		this.state = {
@@ -24,10 +24,10 @@ export class Chat extends React.Component<IChatProps, IChatState> {
 		
 	}
 	componentDidMount = async () => {
-		if(!this.chat_service)
-		 createChatRtSocket(this.props.client_data, this).then((service) => {
+		if(!this.chat_socket)
+		 createChatRtSocket(this.props.client_data, this).then((socket) => {
 			 // subscribe to chat
-			service.on('created', (data: IMessageProps) => {
+			socket.on('chat created', (data: IMessageProps) => {
 				const tempChat: IMessageProps[] = this.state.chat;
 				tempChat.push(data);
 				tempChat.map(elem => elem = {
@@ -37,7 +37,7 @@ export class Chat extends React.Component<IChatProps, IChatState> {
 				this.setState({ chat: tempChat });
 			});
 			console.log('connection to realtime app created');
-			this.chat_service = service;
+			this.chat_socket = socket;
 		});
 		this.setOnSubmit();
 	};
@@ -58,7 +58,7 @@ export class Chat extends React.Component<IChatProps, IChatState> {
 	public handleSubmit = async () => {
 		const elem: any = document.getElementById('_msg-input');
 		if (elem && elem.value !== '') {
-			await this.chat_service.create({
+			await this.chat_socket.emit('create', 'chat', {
 				user: this.props.user_id,
 				msg: elem.value,
 				intern: false,

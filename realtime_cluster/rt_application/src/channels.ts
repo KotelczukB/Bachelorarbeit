@@ -26,14 +26,12 @@ export default function (app: Application) {
   // fuge client zu dem Session channel
   //********************************************** */
 
-  app.on(
-    "connection",
-    async (connection: IConnection) =>
+  app.on("connection", async (connection: IConnection) =>
       // On a new real-time connection, add it to the anonymous channel
       await getConnectionObject(connection, app)
         .then(
           async (obj: { backend_channel: string; client_channel: string }) => {
-            console.log(`1INCOMMING CONNECTION ON APP TYPE ${getType()}`, connection)
+            
             // Check ob das backend gespeichert ist
             const backend_connection = await idetifyBackendServer(
               connection,
@@ -53,8 +51,10 @@ export default function (app: Application) {
   // send data
   // easy
   //******************************************** */
-  app.service("chat").publish("created", (data: IChatMessage, context) =>
-    app.channel(data.channel).send(data)
+  app.service("chat").publish("created", (data: IChatMessage, context) => {
+    console.log("emitting")
+    return app.channel(data.channel).send(data)
+  }
   );
 
   //******************************************** */

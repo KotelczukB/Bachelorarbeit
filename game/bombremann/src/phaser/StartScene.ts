@@ -1,7 +1,7 @@
 import getGameData from "../modules/get-game-data";
 
 export class StartScene extends Phaser.Scene {
-	client_service!: any;
+	socket!: any;
 	character_id!: number;
   can_start: boolean = false;
   start!: Phaser.GameObjects.Sprite;
@@ -12,9 +12,9 @@ export class StartScene extends Phaser.Scene {
 			key: 'START',
 		});
 	}
-	init(data: { character_id: number,  client_service: any, token: string }) {
+	init(data: { character_id: number,  socket: any, token: string }) {
 		console.log('init_start', data);
-		this.client_service = data.client_service;
+		this.socket = data.socket;
 		this.character_id = data.character_id;
 		this.token = data.token
 	}
@@ -38,7 +38,7 @@ export class StartScene extends Phaser.Scene {
 			.sprite(this.game.renderer.width * 100, this.game.renderer.height * 100, 'start', 1)
 			.setInteractive()
 			.on('pointerup', () => {
-				this.scene.start('GAME', { character_id: this.character_id, client_service: this.client_service, token: this.token});
+				this.scene.start('GAME', { character_id: this.character_id, socket: this.socket, token: this.token});
       });
       
       this.wait = this.add

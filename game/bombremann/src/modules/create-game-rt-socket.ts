@@ -1,6 +1,5 @@
 
 import io from 'socket.io-client';
-import feathers from '@feathersjs/client';
 import { ILoginRegisterAnswer } from '../models/ILoginRegisterAnswer';
 import { IRT_AppLoginAnswer } from '../models/IRT_AppLoginAnswer';
 
@@ -23,21 +22,20 @@ export default async (client: ILoginRegisterAnswer) => {
 	);
 	if (login_response.ok) {
 		const login_data: IRT_AppLoginAnswer = await login_response.json();
-    const game_client = (feathers as any)();
 		// initial Data fur verbindung und registierung
+		console.log('Creating connection with SOCKET')
 		const game_socket = io(client.rt_servers.filter((elem) => elem.type === 'application')[0].serverURL, {
 			query: {
         ...login_data,
         type: 'client'
 			},
 		});
-		game_client.configure(feathers.socketio(game_socket));
-		game_client.service("client-inputs").on('created', (data: any) => {
+		game_socket.on('client-inputs created', (data: any) => {
 		//	console.log('RECIVED GAME DATA', data)
 			localStorage.setItem('game_data', JSON.stringify(data));
 		});
 		console.log(`Game connected to game_application Server with socket`);
-		return game_client.service("client-inputs");
+		return game_socket;
 	}
 	throw new Error('GAME - Cannot connect to the realtime server - no socket connection possible!');
 };

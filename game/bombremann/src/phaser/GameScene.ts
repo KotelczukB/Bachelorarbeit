@@ -23,7 +23,7 @@ export default class GameScene extends Scene {
 	won: boolean = false;
 	player_sprite_consts: IPlayerData[] = players_sprite_data;
 	game_data!: any;
-	client_service!: any;
+	socket!: any;
 	token: string = '';
 	frame: number = 0
 	player_pos: any[] = [];
@@ -54,23 +54,22 @@ export default class GameScene extends Scene {
 	/**************************************** */
 
 	sendUpdateGameState_io = async () => {
-		await this.client_service.create(
+		await this.socket.emit('create', 'client-input',
 			createNewGameInput(
 				this.char_id,
 				this.player,
 				this.bullets.filter((bullet) => bullet.owner_id === this.player.id),
 				this.game_data,
 				this.token
-			)
-		);
+			))
 	};
 	/***************************************** */
 
-	init(data: { character_id: number; client_service: any, token: string }) {
+	init(data: { character_id: number; socket: any, token: string }) {
 		console.log('init', data);
 		this.char_id = data.character_id;
 		this.token = data.token
-		this.client_service = data.client_service;
+		this.socket = data.socket;
 		const game_state = localStorage.getItem('game_data');
 		if (game_state) {
 			this.game_data = getGameData();

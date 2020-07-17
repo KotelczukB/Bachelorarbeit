@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 
 export default class LoadScene extends Scene {
-  client!: any
+  socket!: any
   token: string = ''
   constructor(){
     super({
@@ -9,8 +9,8 @@ export default class LoadScene extends Scene {
   })
   }
 
-  init(data: {client: any, token: string}) {
-    this.client = data.client;
+  init(data: {socket: any, token: string}) {
+    this.socket = data.socket;
     this.token = data.token;
   }
 	preload() {
@@ -60,7 +60,6 @@ export default class LoadScene extends Scene {
 
 	}
 	create() {
-    console.log('load', this.client)
-		this.scene.start("MENU", {client: this.client, token: this.token});
+		this.scene.start("MENU", {socket: this.socket, token: this.token});
 	}
 }

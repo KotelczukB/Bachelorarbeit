@@ -4,7 +4,7 @@ import getGameData from "../modules/get-game-data";
 export class MenuScene extends Phaser.Scene {
 	buttons!: Phaser.GameObjects.Sprite[];
 	vorbittens!: Phaser.GameObjects.Image[];
-	client_service!: any;
+	socket!: any;
 	players_selected!: string[];
 	anims_list: string[] = ['player_1', 'player_2', 'player_3', 'player_4'];
 	token: string = ''
@@ -13,9 +13,9 @@ export class MenuScene extends Phaser.Scene {
 			key: 'MENU',
 		});
 	}
-	init(data: { client: any, token: string}) {
+	init(data: { socket: any, token: string}) {
 		console.log('init_menu', data);
-		this.client_service = data.client;
+		this.socket = data.socket;
 		this.token = data.token;
 	}
 	create() {
@@ -105,11 +105,9 @@ export class MenuScene extends Phaser.Scene {
 			elem.on('pointerup', () => {
 				const id = index + 1;
 				console.log('sending data')
-				console.log(this.client_service)
-				this.client_service.create(createNewInput(id, this.token, localStorage.getItem('game_data'))).then(() => {
-					this.scene.start('START', { character_id: id, client_service: this.client_service, token: this.token});
-				});
-				
+				console.log(this.socket)
+				this.socket.emit('create', 'client-inputs', createNewInput(id, this.token, localStorage.getItem('game_data')))
+				this.scene.start('START', { character_id: id, socket: this.socket, token: this.token});	
 			});
 		});
 	}
