@@ -1,26 +1,74 @@
 version: '3'
 services:
-  mongo:
-    container_name: mongo
+  mongo_app:
+    container_name: mongo_app
     restart: always
     image: mongo:latest
     volumes:
-       - mongodbdata:/data/db
+       - mongodbdata:/data/app/db
        - ./etc/mongod.conf:/etc/mongo/mongod.conf
     ports:
       - '27017:27017'
     command: --config /etc/mongo/mongod.conf
-  web:
+    networks: 
+      net_1:
+  app:
+    container_name: rt_app
     restart: always
     environment: 
-      - APP_TYPE=chat
+      - APP_TYPE=application
+      - MONGO=mongodb://mongo_app:27017/rt_app
+      - ROUTER=http://host.docker.internal:3080/applications
+      - PORT=3050
+      - HOST=host.docker.internal
     build: .
     ports:
       - "3050:3050"
     depends_on:
-      - mongo
+      - mongo_app
     links:
-      - mongo
+      - mongo_app
+    networks: 
+      net_1:
+  mongo_chat:
+    container_name: mongo_chat
+    restart: always
+    image: mongo:latest
+    volumes:
+       - mongodbdata_chat:/data/chat/db
+       - ./etc/mongod.conf:/etc/mongo/mongod.conf
+    ports:
+      - '27020:27017'
+    command: --config /etc/mongo/mongod.conf
+    networks: 
+      net_2:
+  chat:
+    container_name: rt_chat
+    restart: always
+    environment: 
+      - APP_TYPE=chat
+      - MONGO=mongodb://mongo_chat:27017/rt_chat
+      - ROUTER=http://host.docker.internal:3080/applications
+      - PORT=3040
+      - HOST=host.docker.internal
+    build: .
+    ports:
+      - "3040:3040"
+    depends_on:
+      - mongo_chat
+    links:
+      - mongo_chat
+    networks: 
+      net_2:
 volumes:
   mongodbdata:
     external: false
+  mongodbdata_chat:
+    external: false
+networks: 
+  net_1:
+    external: 
+      name: rt_service_app
+  net_2:
+    external: 
+      name: rt_service_chat

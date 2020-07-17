@@ -17,6 +17,7 @@ import services from './services';
 import appHooks from './app.hooks';
 import channels from './channels';
 import mongodb from './mongodb';
+import { getRouterConnection, getPort, getType, getHOST } from './modules/helpers/get-envs';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 const app: Application = express(feathers());
@@ -65,15 +66,15 @@ app.configure(socketio(function(io) {
   });
 }));
 // router default REST Client
-fetch(`${app.get("routerURL")}`, {
+fetch(`${getRouterConnection()}`, {
   method: "POST",
   body: JSON.stringify({
-    type: app.get("self_type"),
-    connection_string: `http://${app.get("host")}:${app.get("port")}`,
+    type: getType(),
+    connection_string: `http://${getHOST()}:${getPort()}`,
     state: null
   }),
   headers: { "Content-Type": "application/json" },
-}).then(resp => resp.json())//.then(console.log)
+}).then(resp => resp.json()).catch(console.log)
 
 app.hooks(appHooks);
 

@@ -1,37 +1,15 @@
 {
-  "host": "localhost",
-  "port": 3030,
-  "public": "../public/",
-  "paginate": {
-    "default": 10,
-    "max": 50
-  },
-  "mongodb": "mongodb://localhost:27017/bombreman_backend",
-  "router_url": "http://localhost:3080/applications",
-  "min_players": 2,
-  "max_players": 4,
-  "custom_interval": 0,
-  "rt_game_backend_service": "client-inputs",
-  "authentication": {
-    "entity": "user",
-    "service": "users",
-    "secret": "koCIi7lb35h5Mhq0D/SvkPIf7v0=",
-    "authStrategies": [
-      "jwt",
-      "local"
-    ],
-    "jwtOptions": {
-      "header": {
-        "typ": "access"
-      },
-      "audience": "https://yourdomain.com",
-      "issuer": "feathers",
-      "algorithm": "HS256",
-      "expiresIn": "1d"
+    "host": "localhost",
+    "port": 3030,
+    "public": "../public/",
+    "paginate": {
+        "default": 10,
+        "max": 50
     },
-    "local": {
-      "usernameField": "email",
-      "passwordField": "password"
-    }
-  }
+    "mongodb": "mongodb://localhost:27017/bombreman_backend",
+    "router_url": "http://localhost:3080/applications",
+    "min_players": 2,
+    "max_players": 4,
+    "custom_interval": 0,
+    "rt_game_backend_service": "client-inputs"
 }

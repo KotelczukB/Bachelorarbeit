@@ -3,11 +3,11 @@ import { Application } from "./declarations";
 import getConnectionObject from "./modules/helpers/get-connection-object";
 import { _AppType } from "./models/Interfaces/_AppType";
 import { IBackendInput } from "./models/Interfaces/backend-inputs/IBackendInput";
-import getEnvTYPE from "./modules/helpers/get-env-TYPE";
 import { IConnection } from "./models/IConnection";
 import { _ExternType } from "./models/Interfaces/_ExternType";
 import idetifyBackendServer from "./modules/helpers/idetify-backend-server";
 import { IMessageToBackend } from "./models/Interfaces/backend-inputs/IMessageToBackend";
+import { getType } from "./modules/helpers/get-envs";
 
 export default function (app: Application) {
   if (typeof app.channel !== "function") {
@@ -17,7 +17,7 @@ export default function (app: Application) {
 
   const interval: number = app.get("min_rt_interval");
   // aus docker holen
-  const appType: _AppType = (<any>_AppType)[getEnvTYPE(app)];
+  const appType: _AppType = (<any>_AppType)[getType()];
 
   app.on("connection",  async (connection: IConnection) =>
       // On a new real-time connection, add it to the anonymous channel

@@ -1,0 +1,28 @@
+version: '3'
+services:
+  mongo_router:
+    container_name: mongo_router
+    restart: always
+    image: mongo:latest
+    volumes:
+       - mongodbdata:/data/router/db
+       - ./etc/mongod.conf:/etc/mongo/mongod.conf
+    ports:
+      - '27030:27017'
+    command: --config /etc/mongo/mongod.conf
+  router:
+    container_name: rt_router
+    restart: always
+    environment: 
+      - MONGO=mongodb://mongo_router:27017/rt_router
+      - PORT=3080
+    build: .
+    ports:
+      - "3080:3080"
+    depends_on:
+      - mongo_router
+    links:
+      - mongo_router
+volumes:
+  mongodbdata:
+    external: false

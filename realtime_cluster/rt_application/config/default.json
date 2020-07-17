@@ -10,27 +10,5 @@
     "mongodb": "mongodb://mongo:27017/database",
     "min_rt_interval": 30,
     "self_type": "application",
-    "waiting_channel": "unsigned",
-    "authentication": {
-        "entity": "user",
-        "service": "users",
-        "secret": "+rMPfWwhtwDUIk5oMg/OBzKeBrQ=",
-        "authStrategies": [
-            "jwt",
-            "local"
-        ],
-        "jwtOptions": {
-            "header": {
-                "typ": "access"
-            },
-            "audience": "https://yourdomain.com",
-            "issuer": "feathers",
-            "algorithm": "HS256",
-            "expiresIn": "1d"
-        },
-        "local": {
-            "usernameField": "email",
-            "passwordField": "password"
-        }
-    }
+    "waiting_channel": "unsigned"
 }

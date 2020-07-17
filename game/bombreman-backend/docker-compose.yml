@@ -1,0 +1,30 @@
+version: '3'
+services:
+  mongo_backend:
+    container_name: mongo_backend
+    restart: always
+    image: mongo:latest
+    volumes:
+       - mongodbdata:/data/backend/db
+       - ./etc/mongod.conf:/etc/mongo/mongod.conf
+    ports:
+      - '27040:27017'
+    command: --config /etc/mongo/mongod.conf
+  backend:
+    container_name: game_backend
+    restart: always
+    environment: 
+      - MONGO=mongodb://mongo_backend:27017/rt_router
+      - ROUTER=http://host.docker.internal:3080/applications
+      - PORT=8080
+      - HOST=host.docker.internal
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo_backend
+    links:
+      - mongo_backend
+volumes:
+  mongodbdata:
+    external: false

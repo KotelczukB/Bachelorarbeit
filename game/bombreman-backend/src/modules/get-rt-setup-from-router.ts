@@ -7,12 +7,13 @@ import io from "socket.io-client";
 import feathers from "@feathersjs/feathers";
 import socketio from "@feathersjs/socketio-client";
 import getGameState from "./get-game-state";
+import { getPORT, getHOST, getRouterConnection } from "./get-envs";
 
 //************************************** */
 // Remove old rt_servers -> connect to router -> save new Servers -> connect to rt_server over socket
 //************************************** */
 export const getRTSetup = (app: Application) =>
-  fetch(app.get("router_url"), {
+  fetch(getRouterConnection(), {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   })
@@ -60,7 +61,7 @@ export const getRTSetup = (app: Application) =>
       const socket = io(game_rt.serverURL, {
         transports: ["websocket"],
         query: {
-          own_url: `http://${app.get("host")}:${app.get("port")}`,
+          own_url: `http://${getHOST()}:${getPORT()}`,
           type: "backend",
           min_players: app.get("min_players"),
           max_players: app.get("max_players"),

@@ -19,7 +19,7 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
 		this.state = {
 			password: null,
 			user_name: null,
-			backend_url: "http://localhost:3030"
+			backend_url: "http://localhost:8080"
 		};
 	}
 

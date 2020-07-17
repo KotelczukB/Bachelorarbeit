@@ -5,6 +5,7 @@ import ISession from "../../models/Interfaces/session/ISession";
 import getNewestInputsOnSession from "./get-newest-inputs-on-session";
 import clientInputsRtModifications from "../rtFunctions/client-inputs-app-rt-modifications";
 import { IMessageToBackend } from "../../models/Interfaces/backend-inputs/IMessageToBackend";
+import { getPort, getHOST } from "../helpers/get-envs";
 
 //********************************************
 // Beim Client input create hole die dazugehorige Session
@@ -34,7 +35,7 @@ export default async (
         )
           .then( async (stuff) =>  await Promise.all(stuff))
           .then( 
-            clientInputsRtModifications(`http://${app.get('host')}:${app.get('port')}`, session.backends_channel)
+            clientInputsRtModifications(`http://${getHOST()}:${getPort()}`, session.backends_channel)
           ).catch(err => {console.log('clientinptus err', err)}))
       )
   }).catch((err: any) => {console.log(err)});

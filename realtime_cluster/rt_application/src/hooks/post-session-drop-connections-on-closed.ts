@@ -4,8 +4,8 @@ import { Hook, HookContext, Application } from "@feathersjs/feathers";
 import ISession from "../models/Interfaces/session/ISession";
 import { _SessionState } from "../models/enums/_SessionState";
 import { _AppType } from "../models/Interfaces/_AppType";
-import getEnvTYPE from "../modules/helpers/get-env-TYPE";
 import handleClosedSession, { leaveChannel } from "../modules/sessions/handle-closed-session";
+import { getType } from "../modules/helpers/get-envs";
 
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
@@ -13,7 +13,7 @@ export default (options = {}): Hook => {
     if (data.state === _SessionState.closed)
       // drop all connections
       leaveChannel(data.clients_channel, app)
-      handleClosedSession(data, app, (<any>_AppType)[getEnvTYPE(app)])
+      handleClosedSession(data, app, (<any>_AppType)[getType()])
       leaveChannel(data.backends_channel, app)
     return context;
   };
