@@ -14,7 +14,7 @@ services:
     container_name: game_backend
     restart: always
     environment: 
-      - MONGO=mongodb://mongo_backend:27017/rt_router
+      - MONGO=mongodb://mongo_backend:27017/bombremann_backend
       - ROUTER=http://host.docker.internal:3080/applications
       - PORT=8080
       - HOST=host.docker.internal

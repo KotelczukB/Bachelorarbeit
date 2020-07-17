@@ -2,65 +2,69 @@ import "@feathersjs/transport-commons";
 import { Application } from "./declarations";
 import getConnectionObject from "./modules/helpers/get-connection-object";
 import { _AppType } from "./models/Interfaces/_AppType";
-import { IBackendInput } from "./models/Interfaces/backend-inputs/IBackendInput";
 import { IConnection } from "./models/IConnection";
 import { _ExternType } from "./models/Interfaces/_ExternType";
 import idetifyBackendServer from "./modules/helpers/idetify-backend-server";
 import { IMessageToBackend } from "./models/Interfaces/backend-inputs/IMessageToBackend";
-import { getType } from "./modules/helpers/get-envs";
+import { IChatMessage } from "./models/Interfaces/chat/IChatMessage";
 
 export default function (app: Application) {
   if (typeof app.channel !== "function") {
-    // If no real-time functionality has been configured just return
     return;
   }
 
   const interval: number = app.get("min_rt_interval");
-  // aus docker holen
-  const appType: _AppType = (<any>_AppType)[getType()];
 
-  app.on("connection",  async (connection: IConnection) =>
+  //********************************************** */
+  // realtime mit sockets geht nur mit clients
+  // prufe ob backend schon gespeichert
+  // fuge client zu dem Session channel
+  //********************************************** */
+
+  app.on(
+    "connection",
+    async (connection: IConnection) =>
       // On a new real-time connection, add it to the anonymous channel
       await getConnectionObject(connection, app)
         .then(
-          (obj: void | { backend_channel: string; client_channel: string }) => {
-            // void === backend connection; obj === clinet connection
-            if (obj) {
-              const backend_connection = idetifyBackendServer(
-                connection,
-                app.channel(app.get("waiting_channel")).connections
-              );
-              if (!backend_connection)
-                throw new Error("requested Backendserver could not be found");
-              return [
-                app.channel(`${obj.client_channel}`).join(connection),
-                app.channel(`${obj.backend_channel}`).join(backend_connection),
-              ];
-            } else {
-              return app.channel(app.get("waiting_channel")).join(connection);
-            }
+          async (obj: { backend_channel: string; client_channel: string }) => {
+            // Check ob das backend gespeichert ist
+            const backend_connection = await idetifyBackendServer(
+              connection,
+              app.service("backends")
+            );
+            if (!backend_connection || backend_connection.length < 1)
+              throw new Error("requested Backendserver could not be found");
+            return app.channel(`${obj.client_channel}`).join(connection);
           }
         )
         .catch((err) => console.log(`connection setting error ${err}`))
   );
-
-  // publish alle Client-inputs an das Backend nur dann wenn es kein Intervall gibt
-  // chat type -> convert input, push
-  // hier subscribet das backend
-  // hier pushen die clients
-  app.service("client-inputs").publish("created", (data: IMessageToBackend, context) =>
-      //appType === _AppType.chat
-      // Chat handling
-      app.channel(data.backend_channel).send(data) // returns backend channel somit publish nicht an die clients
+  
+ //******************************************** */
+ // standard realtime verhalten
+ // get data
+ // send data
+ //******************************************** */
+  app.service("chat").publish("created", (data: IChatMessage, context) => {}
+    // Chat handling /FFFFFFFFFFFFFFFFFFFFFFFUUUUUUUUUUUUUUUUUUUUUUKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK
+    // sende mit rest an backend und warte auf die antwort
+    // fetch(backend, () => methode: "post")
   );
-  // Setzt ein um das Interval varzoggerten publish von client-inputs an das Backend
-  // hier pushed das backend
-  // hier subscriben die clients
-  app.service("backend-inputs").publish("created", (data: IBackendInput, context) => {
-         console.log('FUCK SEND IT', data.client_channel);
-      return app.channel(data.client_channel).send(data)
-  }
-    ); // returs client channels somit gehen messages an clietns raus
+
+  //******************************************** */
+  // Sende clients Input zu valiederung an das bachend
+  // awaite die Antwort -> poling
+  // passe die Antwort an
+  // sende an die clients 
+  // Ziel -> async logic bleibt beim Realtime Server
+   //******************************************** */
+  app.service("client-inputs").publish("created", (data: IMessageToBackend, context) =>
+      // Chat handling /FFFFFFFFFFFFFFFFFFFFFFFUUUUUUUUUUUUUUUUUUUUUUKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK
+      // sende mit rest an backend und warte auf die antwort
+      // fetch(backend, () => methode: "post")
+      app.channel(data.channel).send(data) // push to clients_channel
+  );
 
   // Preventing area
   app.service("health").publish(() => {

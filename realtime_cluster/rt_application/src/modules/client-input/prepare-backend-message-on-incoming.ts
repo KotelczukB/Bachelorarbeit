@@ -35,7 +35,7 @@ export default async (
         )
           .then( async (stuff) =>  await Promise.all(stuff))
           .then( 
-            clientInputsRtModifications(`http://${getHOST()}:${getPort()}`, session.backends_channel)
+            clientInputsRtModifications(`http://${getHOST()}:${getPort()}`, session.clients_channel)
           ).catch(err => {console.log('clientinptus err', err)}))
       )
   }).catch((err: any) => {console.log(err)});

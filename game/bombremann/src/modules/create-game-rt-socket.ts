@@ -33,12 +33,12 @@ export default async (client: ILoginRegisterAnswer) => {
 			},
 		});
 		game_client.configure(feathers.socketio(game_socket));
-		game_client.service("backend-inputs").on('created', (data: any) => {
+		game_client.service("client-inputs").on('created', (data: any) => {
 		//	console.log('RECIVED GAME DATA', data)
 			localStorage.setItem('game_data', JSON.stringify(data));
 		});
 		console.log(`Game connected to game_application Server with socket`);
 		return game_client.service("client-inputs");
 	}
-	throw new Error('Cannot connect to the realtime server - no socket connection possible!');
+	throw new Error('GAME - Cannot connect to the realtime server - no socket connection possible!');
 };

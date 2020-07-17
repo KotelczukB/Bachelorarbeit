@@ -4,6 +4,7 @@ import { Header } from '../Header/Header';
 import createLoginBody from '../../modules/create-login-body';
 import { ILoginRegisterAnswer } from '../../models/ILoginRegisterAnswer';
 import { IRTServer } from '../../models/IRTServer';
+import { getBackendURL, getRouterConnection } from '../../modules/get-envs';
 
 export interface ILoginProps {}
 
@@ -19,7 +20,7 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
 		this.state = {
 			password: null,
 			user_name: null,
-			backend_url: "http://localhost:8080"
+			backend_url: getBackendURL()
 		};
 	}
 
@@ -28,7 +29,7 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
 		if(this.canSubmit()) {
 			event.preventDefault();
 			// sende an den Router
-			await fetch(`http://localhost:3080/users?user_name=${this.state.user_name}&password=${this.state.password}&backend_url=${this.state.backend_url}`, {
+			await fetch(`${getRouterConnection()}?user_name=${this.state.user_name}&password=${this.state.password}&backend_url=${this.state.backend_url}`, {
 				method: 'GET',
 				headers: {
 					"Access-Control-Allow-Origin": "*"
@@ -83,7 +84,7 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
 							type="text"
 							className="form-control"
 							id="_user_name"
-							placeholder="Unicron"
+							placeholder="Unicorn"
 							aria-describedby="_nameNote"
 							onChange={this.setUserName}
 						/>
@@ -98,9 +99,10 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
 							className="form-control"
 							id="_password"
 							placeholder="Password"
+							aria-describedby="_pwdNote"
 							onChange={this.setPassword}
 						/>
-						<small id="_nameNote" className="form-text text-muted">
+						<small id="_pwdNote" className="form-text text-muted">
 							Min. 8 chars and 1 digit
 						</small>
 					</div>

@@ -1,9 +1,9 @@
 import IClientMessage from "../../models/Interfaces/clients-inputs/IClientMessage";
 import { IMessageToBackend } from "../../models/Interfaces/backend-inputs/IMessageToBackend";
 
-export default (rt_server_url: string, backend_channel: string) => (param: (IClientMessage | undefined)[]): IMessageToBackend | null => (createBackendInput(rt_server_url, backend_channel, initializeRang(param)));
+export default (rt_server_url: string, channel: string) => (param: (IClientMessage | undefined)[]): IMessageToBackend | null => (createBackendInput(rt_server_url, channel, initializeRang(param)));
 
-export const createBackendInput = (url: string, backend_channel: string,  param: (IClientMessage | undefined)[]): IMessageToBackend | null => {
+export const createBackendInput = (url: string, channel: string,  param: (IClientMessage | undefined)[]): IMessageToBackend | null => {
   const infos = param.filter(elem => elem !== undefined)
   if(infos.length < 1)
     return null;
@@ -13,7 +13,7 @@ export const createBackendInput = (url: string, backend_channel: string,  param:
     client_inputs: param,
     session_name: infos[0].session_name,
     rt_server: url,
-    backend_channel
+    channel: channel
   };
 };
 

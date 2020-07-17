@@ -36,8 +36,8 @@ export default async (client: ILoginRegisterAnswer, app: any) => {
 		});
 		// setup connection to service
 		chat_client.configure(feathers.socketio(game_socket));
-		const chat_service = chat_client.service("client-inputs");
+		const chat_service = chat_client.service("chat");
 		return chat_service;
 	}
-	throw new Error('Cannot connect to the realtime server - no socket connection possible!');
+	throw new Error('CHAT - Cannot connect to the realtime server - no socket connection possible!');
 }

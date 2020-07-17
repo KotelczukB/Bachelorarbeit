@@ -1,6 +1,5 @@
 import React from 'react';
 import './Chat.scss';
-import { use } from 'matter';
 
 export interface IMessageProps {
 	intern: boolean;
@@ -19,10 +18,12 @@ export class Message extends React.Component<IMessageProps, {}> {
 	public getShortenUserName = (username: string) =>
 		`${username.slice(0, 4)}_${username.slice(username.length - 6, username.length - 1)}`;
 
+	public setcolor = (): string => this.props.intern ? "user-name unicorn" : "user-name"
+
 	public render(): JSX.Element {
 		return (
 			<div className="msg-container">
-				<div className="user-name">
+				<div className={this.setcolor()}>
 					<span
 						className="msg-user-label"
 						data-toggle="tooltip"

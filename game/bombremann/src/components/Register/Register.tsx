@@ -3,6 +3,7 @@ import { Header } from '../Header/Header';
 import './Register.scss';
 import { ILoginRegisterAnswer } from '../../models/ILoginRegisterAnswer';
 import { IRTServer } from '../../models/IRTServer';
+import { getBackendURL, getRouterConnection } from '../../modules/get-envs';
 
 export interface IRegisterProps {}
 
@@ -18,36 +19,44 @@ export class Register extends React.Component<IRegisterProps, IRegisterState> {
 		this.state = {
 			password: null,
 			user_name: null,
-			backend_url: "http://localhost:3030"
+			backend_url: getBackendURL(),
 		};
 	}
 
 	public handleRegister = async (event: any) => {
-		if(this.canSubmit()) {
+		if (this.canSubmit()) {
 			event.preventDefault();
 			// sende an den Router
-			await fetch(`http://localhost:3080/users`, {
+			await fetch(getRouterConnection(), {
 				method: 'POST',
 				headers: {
-					"Content-Type": "application/json",
+					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({user_name: this.state.user_name, password: this.state.password, backend_url: this.state.backend_url}),
-			}).then(async (res) => {
-				if(res.ok) {
-					const body: any = await res.json();
-					// setzte server_stuff und token in den localStorage
-					body.rt_servers.forEach((server: IRTServer) => { localStorage.setItem(`rt_server_${server.type}`, server.serverURL) });
-					localStorage.setItem('token', body.token);
+				body: JSON.stringify({
+					user_name: this.state.user_name,
+					password: this.state.password,
+					backend_url: this.state.backend_url,
+				}),
+			})
+				.then(async (res) => {
+					if (res.ok) {
+						const body: any = await res.json();
+						// setzte server_stuff und token in den localStorage
+						body.rt_servers.forEach((server: IRTServer) => {
+							localStorage.setItem(`rt_server_${server.type}`, server.serverURL);
+						});
+						localStorage.setItem('token', body.token);
 
-					(this.props as any).history.push({
-						pathname: '/game',
-						state: { detail: body }
-					});
-				}
-			}).catch(err => window.alert(err));
+						(this.props as any).history.push({
+							pathname: '/game',
+							state: { detail: body },
+						});
+					}
+				})
+				.catch((err) => window.alert(err));
 		} else {
 			event.preventDefault();
-			window.alert("Check Username or Password!")
+			window.alert('Check Username or Password!');
 		}
 	};
 
@@ -55,17 +64,15 @@ export class Register extends React.Component<IRegisterProps, IRegisterState> {
 		this.state.password !== null &&
 		this.state.user_name !== null &&
 		this.validatePassword() &&
-		this.validateUsername()
+		this.validateUsername();
 
 	public setPassword = (event: any) => this.setState({ password: event.target.value });
 
 	public setUsername = (event: any) => this.setState({ user_name: event.target.value });
 
-	public validatePassword = () =>
-		this.state.password !== null && this.state.password.length > 5
+	public validatePassword = () => this.state.password !== null && this.state.password.length > 5;
 
-		public validateUsername = () =>
-		this.state.user_name !== null && this.state.user_name.length >= 5
+	public validateUsername = () => this.state.user_name !== null && this.state.user_name.length >= 5;
 
 	public redirect = (): void => {
 		(this.props as any).history.goBack();
@@ -84,9 +91,13 @@ export class Register extends React.Component<IRegisterProps, IRegisterState> {
 							className="form-control"
 							id="_user_name"
 							placeholder="Nickname"
+							aria-describedby="_nameNote"
 							onChange={this.setUsername}
 						/>
 					</div>
+					<small id="_nameNote" className="form-text text-muted">
+						Min. 5 chars long
+					</small>
 					<div className="form-group">
 						<label>Password</label>
 						<input
@@ -94,10 +105,11 @@ export class Register extends React.Component<IRegisterProps, IRegisterState> {
 							className="form-control"
 							id="_password"
 							placeholder="Password"
+							aria-describedby="_pwdNote"
 							onChange={this.setPassword}
 						/>
-						<small id="_pwd_note" className="form-text text-muted invalid-feedback">
-							{this.validatePassword()}
+						<small id="_pwdNote" className="form-text text-muted">
+							Min. 8 chars and 1 digit
 						</small>
 					</div>
 					<button type="submit" className="btn btn-primary btn-lg custom-btn">

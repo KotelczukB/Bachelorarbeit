@@ -45,7 +45,7 @@ export class Game extends React.Component<IGameProps, IGameState> {
 	public render = (): JSX.Element => {
 		return (
 			this.state.loaded ? <div className="login-overlay">
-				{/* <Chat token={this.client_data.token} user_id={this.user_id} client_data={this.client_data}/> */}
+				<Chat token={this.client_data.token} user_id={this.user_id} client_data={this.client_data}/>
 				<PhaserGame token={this.client_data.token} client_service={this.state.game_service}/>
 				<div className="attribution-block credits"><a href="http://dig.ccmixter.org/files/destinazione_altrove/53756">Funk Interlude</a> by Dysfunction_AL (c) copyright 2016 Licensed under a Creative Commons <a href="http://creativecommons.org/licenses/by-nc/3.0/">Attribution Noncommercial  (3.0)</a> license. Ft: Fourstones - Scomber ( Bonus Track )</div>
 			</div> : <div></div>

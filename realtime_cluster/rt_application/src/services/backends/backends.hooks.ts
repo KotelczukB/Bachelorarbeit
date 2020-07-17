@@ -2,13 +2,13 @@ import preventExternTriggerOnEvent from "../../hooks/prevent-extern-trigger-on-e
 
 export default {
   before: {
-    all: [preventExternTriggerOnEvent()],
-    find: [],
-    get: [],
+    all: [],
+    find: [preventExternTriggerOnEvent()],
+    get: [preventExternTriggerOnEvent()],
     create: [],
-    update: [],
-    patch: [],
-    remove: [],
+    update: [preventExternTriggerOnEvent()],
+    patch: [preventExternTriggerOnEvent()],
+    remove: [preventExternTriggerOnEvent()],
   },
 
   after: {

@@ -39,7 +39,7 @@ export default class LoadScene extends Scene {
 
     // menu imgs
     this.load.spritesheet('start', 'start.png', {frameWidth: 270, frameHeight: 119});
-    this.load.spritesheet('wait', 'waiting.png', {frameWidth: 832, frameHeight: 126});
+    this.load.spritesheet('wait', 'waiting.png', {frameWidth: 808, frameHeight: 135});
     this.load.atlas('select','assets/player/select/player_select.png', 'assets/player/select/player_select_atlas.json');
 		this.load.image('header', 'header_pic.png');
     this.load.image('select_header', 'scene_select.png');

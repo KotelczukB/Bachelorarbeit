@@ -9,6 +9,7 @@ export interface IChatState {
 }
 
 export interface IChatProps {
+	token: string;
 	user_id: string;
 	client_data: ILoginRegisterAnswer;
 }
@@ -25,21 +26,19 @@ export class Chat extends React.Component<IChatProps, IChatState> {
 	componentDidMount = async () => {
 		if(!this.chat_service)
 		 createChatRtSocket(this.props.client_data, this).then((service) => {
-		// 	service.on('created', (data: any) => {
-		// 		const tempChat = this.state.chat;
-		// 		tempChat.push(data);
-		// 		this.setState({ chat: tempChat });
-		// 	});
-		// 	console.log('connection to realtime app created');
-		// 	this.chat_service = service;
-		});
-		try {
-			this.chat_service.create({
-				// send data here
+			 // subscribe to chat
+			service.on('created', (data: IMessageProps) => {
+				const tempChat: IMessageProps[] = this.state.chat;
+				tempChat.push(data);
+				tempChat.map(elem => elem = {
+					...elem,
+					intern: elem.user === this.props.user_id
+				})
+				this.setState({ chat: tempChat });
 			});
-		} catch (error) {
-			console.log(error);
-		}
+			console.log('connection to realtime app created');
+			this.chat_service = service;
+		});
 		this.setOnSubmit();
 	};
 	componentDidUpdate() {
@@ -50,24 +49,22 @@ export class Chat extends React.Component<IChatProps, IChatState> {
 	public setOnSubmit = () => {
 		const form = document.getElementById('_form');
 		if (form)
-			form.onsubmit = (event: any) => {
-				this.handleSubmit();
+			form.onsubmit = async (event: any) => {
+				await this.handleSubmit();
 				event.preventDefault();
 			};
 	};
 
-	public handleSubmit = () => {
+	public handleSubmit = async () => {
 		const elem: any = document.getElementById('_msg-input');
 		if (elem && elem.value !== '') {
-			const chat = this.state.chat;
-			chat.push({
-				intern: true,
-				user: `@${this.props.user_id}`,
+			await this.chat_service.create({
+				user: this.props.user_id,
 				msg: elem.value,
+				intern: false,
+				token: this.props.token
 			});
-			this.setState({ chat });
 			elem.value = '';
-			// send data to feahters
 		}
 	};
 
