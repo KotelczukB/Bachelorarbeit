@@ -54,7 +54,7 @@ export default class GameScene extends Scene {
 	/**************************************** */
 
 	sendUpdateGameState_io = async () => {
-		await this.socket.emit('create', 'client-input',
+		await this.socket.emit('create', 'client-inputs',
 			createNewGameInput(
 				this.char_id,
 				this.player,
