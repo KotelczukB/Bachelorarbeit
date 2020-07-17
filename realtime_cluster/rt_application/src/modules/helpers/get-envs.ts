@@ -41,4 +41,12 @@ export const getHOST = (): string => {
   }
 };
 
+export const getRT_CONSTRAIN = (): number => {
+  if (process.env.RT_CONSTRAIN) {
+    return +process.env.RT_CONSTRAIN;
+  } else {
+    throw new Error('critical ENV Variable not provided')
+  }
+};
+
 

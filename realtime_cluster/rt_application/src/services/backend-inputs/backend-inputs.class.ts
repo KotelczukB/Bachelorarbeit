@@ -1,7 +1,7 @@
 import { Db } from 'mongodb';
 import { Service, MongoDBServiceOptions } from 'feathers-mongodb';
 import { Application } from '../../declarations';
-import { IBackendInput } from '../../models/Interfaces/backend-inputs/IBackendInput';
+import { IBackendResponse } from '../../models/Interfaces/backend-inputs/IBackendResponse';
 import getTimeStamp from '../../modules/helpers/getTimeStamp';
 
 export class BackendInputs extends Service {
@@ -15,8 +15,8 @@ export class BackendInputs extends Service {
     });
   }
 
-  public async create(data: IBackendInput, params: any): Promise<any> {
-    const input: IBackendInput = {
+  public async create(data: IBackendResponse, params: any): Promise<any> {
+    const input: IBackendResponse = {
       ...data,
       created_at: getTimeStamp()
     }

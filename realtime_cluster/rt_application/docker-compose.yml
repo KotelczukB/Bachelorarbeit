@@ -21,6 +21,8 @@ services:
       - ROUTER=http://host.docker.internal:3080/applications
       - PORT=3050
       - HOST=host.docker.internal
+      # Echtzeit Bedingung - dieser wert darf nicht uberschritten werden in der rt_server -> backend kommunikation (in ms)
+      - RT_CONSTRAIN=100
     build: .
     ports:
       - "3050:3050"
@@ -51,6 +53,8 @@ services:
       - ROUTER=http://host.docker.internal:3080/applications
       - PORT=3040
       - HOST=host.docker.internal
+      # Just als placeholder damit versehentlich kein Fehler fliegt
+      - RT_CONSTRAIN=60000
     build: .
     ports:
       - "3040:3040"

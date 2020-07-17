@@ -1,14 +1,15 @@
 
 import preChatCreateGetChannel from '../../hooks/pre-chat-create-get-channel';
+import preventExternTriggerOnEvent from '../../hooks/prevent-extern-trigger-on-event';
 export default {
   before: {
     all: [],
     find: [],
-    get: [],
+    get: [preventExternTriggerOnEvent()],
     create: [preChatCreateGetChannel()],
-    update: [],
-    patch: [],
-    remove: []
+    update: [preventExternTriggerOnEvent()],
+    patch: [preventExternTriggerOnEvent()],
+    remove: [preventExternTriggerOnEvent()]
   },
 
   after: {

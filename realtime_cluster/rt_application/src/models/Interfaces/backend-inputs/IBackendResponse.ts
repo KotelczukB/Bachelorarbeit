@@ -1,6 +1,6 @@
 import { _ExternType } from "../_ExternType";
 
-export interface IBackendInput {
+export interface IBackendResponse {
   [idx: string]: any;
   created_at: number;
   type: _ExternType;

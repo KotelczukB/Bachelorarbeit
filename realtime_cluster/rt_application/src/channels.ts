@@ -7,6 +7,10 @@ import { _ExternType } from "./models/Interfaces/_ExternType";
 import idetifyBackendServer from "./modules/helpers/idetify-backend-server";
 import { IMessageToBackend } from "./models/Interfaces/backend-inputs/IMessageToBackend";
 import { IChatMessage } from "./models/Interfaces/chat/IChatMessage";
+import sendDataToBackend from "./modules/rtFunctions/send-data-to-backend";
+import { IBackendResponse } from "./models/Interfaces/backend-inputs/IBackendResponse";
+import validateRtConstrain from "./modules/rtFunctions/validate-rt-constrain";
+import getTimeStamp from "./modules/helpers/getTimeStamp";
 
 export default function (app: Application) {
   if (typeof app.channel !== "function") {
@@ -40,30 +44,34 @@ export default function (app: Application) {
         )
         .catch((err) => console.log(`connection setting error ${err}`))
   );
-  
- //******************************************** */
- // standard realtime verhalten
- // get data
- // send data
- //******************************************** */
-  app.service("chat").publish("created", (data: IChatMessage, context) => {}
-    // Chat handling /FFFFFFFFFFFFFFFFFFFFFFFUUUUUUUUUUUUUUUUUUUUUUKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK
-    // sende mit rest an backend und warte auf die antwort
-    // fetch(backend, () => methode: "post")
+
+  //******************************************** */
+  // standard realtime verhalten
+  // get data
+  // send data
+  // easy
+  //******************************************** */
+  app.service("chat").publish("created", (data: IChatMessage, context) =>
+    app.channel(data.channel).send(data)
   );
 
   //******************************************** */
-  // Sende clients Input zu valiederung an das bachend
-  // awaite die Antwort -> poling
+  // Sende clients Input zu validerung an das backend
+  // awaite die Antwort
   // passe die Antwort an
-  // sende an die clients 
-  // Ziel -> async logic bleibt beim Realtime Server
-   //******************************************** */
-  app.service("client-inputs").publish("created", (data: IMessageToBackend, context) =>
-      // Chat handling /FFFFFFFFFFFFFFFFFFFFFFFUUUUUUUUUUUUUUUUUUUUUUKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK
-      // sende mit rest an backend und warte auf die antwort
-      // fetch(backend, () => methode: "post")
-      app.channel(data.channel).send(data) // push to clients_channel
+  // prufe Echtzeitbedingung
+  // sende an die clients
+  // Ziel -> async Kette bleibt beim Realtime Server
+  //******************************************** */
+  app.service("client-inputs").publish("created", async (data: IMessageToBackend, context) =>
+      await sendDataToBackend(data)
+        .then((response: IBackendResponse) => {
+          if (validateRtConstrain(data.created_at, getTimeStamp()))
+            return app.channel(data.channel).send(data);
+        })
+        .catch((err: any) =>
+          console.log("Error on sending new Input to Backend", err)
+        )
   );
 
   // Preventing area
