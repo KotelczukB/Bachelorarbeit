@@ -13,11 +13,11 @@ export const validateIncreaseSessionState = async (app: Application, session: IS
 
 export const isFull = (
   session: ISession | string
-): ISession | string =>  typeof session === 'string' ? session : changeSessionState(session, session.clients.length >= session.min_clients)
+): ISession | string =>  typeof session === 'string' ? session : changeSessionState(session, session.clients.length >= +session.min_clients)
 
 export const isClosed = (
   session: ISession | string
-): ISession | string =>  typeof session === 'string' ? session : changeSessionState(session, session.clients.length === session.max_clients)
+): ISession | string =>  typeof session === 'string' ? session : changeSessionState(session, session.clients.length === +session.max_clients)
 
 export const changeSessionState = (
   session: ISession, change: boolean

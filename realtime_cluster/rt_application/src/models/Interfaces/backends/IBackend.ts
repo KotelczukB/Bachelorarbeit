@@ -1,6 +1,6 @@
 export interface IBackend {
-  interval_value: number,
-  ownURL: string,
-  max_session_clients: number,
-  min_session_clients: number
+  interval: number,
+  own_url: string,
+  max_players: number,
+  min_players: number
 }

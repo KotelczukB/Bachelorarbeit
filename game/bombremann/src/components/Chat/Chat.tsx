@@ -49,9 +49,9 @@ export class Chat extends React.Component<IChatProps, IChatState> {
 	public setOnSubmit = () => {
 		const form = document.getElementById('_form');
 		if (form)
-			form.onsubmit = async (event: any) => {
-				await this.handleSubmit();
-				event.preventDefault();
+		form.onsubmit = async (event: any) => {
+			event.preventDefault();
+			await this.handleSubmit();
 			};
 	};
 

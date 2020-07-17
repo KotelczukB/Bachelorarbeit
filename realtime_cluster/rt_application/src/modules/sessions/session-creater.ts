@@ -28,7 +28,7 @@ export const checkBackendavalible = async (
   backend_service: any,
   backend_url: string
 ): Promise<boolean> =>
-  backend_service.find(addToDefaultParams({query: { ownURL: backend_url }})).then((elem: any) => elem !== undefined && elem.length > 0);
+  backend_service.find(addToDefaultParams({query: { own_url: backend_url }})).then((elem: any) => elem !== undefined && elem.length > 0);
 
 export const getSessionName = () => (
   session: ISession

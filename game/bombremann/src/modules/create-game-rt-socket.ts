@@ -26,7 +26,6 @@ export default async (client: ILoginRegisterAnswer) => {
     const game_client = (feathers as any)();
 		// initial Data fur verbindung und registierung
 		const game_socket = io(client.rt_servers.filter((elem) => elem.type === 'application')[0].serverURL, {
-      transports: ['websocket'],
 			query: {
         ...login_data,
         type: 'client'

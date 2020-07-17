@@ -31,7 +31,7 @@ export const filterSessions = async (
   targetURL: string
 ): Promise<ISession> =>
 // weil feathers $where & $exists nicht unterstutzt ... 
-  await service.find(addToDefaultParams({query: {backend: targetURL}})).then((res: Paginated<ISession>) => res.data.find((sess: ISession) => sess.clients.length < (+sess.max_clients)));
+  await service.find(addToDefaultParams({query: {backend: targetURL, state: {$lt: 3}}})).then((res: Paginated<ISession>) => res.data.find((sess: ISession) => sess.clients.length < (+sess.max_clients)));
 
 export const getJustName = (user_type: string) => (
   session: ISession

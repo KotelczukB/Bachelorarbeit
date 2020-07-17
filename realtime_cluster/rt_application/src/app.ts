@@ -55,12 +55,8 @@ app.configure(socketio(function(io) {
   io.use(function (socket: any, next) {
     socket.feathers.target_channel = socket.handshake.query.target_channel;
     socket.feathers.user_name = socket.handshake.query.user_name;
-    socket.feathers.own_url = socket.handshake.query.own_url;
     socket.feathers.backend_url = socket.handshake.query.backend_url;
     socket.feathers.type = socket.handshake.query.type;
-    socket.feathers.min_players = socket.handshake.query.min_players;
-    socket.feathers.max_players = socket.handshake.query.max_players;
-    socket.feathers.interval = socket.handshake.query.interval;
     socket.feathers.session_name = socket.handshake.query.session_name;
     next();
   });

@@ -8,14 +8,14 @@ export default async (
   service: any
 ): Promise<ISessionCreate> =>
   service
-    .find(addToDefaultParams({ query: { ownURL: backend_url } }))
+    .find(addToDefaultParams({ query: { own_url: backend_url } }))
     .then((res: IBackend[]) => {
       return {
         name: `Session-${+new Date()}`,
         backend_url: backend_url,
         client_id,
-        interval: res[0].interval_value,
-        client_max: res[0].max_session_clients,
-        client_min: res[0].min_session_clients,
+        interval: res[0].interval,
+        client_max: res[0].max_players,
+        client_min: res[0].min_players,
       };
     });

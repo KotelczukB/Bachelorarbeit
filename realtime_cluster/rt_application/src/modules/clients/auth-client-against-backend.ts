@@ -76,7 +76,7 @@ export const findBackend = async (
   await backend_service.find(
     addToDefaultParams({
       query: {
-        ownURL: body.backend_url,
+        own_url: body.backend_url,
       },
     })
   );
@@ -89,7 +89,7 @@ export const updateBackendCall = async (backend_service: any, body: any) =>
     { min_session_clients: body.min_players },
     addToDefaultParams({
       query: {
-        ownURL: body.backend_url,
+        own_url: body.backend_url,
         min_session_clients: { $nin: body.min_players },
       },
     })

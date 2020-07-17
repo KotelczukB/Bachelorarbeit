@@ -4,7 +4,7 @@ import ISessionCreate from "../../models/Interfaces/session/ISessionCreate";
 
 export default async (
   service_session: any,
-  kinde: string,
+  kind: string,
   service_backends: any,
   sessionData: Promise<ISessionCreate>
 ): Promise<{ user: string; session: string; backend: string } | null> =>
@@ -14,7 +14,7 @@ export default async (
         (await getFreeSession(
           service_session,
           res.client_id,
-          kinde,
+          kind,
           res.backend_url
         )) ?? (await createSession(service_session, service_backends, res))
       );

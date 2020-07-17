@@ -3,7 +3,7 @@ import { IBackendResponse } from "../../models/Interfaces/backend-inputs/IBacken
 import fetch from "node-fetch";
 
 export default async (message: IMessageToBackend): Promise<IBackendResponse> =>
-  await fetch(message.backend_url, {
+  await fetch(`${message.backend_url}/player-inputs`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -12,4 +12,4 @@ export default async (message: IMessageToBackend): Promise<IBackendResponse> =>
     body: JSON.stringify(message),
   })
     .then(async (resp: any) => await resp.json())
-    .then((body: IBackendResponse) => body);
+    .then((body: IBackendResponse) => {/*console.log('BACKEND RESPONSE', body);*/ return body});

@@ -58,7 +58,6 @@
     "node-fetch": "^2.6.0",
     "ramda": "^0.27.0",
     "serve-favicon": "^2.5.0",
-    "socket.io-client": "^2.3.0",
     "winston": "^3.3.3"
   },
   "devDependencies": {

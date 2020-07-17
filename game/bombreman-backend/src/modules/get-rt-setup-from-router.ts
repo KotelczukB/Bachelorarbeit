@@ -3,14 +3,10 @@ import { IRTServer } from "../models/IRTServer";
 import fetch from "node-fetch";
 import { _BasicState } from "../models/_SessionState";
 import { _RTServerType } from "../models/_RTServerType";
-import io from "socket.io-client";
-import feathers from "@feathersjs/feathers";
-import socketio from "@feathersjs/socketio-client";
-import getGameState from "./get-game-state";
 import { getPORT, getHOST, getRouterConnection } from "./get-envs";
 
 //************************************** */
-// Remove old rt_servers -> connect to router -> save new Servers -> connect to rt_server over socket
+// Remove old rt_servers -> connect to router -> save new Servers -> create backend object auf allen servern der art-> failed? -> repeat
 //************************************** */
 export const getRTSetup = (app: Application) =>
   fetch(getRouterConnection(), {
@@ -50,43 +46,25 @@ export const getRTSetup = (app: Application) =>
       );
       return body.data;
     })
-    .then((resp: IRTServer[]) => {
-      // Get Game server und init socketio CLIENT mit callback.
-      const game_rt = resp.find(
-        (elem) => elem.type === _RTServerType.application
-      );
-      if (!game_rt) throw new Error("Cannot create rt_server connection");
-      const client = feathers();
-      // initial Data fur verbindung und registierung
-      const socket = io(game_rt.serverURL, {
-        transports: ["websocket"],
-        query: {
-          own_url: `http://${getHOST()}:${getPORT()}`,
-          type: "backend",
-          min_players: app.get("min_players"),
-          max_players: app.get("max_players"),
-          interval: app.get("custom_interval"),
-        },
-      });
-      client.configure(socketio(socket));
-      const rt_input_service = client.service("client-inputs");
-      client.service("client-inputs").on("created", async (data: any) => {
-        // Game RULEZ magic
-        await app
-          .service("player-inputs")
-          .create(data)
-          .then(async (input: any) => await getGameState(input.game_id, app))
-          .then(
-            async (snapshot: any) =>
-              await client.service("backend-inputs").create(snapshot)
-          )
-          .catch((err: any) => console.log(err));
-      });
-      console.log(`Server connected to rt_application Server with socket`);
-    })
+    .then(async (resp: IRTServer[]) => {
+      // Melde dich auf jedem serverder rt_server classe an
+      await Promise.all(resp.map(async (rt_server: IRTServer) => 
+        await fetch(`${rt_server.serverURL}/backends`, {
+          method: "POST",
+          body: JSON.stringify({
+            own_url: `http://${getHOST()}:${getPORT()}`,
+            type: "backend",
+            min_players: app.get("min_players"),
+            max_players: app.get("max_players"),
+            interval: app.get("custom_interval"),
+          }),
+          headers: { "Content-Type": "application/json" },
+        })));
+        console.log(`Server created on rt_server`);
+      })
     .catch((err: any) =>
       setTimeout(() => {
-        console.log(err);
+        console.log('On get RT_Setup or create backend object', err);
         getRTSetup(app);
       }, 5000)
     );
