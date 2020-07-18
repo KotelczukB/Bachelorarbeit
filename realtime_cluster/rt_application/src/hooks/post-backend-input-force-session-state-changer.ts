@@ -11,7 +11,7 @@ export default (options = {}): Hook => {
     const { result, app } = context as { result: IBackendResponse; app: Application };
     if(result.game_started) {
       const session: Paginated<ISession> = await app.service('sessions').find(addToDefaultParams({query: {session_name: result.session_name}}))
-      await app.service('sessions').patch(session.data[0]._id, {state: _SessionState.closed})
+      await app.service('sessions').patch(session.data[0]._id, {state: _SessionState.full})
     }
     return context;
   };

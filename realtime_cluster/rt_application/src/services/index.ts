@@ -6,6 +6,7 @@ import clientInputs from './client-inputs/client-inputs.service';
 import backendInputs from './backend-inputs/backend-inputs.service';
 import sessions from './sessions/sessions.service';
 import chat from './chat/chat.service';
+import backendMessage from './backend-message/backend-message.service';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 export default function (app: Application) {
@@ -16,4 +17,5 @@ export default function (app: Application) {
   app.configure(backendInputs);
   app.configure(sessions);
   app.configure(chat);
+  app.configure(backendMessage);
 }

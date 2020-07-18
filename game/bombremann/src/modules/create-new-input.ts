@@ -14,7 +14,7 @@ export const createNewGameInput = (char_id: number, player: CharacterSprite, pla
     name: player.name
   }
 
-  const bullets_objects: IBulletObject[] = player_bullets.map(bullet => {return {
+  const bullets_objects: (IBulletObject | null)[] = player_bullets.map(bullet => {if(bullet) return {
     pos_x: bullet.body.x,
     pos_y: bullet.body.y,
     vel_x: bullet.body.velocity.x,
@@ -22,12 +22,13 @@ export const createNewGameInput = (char_id: number, player: CharacterSprite, pla
     owner_id: bullet.owner_id,
     created_at: bullet.created_at,
     id: bullet.id
-  }})
+  };
+   return null})
   return {
     ...setDefault(token),
     app: {
       player_data: player_object,
-      bullets_data: bullets_objects,
+      bullets_data: bullets_objects.filter(elem => elem !== null),
       client_selected: `player_${char_id}`
     }
   }

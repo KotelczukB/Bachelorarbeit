@@ -16,7 +16,7 @@ import services from "./services";
 import appHooks from "./app.hooks";
 import channels from "./channels";
 import mongodb from "./mongodb";
-import { getRTSetup } from "./modules/get-rt-setup-from-router";
+import { getRTSetup } from "./modules/get-rt-setup-and-connect-to-servers";
 // Don't remove this comment. It's needed to format import lines nicely.
 
 const app: Application = express(feathers());

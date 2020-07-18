@@ -6,7 +6,7 @@ import startNewGame from '../modules/start-new-game';
 import { IPlayerData } from '../models/player-models';
 import { IPlayerObject } from '../models/transfer/IPlayerObject';
 import { IBulletObject } from '../models/transfer/IBulletObject';
-import { createNewGameInput } from '../modules/createNewClientInput';
+import { createNewGameInput } from '../modules/create-new-input';
 import * as R from 'ramda';
 import getGameData from '../modules/get-game-data';
 
@@ -25,7 +25,7 @@ export default class GameScene extends Scene {
 	game_data!: any;
 	socket!: any;
 	token: string = '';
-	frame: number = 0
+	frame: number = 0;
 	player_pos: any[] = [];
 	constructor() {
 		super({
@@ -53,22 +53,26 @@ export default class GameScene extends Scene {
 	// Feathers communication
 	/**************************************** */
 
-	sendUpdateGameState_io = async () => {
-		await this.socket.emit('create', 'client-inputs',
+	sendUpdateGameState_io = () => {
+		this.socket.emit(
+			'create',
+			'client-inputs',
 			createNewGameInput(
 				this.char_id,
 				this.player,
 				this.bullets.filter((bullet) => bullet.owner_id === this.player.id),
 				this.game_data,
 				this.token
-			), (err: any, data: any) => console.log("GAMESTATE UPDATE", data))
+			),
+			(err: any, data: any) => console.log('GAMESTATE UPDATE', data)
+		);
 	};
 	/***************************************** */
 
-	init(data: { character_id: number; socket: any, token: string }) {
+	init(data: { character_id: number; socket: any; token: string }) {
 		console.log('init', data);
 		this.char_id = data.character_id;
-		this.token = data.token
+		this.token = data.token;
 		this.socket = data.socket;
 		const game_state = localStorage.getItem('game_data');
 		if (game_state) {
@@ -213,32 +217,52 @@ export default class GameScene extends Scene {
 		}
 	}
 
-	async update(time: number, delta: number) {
+	update(time: number, delta: number) {
 		this.frame = this.frame + 1;
-		if(this.game_data.players_selected.length > this.characters.length)
-	//	this.setChars()
+		if (this.game_data.players_selected.length > this.characters.length)
+			//	this.setChars()
 
-		
+			this.game_data = getGameData();
 		// own player
 		this.updatePlayer(delta);
-		this.updateGame();
+		this.predict();
 		// rt communication
-		// billig funktioniert aber 
-		if(this.frame === 7) {
+		this.updateGame();
+		//******************************* */
+		// Update data fur den server. Drunter beginnt der Server sich zu fressen irg.
+		//******************************* */
+		if (this.frame === 8) {
 			// Game state from server
-			this.frame = 0
-			await this.sendUpdateGameState_io().then(() => {
-				this.game_data = getGameData();
-			})
-				
+			this.frame = 0;
+			console.log('UPDATE DATA TO RT SERVER ');
+			this.sendUpdateGameState_io();
 		}
 	}
+
+	predict() {
+		if (this.game_data) {
+			this.characters.forEach(this.predictEnemiePosition(this.game_data));
+
+			// // neue bullets suchen und hinzufugen da bullets latenz und bis auf erstellen user input unabhangig sind
+			// const just_new_bullets: IBulletObject[] = this.game_data.bullet_objects
+			// 	.map(this.getJustNewBulles)
+			// 	.filter((bullet: IBulletObject | undefined) => bullet !== undefined);
+			// this.bullets.concat(this.createNewBullets(just_new_bullets));
+		}
+	}
+
+	predictEnemiePosition = (game_data: any) => (character: CharacterSprite): CharacterSprite | undefined => {
+		const enemie = game_data.players_objects.find((enemie: IPlayerObject) =>
+			enemie ? enemie.name === character.name : false
+		);
+		if (enemie) return character.setVelocity(enemie.vel_x, enemie.vel_y);
+	};
 
 	//******************************************************************************************************** */
 	// Updates am Spiel Daten kommen vom Server
 	updateGame() {
 		if (this.game_data) {
-			this.characters.forEach(this.updateEnemiePositionVelocity(this.game_data));
+			this.characters.forEach(this.updateEnemiePositionAndVelo(this.game_data));
 			this.characters.forEach(this.playAnimation);
 
 			// neue bullets suchen und hinzufugen da bullets latenz und bis auf erstellen user input unabhangig sind
@@ -289,11 +313,15 @@ export default class GameScene extends Scene {
 		});
 	};
 
-	updateEnemiePositionVelocity = (game_data: any) => (character: CharacterSprite): CharacterSprite | undefined => {
-		const enemie = game_data.players_objects.find((enemie: IPlayerObject) => enemie ? enemie.name === character.name : false);
-		if (enemie)
-			return (character.setPosition(enemie.pos_x, enemie.pos_y).setVelocity(enemie.vel_x, enemie.vel_y).hp =
-				enemie.hp);
+	updateEnemiePositionAndVelo = (game_data: any) => (character: CharacterSprite): CharacterSprite | undefined => {
+		const enemie = game_data.players_objects.find((enemie: IPlayerObject) =>
+			enemie ? enemie.name === character.name : false
+		);
+		if (enemie) {
+			if (Math.abs(character.body.x - enemie.pos_x) > 10 ||Math.abs(character.body.y - enemie.pos_y) > 10)
+				character.setPosition(enemie.pos_x, enemie.pos_y);
+			return (character.setVelocity(enemie.vel_x, enemie.vel_y).hp = enemie.hp);
+		}
 	};
 
 	//********************************************************************************************************** */

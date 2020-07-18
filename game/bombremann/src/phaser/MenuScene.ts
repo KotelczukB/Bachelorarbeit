@@ -1,4 +1,4 @@
-import { createNewInput, createInitInput } from "../modules/createNewClientInput";
+import { createNewInput, createInitInput } from "../modules/create-new-input";
 import getGameData from "../modules/get-game-data";
 
 export class MenuScene extends Phaser.Scene {

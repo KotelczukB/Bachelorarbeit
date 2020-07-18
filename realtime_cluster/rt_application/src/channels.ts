@@ -64,7 +64,6 @@ export default function (app: Application) {
   // easy
   //******************************************** */
   app.service("chat").publish("created", (data: IChatMessage, context) => {
-    console.log("emitting");
     return app.channel(data.channel).send(data);
   });
 
@@ -75,9 +74,11 @@ export default function (app: Application) {
   // prufe Echtzeitbedingung
   // sende an die clients
   // Ziel -> async Kette bleibt beim Realtime Server
+  // oder 
+  // Mache das gleiche von der Logik nur sende uber sockets
   //******************************************** */
-  app.service("client-inputs").publish("created", async (data: IMessageToBackend, context) => {
-      console.log("client inputs created",  app.channel(data.channel).connections);
+  app.service("backend-message").publish("created", async (data: IMessageToBackend, context) => {
+    console.log('NEW CLIENT INPUT')
       return app.channel(data.channel)
   }
       // await sendDataToBackend(data)
@@ -95,7 +96,7 @@ export default function (app: Application) {
   );
 
   app.service("backend-inputs").publish("created", (data: IBackendResponse, context) => {
-    console.log('sending from backend')
+    console.log('NEW BACKEND INPUT', getTimeStamp() - data.created_at)
       return app.channel(data.client_channel);
     });
 

@@ -15,6 +15,8 @@ import { _SessionState } from "../models/enums/_SessionState";
 import { addToDefaultParams } from "../modules/helpers/basic-default-service-params";
 import { IClientConnection } from "../models/Interfaces/clients/IClientConnection";
 import updateClientOnBackendWithBackendChannel from "../modules/clients/update-client-on-backend-with-backend-channel";
+import { getType } from "../modules/helpers/get-envs";
+import { _AppType } from "../models/Interfaces/_AppType";
 
 //******************************************************************
 //Prufe vorausgesetzte props von Sessions, prufe anzahl von Clients.
@@ -39,6 +41,7 @@ export default (options = {}): Hook => {
           return await validateIncreaseSessionState(app, response.data[0])
       })
       .catch((error: any) => console.log(error));
+    if (getType() !== _AppType[_AppType.chat])
     await updateClientOnBackendWithBackendChannel(
       result.backend_url,
       session_name,

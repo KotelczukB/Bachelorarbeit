@@ -29,7 +29,8 @@ export default async (game_session_id: any, app: Application): Promise<IGameSnap
     game_ended: ended,
     session_name: game.game_session,
     type: 'backend',
-    game_started: player_objects !== undefined && player_objects.length > 0
+    game_started: player_objects !== undefined && player_objects.length > 0,
+    created_at: +new Date()
   };
 };
 

@@ -4,7 +4,7 @@ import { Chat } from '../Chat/Chat';
 import { PhaserGame } from '../PhaserGame/PhserGame';
 import createGameRtSocket from '../../modules/create-game-rt-socket';
 import { ILoginRegisterAnswer } from '../../models/ILoginRegisterAnswer';
-import { createInitInput } from '../../modules/createNewClientInput';
+import { createInitInput } from '../../modules/create-new-input';
 
 export interface IGameProps {
 

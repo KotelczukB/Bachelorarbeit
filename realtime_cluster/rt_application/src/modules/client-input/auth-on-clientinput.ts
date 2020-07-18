@@ -4,7 +4,7 @@ import { IClientConnection } from "../../models/Interfaces/clients/IClientConnec
 import { Paginated } from "@feathersjs/feathers";
 
 
-export const validateUser = (client_service: any, user: IClientMessage):Promise <boolean> => getUserFromDB(client_service, user).then(validateToken(user))
+export const validateUser = async (client_service: any, user: IClientMessage):Promise <boolean> => await getUserFromDB(client_service, user).then(validateToken(user))
 
 export const getUserFromDB = async (client_service: any, user: IClientMessage): Promise<Paginated<IClientConnection>> => await client_service.find(addToDefaultParams({query: {token: user.token }}));
 

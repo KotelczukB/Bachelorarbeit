@@ -13,7 +13,7 @@ export const validateIncreaseSessionState = async (app: Application, session: IS
 
 export const isFull = (
   session: ISession | string
-): ISession | string =>  typeof session === 'string' ? session : changeSessionState(session, session.clients.length >= +session.min_clients)
+): ISession | string =>  typeof session === 'string' ? session : changeSessionState(session, session.clients.length >= +session.min_clients && session.state !== _SessionState.full)
 
 export const isClosed = (
   session: ISession | string

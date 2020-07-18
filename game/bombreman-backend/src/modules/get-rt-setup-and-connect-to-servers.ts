@@ -78,10 +78,10 @@ export const getRTSetup = (app: Application) =>
             type: "backend",
           },
         });
-        socket.on("client-inputs created" , async (data: any) => {
+        socket.on("backend-message created" , (data: any) => {
           // Game RULEZ magic
-          console.log('GETTING DATA FROM RT_SERVER')
-          await app
+          console.log('NEW CLIENT INPUT')
+          app
             .service("player-inputs")
             .create(data)
             .then(

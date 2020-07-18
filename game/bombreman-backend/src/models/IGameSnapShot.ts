@@ -10,4 +10,5 @@ export interface IGameSnapShot {
   game_can_start: boolean;
   session_name: string;
   type: string;
+  created_at: number;
 }

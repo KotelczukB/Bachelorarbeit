@@ -10,18 +10,18 @@ export default async (
   client_inputs_service: any,
   sesssion: string,
   sortDirection: number
-): Promise<Promise<IClientMessage>[]> =>
+): Promise<IClientMessage[]>=>
   await session_service
     .find(addToDefaultParams({ query: { session_name: sesssion } }))
     .then(async (sess: Paginated<ISession>) =>
-      await sess.data[0].clients.map(async (user: string) =>
+      await Promise.all(sess.data[0].clients.map(async (user: string) =>
         await getClientInputOnClient(
           client_inputs_service,
           user,
           sess.data[0].session_name,
           sortDirection
         ).then((client_inp: Paginated<IClientMessage>) => client_inp.data[0])
-      )
+      ))
     );
 
 export const getClientInputOnClient = async (

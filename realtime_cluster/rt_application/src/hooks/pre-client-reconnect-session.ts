@@ -24,10 +24,9 @@ export default (options = {}): Hook => {
     console.log("pre clinet reconnect session on search and remove", err));
     // b)
 
-    /// Functional
     if (data.session_name) {
       const session: ISession | null = await findOnServiceGetFirst(app.service("sessions"), {
-        query: { session_name: data.session_name, state: 0 },
+        query: { session_name: data.session_name, state: {$lt: 2} },
       });
       if (session) {
         await app.service("sessions").patch(session._id, {
