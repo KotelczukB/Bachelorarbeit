@@ -68,7 +68,7 @@ export default class GameScene extends Scene {
 			),
 			(err: any, data: any) => console.log('GAMESTATE UPDATE', data)
 		);
-		this.temp_bullet_id = ''
+		this.temp_bullet_id = '';
 	};
 	/***************************************** */
 
@@ -76,12 +76,12 @@ export default class GameScene extends Scene {
 		console.log('init', data);
 		this.char_id = data.character_id;
 		this.token = data.token;
-		data.socket.off('backend-inputs created')
+		data.socket.off('backend-inputs created');
 		this.socket = data.socket;
 		const game_state = localStorage.getItem('game_data');
 		if (game_state) {
 			this.game_data = getGameData();
-			localStorage.removeItem('game-data')
+			localStorage.removeItem('game-data');
 		}
 		data.socket.on('backend-inputs created', (data: any) => {
 			this.game_data = data;
@@ -209,7 +209,7 @@ export default class GameScene extends Scene {
 		});
 
 		// camera on player
-		this.cameras.main.startFollow(this.player).zoom = 2.5;
+		this.cameras.main.startFollow(this.player);
 
 		// set keys
 		this.keyboard = this.input.keyboard.addKeys('W, S, A, D, SPACE, G') as {
@@ -227,38 +227,42 @@ export default class GameScene extends Scene {
 	}
 
 	update(time: number, delta: number) {
-		if(this.to_draw_bullets.length > 0){
-			this.to_draw_bullets.forEach(bull => {
-				this.bullets.push(
-					new BulletSprite(
-						this,
-						bull.owner_id,
-						bull.pos_y,
-						bull.pos_x,
-						bull.sheet_id,
-						bull.shot_anim_fly,
-						bull.shot_anim_imp,
-						bull.vel_x,
-						bull.vel_y,
-						bull.id
-					)
-				)
-			})
-			console.log('drawing')
+		if (this.to_draw_bullets.length > 0) {
+			this.to_draw_bullets.forEach((bull) => {
+				if (bull.owner_id !== this.player.id) {
+					this.bullets.push(
+						new BulletSprite(
+							this,
+							bull.owner_id,
+							bull.pos_x,
+							bull.pos_y,
+							bull.sheet_id,
+							bull.shot_anim_fly,
+							bull.shot_anim_imp,
+							bull.vel_x / 1.8,
+							bull.vel_y / 1.8,
+							bull.id
+						)
+					);
+				}
+			});
+			console.log('drawing');
 			this.to_draw_bullets = [];
 		}
 		// own player
 		this.updatePlayer(delta);
 		// rt communication
-		this.characters.forEach(this.predictEnemiePosition)
-		this.sendUpdateOnKeyPress()
+		this.characters.forEach(this.predictEnemiePosition);
+		this.sendUpdateOnKeyPress();
 	}
 
 	sendUpdateOnKeyPress() {
-		this.input.keyboard.keys.forEach(key => {if(Phaser.Input.Keyboard.JustDown(key) || Phaser.Input.Keyboard.JustUp(key)) {
+		this.input.keyboard.keys.forEach((key) => {
+			if (Phaser.Input.Keyboard.JustDown(key) || Phaser.Input.Keyboard.JustUp(key)) {
 				console.log('UPDATE DATA TO RT SERVER ');
-			this.sendUpdateGameState_io();
-		}} )
+				this.sendUpdateGameState_io();
+			}
+		});
 	}
 
 	predictEnemiePosition = (character: CharacterSprite): CharacterSprite | undefined => {
@@ -276,41 +280,19 @@ export default class GameScene extends Scene {
 			this.characters.forEach(this.playAnimation);
 
 			// neue bullets suchen und hinzufugen da bullets latenz und bis auf erstellen user input unabhangig sind
-			if(this.game_data.bullet_objects.length > 1) {
-				console.log(this.game_data.bullet_objects.filter((elem: any) => elem !== null))
-				this.to_draw_bullets = this.game_data.bullet_objects.filter((elem: any) => elem !== null)
+			if (this.game_data.bullet_objects.length > 1) {
+				console.log(this.game_data.bullet_objects.filter((elem: any) => elem !== null));
+				this.to_draw_bullets = this.game_data.bullet_objects.filter((elem: any) => elem !== null);
 			}
 		}
 	}
-
-	createNewBullets = (new_bullets: any[]): BulletSprite[] => 
-		new_bullets.map((bull: IBulletObject) => this.newBulletSprite(bull) )
-
-
-	newBulletSprite = (bullet: IBulletObject): BulletSprite => {
-		const new_bullet = 
-			new BulletSprite(
-				this,
-				bullet.owner_id,
-				bullet.pos_y,
-				bullet.pos_x,
-				bullet.sheet_id,
-				bullet.shot_anim_fly,
-				bullet.shot_anim_imp,
-				bullet.vel_x,
-				bullet.vel_y,
-				bullet.id
-			);
-			console.log('SERVER', new_bullet)
-		return new_bullet
-	};
 
 	updateEnemiePositionAndVelo = (game_data: any) => (character: CharacterSprite): CharacterSprite | undefined => {
 		const enemie = game_data.players_objects.find((enemie: IPlayerObject) =>
 			enemie ? enemie.name === character.name : false
 		);
 		if (enemie) {
-			if (Math.abs(character.body.x - enemie.pos_x) > 5 ||Math.abs(character.body.y - enemie.pos_y) > 5 )
+			if (Math.abs(character.body.x - enemie.pos_x) > 5 || Math.abs(character.body.y - enemie.pos_y) > 5)
 				character.setPosition(enemie.pos_x, enemie.pos_y);
 			return (character.setVelocity(enemie.vel_x, enemie.vel_y).hp = enemie.hp);
 		}
@@ -413,22 +395,21 @@ export default class GameScene extends Scene {
 
 			if (this.keyboard.SPACE.isDown && !this.player.shoot_blocked) {
 				this.player.shoot_blocked = true;
-				const bullet = 
-				new BulletSprite(
-						this,
-						this.player.id,
-						this.player.x + -10,
-						this.player.y + (this.player.body.velocity.y !== 0 || this.player.body.velocity.x !== 0 ? 0 : 10),
-						this.player.sheet_id,
-						this.player.shot_anim_fly,
-						this.player.shot_anim_imp,
-						this.player.body.velocity.x,
-						this.player.body.velocity.y,
-						null
+				const bullet = new BulletSprite(
+					this,
+					this.player.id,
+					this.player.x + -10,
+					this.player.y + (this.player.body.velocity.y !== 0 || this.player.body.velocity.x !== 0 ? 0 : 10),
+					this.player.sheet_id,
+					this.player.shot_anim_fly,
+					this.player.shot_anim_imp,
+					this.player.body.velocity.x,
+					this.player.body.velocity.y,
+					null
 				);
 				this.temp_bullet_id = bullet.id;
-				console.log('OWN', bullet)
-				this.bullets.push(bullet)
+				console.log('OWN', bullet);
+				this.bullets.push(bullet);
 			}
 
 			this.playAnimation(this.player);
