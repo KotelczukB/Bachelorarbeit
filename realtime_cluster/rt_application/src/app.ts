@@ -18,6 +18,7 @@ import appHooks from './app.hooks';
 import channels from './channels';
 import mongodb from './mongodb';
 import { getRouterConnection, getPort, getType, getHOST } from './modules/helpers/get-envs';
+import getTimeStamp from './modules/helpers/getTimeStamp';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 const app: Application = express(feathers());
@@ -71,7 +72,7 @@ fetch(`${getRouterConnection()}`, {
   }),
   headers: { "Content-Type": "application/json" },
 }).then(resp => resp.json()).catch(console.log)
-
+app.set('lastsend', getTimeStamp());
 app.hooks(appHooks);
 
 export default app;

@@ -1,8 +1,6 @@
 import React from 'react';
 import './Login.scss'
 import { Header } from '../Header/Header';
-import createLoginBody from '../../modules/create-login-body';
-import { ILoginRegisterAnswer } from '../../models/ILoginRegisterAnswer';
 import { IRTServer } from '../../models/IRTServer';
 import { getBackendURL, getRouterConnection } from '../../modules/get-envs';
 

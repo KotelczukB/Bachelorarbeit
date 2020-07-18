@@ -15,11 +15,11 @@ ReactDOM.render(
 );
 
 window.onbeforeunload = () => {
-  localStorage.removeItem('game_state');
+  localStorage.removeItem('game_data');
 };
 
 window.onload = () => {
-  localStorage.removeItem('game_state');
+  localStorage.removeItem('game_data');
 };
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

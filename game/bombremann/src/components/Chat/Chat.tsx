@@ -21,25 +21,27 @@ export class Chat extends React.Component<IChatProps, IChatState> {
 		this.state = {
 			chat: [],
 		};
-		
 	}
 	componentDidMount = async () => {
-		if(!this.chat_socket)
-		 createChatRtSocket(this.props.client_data, this).then((socket) => {
-			 // subscribe to chat
-			socket.on('chat created', (data: IMessageProps) => {
-				console.log(data)
-				const tempChat: IMessageProps[] = this.state.chat;
-				tempChat.push(data);
-				tempChat.map(elem => elem = {
-					...elem,
-					intern: elem.user === this.props.user_id
-				})
-				this.setState({ chat: tempChat });
+		if (!this.chat_socket)
+			createChatRtSocket(this.props.client_data, this).then((socket) => {
+				// subscribe to chat
+				socket.on('chat created', (data: IMessageProps) => {
+					console.log(data);
+					const tempChat: IMessageProps[] = this.state.chat;
+					tempChat.push(data);
+					tempChat.map(
+						(elem) =>
+							(elem = {
+								...elem,
+								intern: elem.user === this.props.user_id,
+							})
+					);
+					this.setState({ chat: tempChat });
+				});
+				console.log('connection to realtime app created');
+				this.chat_socket = socket;
 			});
-			console.log('connection to realtime app created');
-			this.chat_socket = socket;
-		});
 		this.setOnSubmit();
 	};
 	componentDidUpdate() {
@@ -50,23 +52,32 @@ export class Chat extends React.Component<IChatProps, IChatState> {
 	public setOnSubmit = () => {
 		const form = document.getElementById('_form');
 		if (form)
-		form.onsubmit = async (event: any) => {
-			event.preventDefault();
-			await this.handleSubmit();
+			form.onsubmit = async (event: any) => {
+				event.preventDefault();
+				await this.handleSubmit();
 			};
 	};
 
 	public handleSubmit = () => {
 		const elem: any = document.getElementById('_msg-input');
 		if (elem && elem.value !== '') {
-			console.log('TEST')
-			this.chat_socket.emit('create', 'chat', {
-				user: this.props.user_id,
-				msg: elem.value,
-				intern: false,
-				token: this.props.token,
-				created_at: +new Date()
-			}, (err: any, data: any) => console.log(err, data));
+			console.log('TEST');
+			try {
+				this.chat_socket.emit(
+					'create',
+					'chat',
+					{
+						user: this.props.user_id,
+						msg: elem.value,
+						intern: false,
+						token: this.props.token,
+						created_at: +new Date(),
+					},
+					(err: any, data: any) => console.log(err, data)
+				);
+			} catch (err) {
+				window.alert('ups chat is down ...');
+			}
 			elem.value = '';
 		}
 	};

@@ -7,13 +7,13 @@ import { IPlayerData } from '../models/player-models';
 import { IPlayerObject } from '../models/transfer/IPlayerObject';
 import { IBulletObject } from '../models/transfer/IBulletObject';
 import { createNewGameInput } from '../modules/create-new-input';
-import * as R from 'ramda';
 import getGameData from '../modules/get-game-data';
 
 export default class GameScene extends Scene {
 	keyboard!: { [idx: string]: Phaser.Input.Keyboard.Key };
 	characters: CharacterSprite[] = [];
 	bullets: BulletSprite[] = [];
+	temp_bullet_id: string = '';
 	player!: CharacterSprite;
 	follower!: CharacterSprite;
 	follower_pic_1!: Phaser.GameObjects.Image;
@@ -27,6 +27,8 @@ export default class GameScene extends Scene {
 	token: string = '';
 	frame: number = 0;
 	player_pos: any[] = [];
+
+	to_draw_bullets: IBulletObject[] = [];
 	constructor() {
 		super({
 			key: 'GAME',
@@ -60,12 +62,13 @@ export default class GameScene extends Scene {
 			createNewGameInput(
 				this.char_id,
 				this.player,
-				this.bullets.filter((bullet) => bullet.owner_id === this.player.id),
+				this.bullets.find((elem: BulletSprite) => elem.id === this.temp_bullet_id),
 				this.game_data,
 				this.token
 			),
 			(err: any, data: any) => console.log('GAMESTATE UPDATE', data)
 		);
+		this.temp_bullet_id = ''
 	};
 	/***************************************** */
 
@@ -73,11 +76,17 @@ export default class GameScene extends Scene {
 		console.log('init', data);
 		this.char_id = data.character_id;
 		this.token = data.token;
+		data.socket.off('backend-inputs created')
 		this.socket = data.socket;
 		const game_state = localStorage.getItem('game_data');
 		if (game_state) {
 			this.game_data = getGameData();
+			localStorage.removeItem('game-data')
 		}
+		data.socket.on('backend-inputs created', (data: any) => {
+			this.game_data = data;
+			this.updateGame();
+		});
 	}
 	preload() {
 		// create animation for all player
@@ -218,41 +227,42 @@ export default class GameScene extends Scene {
 	}
 
 	update(time: number, delta: number) {
-		this.frame = this.frame + 1;
-		if (this.game_data.players_selected.length > this.characters.length)
-			//	this.setChars()
-
-			this.game_data = getGameData();
+		if(this.to_draw_bullets.length > 0){
+			this.to_draw_bullets.forEach(bull => {
+				this.bullets.push(
+					new BulletSprite(
+						this,
+						bull.owner_id,
+						bull.pos_y,
+						bull.pos_x,
+						bull.sheet_id,
+						bull.shot_anim_fly,
+						bull.shot_anim_imp,
+						bull.vel_x,
+						bull.vel_y,
+						bull.id
+					)
+				)
+			})
+			console.log('drawing')
+			this.to_draw_bullets = [];
+		}
 		// own player
 		this.updatePlayer(delta);
-		this.predict();
 		// rt communication
-		this.updateGame();
-		//******************************* */
-		// Update data fur den server. Drunter beginnt der Server sich zu fressen irg.
-		//******************************* */
-		if (this.frame === 8) {
-			// Game state from server
-			this.frame = 0;
-			console.log('UPDATE DATA TO RT SERVER ');
+		this.characters.forEach(this.predictEnemiePosition)
+		this.sendUpdateOnKeyPress()
+	}
+
+	sendUpdateOnKeyPress() {
+		this.input.keyboard.keys.forEach(key => {if(Phaser.Input.Keyboard.JustDown(key) || Phaser.Input.Keyboard.JustUp(key)) {
+				console.log('UPDATE DATA TO RT SERVER ');
 			this.sendUpdateGameState_io();
-		}
+		}} )
 	}
 
-	predict() {
-		if (this.game_data) {
-			this.characters.forEach(this.predictEnemiePosition(this.game_data));
-
-			// // neue bullets suchen und hinzufugen da bullets latenz und bis auf erstellen user input unabhangig sind
-			// const just_new_bullets: IBulletObject[] = this.game_data.bullet_objects
-			// 	.map(this.getJustNewBulles)
-			// 	.filter((bullet: IBulletObject | undefined) => bullet !== undefined);
-			// this.bullets.concat(this.createNewBullets(just_new_bullets));
-		}
-	}
-
-	predictEnemiePosition = (game_data: any) => (character: CharacterSprite): CharacterSprite | undefined => {
-		const enemie = game_data.players_objects.find((enemie: IPlayerObject) =>
+	predictEnemiePosition = (character: CharacterSprite): CharacterSprite | undefined => {
+		const enemie = this.game_data.players_objects.find((enemie: IPlayerObject) =>
 			enemie ? enemie.name === character.name : false
 		);
 		if (enemie) return character.setVelocity(enemie.vel_x, enemie.vel_y);
@@ -266,51 +276,33 @@ export default class GameScene extends Scene {
 			this.characters.forEach(this.playAnimation);
 
 			// neue bullets suchen und hinzufugen da bullets latenz und bis auf erstellen user input unabhangig sind
-			const just_new_bullets: IBulletObject[] = this.game_data.bullet_objects
-				.map(this.getJustNewBulles)
-				.filter((bullet: IBulletObject | undefined) => bullet !== undefined);
-			this.bullets.concat(this.createNewBullets(just_new_bullets));
+			if(this.game_data.bullet_objects.length > 1) {
+				console.log(this.game_data.bullet_objects.filter((elem: any) => elem !== null))
+				this.to_draw_bullets = this.game_data.bullet_objects.filter((elem: any) => elem !== null)
+			}
 		}
 	}
 
-	getJustNewBulles = (server_bullet: IBulletObject) => {
-		this.bullets.find((old) => old.id === server_bullet.id);
-	};
+	createNewBullets = (new_bullets: any[]): BulletSprite[] => 
+		new_bullets.map((bull: IBulletObject) => this.newBulletSprite(bull) )
 
-	destroyOldBullets = () => {
-		this.bullets.forEach((bullet) => bullet.destroy());
-	};
 
-	createNewBullets = (new_bullets: IBulletObject[]): BulletSprite[] => {
-		const grupping_by_owner = R.groupBy((bullet: IBulletObject) => bullet.owner_id + '');
-		const new_sprites: BulletSprite[] = [];
-		const grupped = grupping_by_owner(new_bullets);
-		Object.keys(grupped).forEach((key) => {
-			if (this.player.id === +key) {
-				new_sprites.concat(this.newBulletSprite(this.player, grupped[key]));
-			} else {
-				const char = this.characters.find((char) => char.id === +key);
-				if (char) new_sprites.concat(this.newBulletSprite(char, grupped[key]));
-			}
-		});
-		return new_sprites;
-	};
-
-	newBulletSprite = (character: CharacterSprite, bullets: IBulletObject[]): BulletSprite[] => {
-		return bullets.map((bullet) => {
-			return new BulletSprite(
+	newBulletSprite = (bullet: IBulletObject): BulletSprite => {
+		const new_bullet = 
+			new BulletSprite(
 				this,
 				bullet.owner_id,
 				bullet.pos_y,
 				bullet.pos_x,
-				character.sheet_id,
-				character.shot_anim_fly,
-				character.shot_anim_imp,
+				bullet.sheet_id,
+				bullet.shot_anim_fly,
+				bullet.shot_anim_imp,
 				bullet.vel_x,
 				bullet.vel_y,
 				bullet.id
 			);
-		});
+			console.log('SERVER', new_bullet)
+		return new_bullet
 	};
 
 	updateEnemiePositionAndVelo = (game_data: any) => (character: CharacterSprite): CharacterSprite | undefined => {
@@ -318,7 +310,7 @@ export default class GameScene extends Scene {
 			enemie ? enemie.name === character.name : false
 		);
 		if (enemie) {
-			if (Math.abs(character.body.x - enemie.pos_x) > 10 ||Math.abs(character.body.y - enemie.pos_y) > 10)
+			if (Math.abs(character.body.x - enemie.pos_x) > 5 ||Math.abs(character.body.y - enemie.pos_y) > 5 )
 				character.setPosition(enemie.pos_x, enemie.pos_y);
 			return (character.setVelocity(enemie.vel_x, enemie.vel_y).hp = enemie.hp);
 		}
@@ -373,7 +365,6 @@ export default class GameScene extends Scene {
 		}
 		// delta 16.66666 60fps
 		if (this.player.hp > 0 && !this.won && this.input.keyboard.enabled) {
-			this.player.shoot_blocked = this.player.shoot_blocked - delta;
 			let speed: number = 64;
 
 			if (this.keyboard.G.isDown && this.player.stamina > 0) {
@@ -408,6 +399,9 @@ export default class GameScene extends Scene {
 			if (this.keyboard.W.isUp && this.keyboard.S.isUp) {
 				this.player.setVelocityY(0);
 			}
+			if (this.keyboard.SPACE.isUp) {
+				this.player.shoot_blocked = false;
+			}
 			// update life position
 			this.gui_hearts.forEach((heart, idx) => {
 				if (heart)
@@ -417,22 +411,24 @@ export default class GameScene extends Scene {
 					);
 			});
 
-			if (this.keyboard.SPACE.isDown === true && this.player.shoot_blocked < 0) {
-				this.player.shoot_blocked = 500;
-				this.bullets.push(
-					new BulletSprite(
+			if (this.keyboard.SPACE.isDown && !this.player.shoot_blocked) {
+				this.player.shoot_blocked = true;
+				const bullet = 
+				new BulletSprite(
 						this,
 						this.player.id,
-						this.player.x,
-						this.player.y,
+						this.player.x + -10,
+						this.player.y + (this.player.body.velocity.y !== 0 || this.player.body.velocity.x !== 0 ? 0 : 10),
 						this.player.sheet_id,
 						this.player.shot_anim_fly,
 						this.player.shot_anim_imp,
 						this.player.body.velocity.x,
 						this.player.body.velocity.y,
 						null
-					)
 				);
+				this.temp_bullet_id = bullet.id;
+				console.log('OWN', bullet)
+				this.bullets.push(bullet)
 			}
 
 			this.playAnimation(this.player);

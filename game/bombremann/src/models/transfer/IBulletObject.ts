@@ -6,4 +6,7 @@ export interface IBulletObject {
   owner_id: number;
   created_at: number;
   id: string;
+  sheet_id: string;
+  shot_anim_fly: string;
+  shot_anim_imp: string;
 }

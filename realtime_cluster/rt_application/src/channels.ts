@@ -79,6 +79,7 @@ export default function (app: Application) {
   //******************************************** */
   app.service("backend-message").publish("created", async (data: IMessageToBackend, context) => {
     console.log('NEW CLIENT INPUT')
+    app.set('lastsend', getTimeStamp());
       return app.channel(data.channel)
   }
       // await sendDataToBackend(data)
@@ -96,7 +97,7 @@ export default function (app: Application) {
   );
 
   app.service("backend-inputs").publish("created", (data: IBackendResponse, context) => {
-    console.log('NEW BACKEND INPUT', getTimeStamp() - data.created_at)
+    console.log('NEW BACKEND INPUT', getTimeStamp() - data.created_at, data)
       return app.channel(data.client_channel);
     });
 

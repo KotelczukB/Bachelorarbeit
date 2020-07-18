@@ -3,7 +3,7 @@ import { IPlayerAnimations } from './player-models';
 export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
 	hp: number;
 	id: number;
-	shoot_blocked: number;
+	shoot_blocked: boolean;
 	anima: IPlayerAnimations;
 	sheet_id: string;
 	shot_anim_fly: string;
@@ -37,7 +37,7 @@ export class CharacterSprite extends Phaser.Physics.Arcade.Sprite {
 		this.setDepth(2);
 		this.hp = 3;
 		this.id = id;
-		this.shoot_blocked = 0;
+		this.shoot_blocked = false;
 		this.anima = animations;
 		this.sheet_id = 'player';
 		this.shot_anim_fly = shot_anim_fly;

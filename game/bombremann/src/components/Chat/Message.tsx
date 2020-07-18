@@ -8,9 +8,6 @@ export interface IMessageProps {
 	timestamp: number;
 }
 export class Message extends React.Component<IMessageProps, {}> {
-	constructor(props: Readonly<IMessageProps>) {
-		super(props);
-	}
 
 	public convertUserName = (username: string): string => {
 		return username.split('').length < 8 ? username : this.getShortenUserName(username);

@@ -4,6 +4,7 @@ import { IGameSesion } from "../models/IGameSession";
 import { IBulletObject } from "../models/GameObjects/IBulletObject";
 import { IPlayerObject } from "../models/GameObjects/IPlayerObject";
 import { _BasicState } from "../models/_SessionState";
+import R from "ramda";
 
 //***************************************** */
 // where hole magic happens
@@ -17,10 +18,11 @@ import { _BasicState } from "../models/_SessionState";
 export default async (game_session_id: any, app: Application): Promise<IGameSnapShot> => {
   const game: IGameSesion = await app.service('game-session').get(game_session_id);
   const player_objects = getPlayerObjects(game)
-  const bullet_objects = getBulletObjects(game)
+  const bullet_objects = (getBulletObjects(game))
+  console.log(bullet_objects)
   const ended = getEnded(game)
   const selected = game.player_inputs.map(elem => elem?.app.client_selected)
-  const game_can_start = game.players_selected.length === game.player_tokens.length &&  game.players_selected.length >= game.min_player;
+  const game_can_start = game.players_selected.filter(elem => elem !== null).length === game.player_tokens.length &&  game.players_selected.filter(elem => elem !== null).length >= game.min_player;
   return {
     game_can_start,
     players_selected: selected,

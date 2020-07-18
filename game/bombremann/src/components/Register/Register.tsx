@@ -1,7 +1,6 @@
 import React from 'react';
 import { Header } from '../Header/Header';
 import './Register.scss';
-import { ILoginRegisterAnswer } from '../../models/ILoginRegisterAnswer';
 import { IRTServer } from '../../models/IRTServer';
 import { getBackendURL, getRouterConnection } from '../../modules/get-envs';
 
