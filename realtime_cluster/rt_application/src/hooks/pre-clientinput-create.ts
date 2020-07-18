@@ -16,9 +16,9 @@ export default (options = {}): Hook => {
     const auth: boolean = await validateUser(app.service('clients'), data);
     if(!auth)
       throw new Error('client-input not refer to saved client');
-    // const old_messages = await app.service('client-inputs').find(addToDefaultParams({query: {token: data.token}})) 
-    // //console.log("Client input handling", 'old', old_messages, 'input', data)
-    // await Promise.all(old_messages.data.map(async (elem: any) => await app.service('client-inputs').remove(elem._id)))
+    const old_messages = await app.service('client-inputs').find(addToDefaultParams({query: {token: data.token}})) 
+    //console.log("Client input handling", 'old', old_messages, 'input', data)
+    await Promise.all(old_messages.data.map(async (elem: any) => await app.service('client-inputs').remove(elem._id)))
     return context;
   };
 }

@@ -27,13 +27,14 @@ export default function (app: Application) {
   //********************************************** */
 
   app.on("connection", async (connection: IConnection) => {
+    try{
     // On a new real-time connection, add it to the anonymous channel
     if (connection.type === "backend") {
       console.log('backend connnected socket', connection)
       return app.channel("waiting").join(connection);
       
     }
-    await getConnectionObject(connection, app)
+    return await getConnectionObject(connection, app)
       .then(
         async (obj: { backend_channel: string; client_channel: string }) => {
           // Check ob das backend gespeichert ist
@@ -55,6 +56,9 @@ export default function (app: Application) {
        }
       )
       .catch((err) => console.log(`connection setting error ${err}`));
+    } catch (err) {
+      console.log(err)
+    }
   });
 
   //******************************************** */
@@ -64,7 +68,11 @@ export default function (app: Application) {
   // easy
   //******************************************** */
   app.service("chat").publish("created", (data: IChatMessage, context) => {
+    try{ 
     return app.channel(data.channel).send(data);
+    } catch (err) {
+      console.log(err)
+    }
   });
 
   //******************************************** */
@@ -78,7 +86,6 @@ export default function (app: Application) {
   // Mache das gleiche von der Logik nur sende uber sockets
   //******************************************** */
   app.service("backend-message").publish("created", async (data: IMessageToBackend, context) => {
-    console.log('NEW CLIENT INPUT')
     app.set('lastsend', getTimeStamp());
       return app.channel(data.channel)
   }
@@ -97,7 +104,9 @@ export default function (app: Application) {
   );
 
   app.service("backend-inputs").publish("created", (data: IBackendResponse, context) => {
-    console.log('NEW BACKEND INPUT', getTimeStamp() - data.created_at, data)
+    console.log('NEW BACKEND INPUT', getTimeStamp() - app.get('lastsend'), data)
+    // Valiedierung ob Daten die Echtzeitbedingung nicht verletzten
+    if (validateRtConstrain(app.get('lastsend'), getTimeStamp()))
       return app.channel(data.client_channel);
     });
 

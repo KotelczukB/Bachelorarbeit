@@ -22,7 +22,9 @@ services:
       - PORT=3050
       - HOST=host.docker.internal
       # Echtzeit Bedingung - dieser wert darf nicht uberschritten werden in der rt_server -> backend kommunikation (in ms)
-      - RT_CONSTRAIN=100
+      - RT_CONSTRAIN=500
+      # Es besteht die Moglichkeit die Nachrichen an das Backend hinauszuzuggern um den Server nicht zu uberlasten - Gefahr bottleneck
+      - MESSAGE_AWAITER=1
     build: .
     ports:
       - "3050:3050"
@@ -55,6 +57,8 @@ services:
       - HOST=host.docker.internal
       # Just als placeholder damit versehentlich kein Fehler fliegt
       - RT_CONSTRAIN=60000
+      # Just als placeholder damit versehentlich kein Fehler fliegt
+      - MESSAGE_AWAITER=1
     build: .
     ports:
       - "3040:3040"

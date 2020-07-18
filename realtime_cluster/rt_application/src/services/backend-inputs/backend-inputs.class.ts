@@ -5,8 +5,10 @@ import { IBackendResponse } from '../../models/Interfaces/backend-inputs/IBacken
 import getTimeStamp from '../../modules/helpers/getTimeStamp';
 
 export class BackendInputs extends Service {
+  app: any;
   constructor(options: Partial<MongoDBServiceOptions>, app: Application) {
     super(options);
+    this.app = app;
 
     const client: Promise<Db> = app.get('mongoClient');
 
@@ -18,7 +20,8 @@ export class BackendInputs extends Service {
   public async create(data: IBackendResponse, params: any): Promise<any> {
     const input: IBackendResponse = {
       ...data,
-      created_at: getTimeStamp()
+      created_at: getTimeStamp(),
+      ping: getTimeStamp() - this.app.get('lastsend')
     }
     return super.create(input, params)
   } 

@@ -9,7 +9,8 @@ export const createNewGameInput = (
 	player: CharacterSprite,
 	player_bullets: BulletSprite | undefined,
 	game_data: any,
-	token: string
+  token: string,
+  player_won: boolean
 ): IClientMessage => {
 	const player_object: IPlayerObject = {
 		pos_x: player.body.x,
@@ -38,7 +39,8 @@ export const createNewGameInput = (
 			app: {
 				player_data: player_object,
 				bullets_data: bullets_objects,
-				client_selected: `player_${char_id}`,
+        client_selected: `player_${char_id}`,
+        player_won
 			},
 		};
 	} else {
@@ -47,7 +49,8 @@ export const createNewGameInput = (
 			app: {
 				player_data: player_object,
 				bullets_data: undefined,
-				client_selected: `player_${char_id}`,
+        client_selected: `player_${char_id}`,
+        player_won
 			},
 		};
 	}

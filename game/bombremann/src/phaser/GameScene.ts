@@ -64,7 +64,8 @@ export default class GameScene extends Scene {
 				this.player,
 				this.bullets.find((elem: BulletSprite) => elem.id === this.temp_bullet_id),
 				this.game_data,
-				this.token
+				this.token,
+				this.won
 			),
 			(err: any, data: any) => console.log('GAMESTATE UPDATE', data)
 		);
@@ -209,7 +210,7 @@ export default class GameScene extends Scene {
 		});
 
 		// camera on player
-		this.cameras.main.startFollow(this.player);
+		this.cameras.main.startFollow(this.player).zoom = 2.6;
 
 		// set keys
 		this.keyboard = this.input.keyboard.addKeys('W, S, A, D, SPACE, G') as {
@@ -234,8 +235,8 @@ export default class GameScene extends Scene {
 						new BulletSprite(
 							this,
 							bull.owner_id,
-							bull.pos_x,
-							bull.pos_y,
+							bull.pos_x - 10,
+							bull.pos_y - 10,
 							bull.sheet_id,
 							bull.shot_anim_fly,
 							bull.shot_anim_imp,
@@ -341,6 +342,7 @@ export default class GameScene extends Scene {
 			const again_btn = this.add.image(this.player.body.x, this.player.body.y + 60, 'play_again').setDepth(10);
 			this.won = true;
 			again_btn.setInteractive();
+			this.sendUpdateGameState_io()
 			again_btn.on('pointerup', () => {
 				startNewGame();
 			});

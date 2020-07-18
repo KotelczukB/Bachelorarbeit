@@ -2,7 +2,6 @@ import { IGameSesion } from "../models/IGameSession";
 import { _BasicState } from "../models/_SessionState";
 import { IGameSessionCreation } from "../models/IGameSessionCreation";
 import app from "../app";
-import { Application, Paginated } from "@feathersjs/feathers";
 import { IRTServer } from "../models/IRTServer";
 
 // Create State of GameSession !
@@ -16,5 +15,6 @@ export default (data: IGameSessionCreation, rt_server: IRTServer): IGameSesion =
     player_tokens: [data.token],
     players_selected: [],
     player_inputs: [],
+    player_won: false
   };
 };

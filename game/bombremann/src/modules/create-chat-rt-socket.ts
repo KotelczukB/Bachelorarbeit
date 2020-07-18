@@ -27,6 +27,10 @@ export default async (client: ILoginRegisterAnswer, app: any) => {
 		// initial Data fur verbindung und registierung
 		console.log('Creating connection with CHAT', rt_server_url)
 		const game_socket = await io(rt_server_url, {
+			reconnection: true,
+			reconnectionDelay: 1000,
+			reconnectionDelayMax : 5000,
+			reconnectionAttempts: Infinity,
 			query: {
         ...login_data,
         type: 'client'

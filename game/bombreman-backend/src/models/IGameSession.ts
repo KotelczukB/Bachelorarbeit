@@ -4,6 +4,7 @@ import { IPlayerInput, IClientInput } from "./IPlayerInput";
 
 export interface IGameSesion {
   name: string;
+  player_won: boolean;
   min_player: number;
   state: _BasicState;
   game_session: string;

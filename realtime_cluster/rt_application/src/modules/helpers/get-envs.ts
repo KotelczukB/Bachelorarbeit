@@ -49,4 +49,12 @@ export const getRT_CONSTRAIN = (): number => {
   }
 };
 
+export const getMESSAGE_AWAITER = (): number => {
+  if (process.env.MESSAGE_AWAITER) {
+    return +process.env.MESSAGE_AWAITER;
+  } else {
+    throw new Error('critical ENV Variable not provided')
+  }
+};
+
 

@@ -9,7 +9,7 @@ export default async (
 ): Promise<void> => {
   await getAllClientMessages(client_input_service, session_name).then(
     (messeges: IClientMessage[]) =>
-      fetch(`${backend_url}/chats`, {
+      fetch(`${backend_url}/chat_backup`, {
         method: "POST",
         body: JSON.stringify(messeges),
       }).catch((err: any) => {
