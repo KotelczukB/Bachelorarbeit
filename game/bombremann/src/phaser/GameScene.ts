@@ -61,7 +61,7 @@ export default class GameScene extends Scene {
 				this.bullets.filter((bullet) => bullet.owner_id === this.player.id),
 				this.game_data,
 				this.token
-			))
+			), (err: any, data: any) => console.log("GAMESTATE UPDATE", data))
 	};
 	/***************************************** */
 
@@ -227,7 +227,7 @@ export default class GameScene extends Scene {
 		if(this.frame === 7) {
 			// Game state from server
 			this.frame = 0
-			this.sendUpdateGameState_io().then(() => {
+			await this.sendUpdateGameState_io().then(() => {
 				this.game_data = getGameData();
 			})
 				

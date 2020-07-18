@@ -16,7 +16,7 @@ export default (options = {}): Hook => {
       await authClientAgainstBackend(app.service("backends"), data).then((resp: boolean) => {
         if(!resp)
           throw new Error('Backend refused Client')
-      });
+      }).catch((err: any) => console.log('pre client auth err',err));
     return context;
   };
 };

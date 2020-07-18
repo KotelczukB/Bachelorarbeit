@@ -19,7 +19,7 @@ export class Backends extends Service {
     const result = await super.find(addToDefaultParams({query : {own_url: data.own_url}}))
     if(result !== undefined && (result as any).length > 0)
     // CHACK um die aktion abzubrechen ohne einen fehler werfen zu mussen
-      return super.remove((result as any)._id)
+      super.remove((result as any)[0]._id).catch((err: any) => console.log('remove on create backend', err))
     return super.create(data);
   }
 };

@@ -80,7 +80,7 @@ export class Chat extends React.Component<IChatProps, IChatState> {
 				<div className="chat">
 					<div className="chat-whole " id="style-1">
 						{this.state.chat.map((elem, idx) => (
-							<Message msg={elem.msg} user={elem.user} intern={elem.intern} timestamp={idx} />
+							<Message msg={elem.msg} user={elem.user} intern={elem.intern} timestamp={idx} key={idx} />
 						))}
 					</div>
 					<form className="chat-form" id="_form">

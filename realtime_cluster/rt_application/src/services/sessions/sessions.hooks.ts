@@ -21,7 +21,7 @@ export default {
     get: [],
     create: [],
     update: [],
-    patch: [postSessionDropConnectionsOnClosed()],
+    patch: [],
     remove: []
   },
 

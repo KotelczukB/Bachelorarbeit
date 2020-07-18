@@ -30,8 +30,8 @@ export default async (client: ILoginRegisterAnswer) => {
         type: 'client'
 			},
 		});
-		game_socket.on('client-inputs created', (data: any) => {
-		//	console.log('RECIVED GAME DATA', data)
+		game_socket.on('backend-inputs created', (data: any) => {
+				console.log('RECIVED GAME DATA FROM BACKEND', data)
 			localStorage.setItem('game_data', JSON.stringify(data));
 		});
 		console.log(`Game connected to game_application Server with socket`);

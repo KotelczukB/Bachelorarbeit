@@ -20,7 +20,8 @@ export default (options = {}): Hook => {
   return async (context: HookContext) => {
     const { data, app } = context as {data: IClientConnection, app: Application};
     // a)
-    await searchAndRemoveFromSessions(data.user_name, app.service("sessions"));
+    await searchAndRemoveFromSessions(data.user_name, app.service("sessions")).catch((err: any) =>
+    console.log("pre clinet reconnect session on search and remove", err));
     // b)
 
     /// Functional
@@ -31,7 +32,8 @@ export default (options = {}): Hook => {
       if (session) {
         await app.service("sessions").patch(session._id, {
           $push: { clients: data.user_name },
-        }, default_params);
+        }, default_params).catch((err: any) =>
+        console.log("pre clinet reconnect session patch session", err));
         context.data.targetChannel = session.clients_channel;
       }
       return context;

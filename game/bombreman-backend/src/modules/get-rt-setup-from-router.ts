@@ -4,6 +4,7 @@ import fetch from "node-fetch";
 import { _BasicState } from "../models/_SessionState";
 import { _RTServerType } from "../models/_RTServerType";
 import { getPORT, getHOST, getRouterConnection } from "./get-envs";
+import io from "socket.io-client";
 
 //************************************** */
 // Remove old rt_servers -> connect to router -> save new Servers -> create backend object auf allen servern der art-> failed? -> repeat
@@ -61,7 +62,36 @@ export const getRTSetup = (app: Application) =>
           headers: { "Content-Type": "application/json" },
         })));
         console.log(`Server created on rt_server`);
-      })
+      
+
+      // Socket connection on pure socket
+
+      const game_rt = resp.find(
+        (elem) => elem.type === _RTServerType.application
+        );
+        if (!game_rt) throw new Error("Cannot create rt_server connection");
+        console.log("CONNECTION WITH SOCKET", game_rt)
+        // initial Data fur verbindung und registierung
+        const socket = io(game_rt.serverURL, {
+          query: {
+            backend_url: `http://${getHOST()}:${getPORT()}`,
+            type: "backend",
+          },
+        });
+        socket.on("client-inputs created" , async (data: any) => {
+          // Game RULEZ magic
+          console.log('GETTING DATA FROM RT_SERVER')
+          await app
+            .service("player-inputs")
+            .create(data)
+            .then(
+              (snapshot: any) =>
+                socket.emit('create','backend-inputs', snapshot)
+            )
+            .catch((err: any) => console.log(err))
+          });
+      }
+    )
     .catch((err: any) =>
       setTimeout(() => {
         console.log('On get RT_Setup or create backend object', err);

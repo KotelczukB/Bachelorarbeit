@@ -26,24 +26,36 @@ export default function (app: Application) {
   // fuge client zu dem Session channel
   //********************************************** */
 
-  app.on("connection", async (connection: IConnection) =>
-      // On a new real-time connection, add it to the anonymous channel
-      await getConnectionObject(connection, app)
-        .then(
-          async (obj: { backend_channel: string; client_channel: string }) => {
-            
-            // Check ob das backend gespeichert ist
-            const backend_connection = await idetifyBackendServer(
-              connection,
-              app.service("backends")
+  app.on("connection", async (connection: IConnection) => {
+    // On a new real-time connection, add it to the anonymous channel
+    if (connection.type === "backend") {
+      console.log('backend connnected socket', connection)
+      return app.channel("waiting").join(connection);
+      
+    }
+    await getConnectionObject(connection, app)
+      .then(
+        async (obj: { backend_channel: string; client_channel: string }) => {
+          // Check ob das backend gespeichert ist
+          const backend_instance = await idetifyBackendServer(
+            connection,
+            app.service("backends")
+          );
+          if (!backend_instance || backend_instance.length < 1)
+            throw new Error("requested Backendserver could not be found");
+
+          const backend_connection = app
+            .channel("waiting")
+            .connections.filter(
+              (elem: any) => elem.backend_url === backend_instance[0].own_url
             );
-            if (!backend_connection || backend_connection.length < 1)
-              throw new Error("requested Backendserver could not be found");
-            return app.channel(`${obj.client_channel}`).join(connection);
-          }
-        )
-        .catch((err) => console.log(`connection setting error ${err}`))
-  );
+            console.log('SOCKET', obj.backend_channel, backend_connection[0]);
+            return [app.channel(obj.client_channel).join(connection),
+            app.channel(obj.backend_channel).join(backend_connection[0])];
+       }
+      )
+      .catch((err) => console.log(`connection setting error ${err}`));
+  });
 
   //******************************************** */
   // standard realtime verhalten
@@ -52,10 +64,9 @@ export default function (app: Application) {
   // easy
   //******************************************** */
   app.service("chat").publish("created", (data: IChatMessage, context) => {
-    console.log("emitting")
-    return app.channel(data.channel).send(data)
-  }
-  );
+    console.log("emitting");
+    return app.channel(data.channel).send(data);
+  });
 
   //******************************************** */
   // Sende clients Input zu validerung an das backend
@@ -65,17 +76,28 @@ export default function (app: Application) {
   // sende an die clients
   // Ziel -> async Kette bleibt beim Realtime Server
   //******************************************** */
-  app.service("client-inputs").publish("created", async (data: IMessageToBackend, context) =>
-      await sendDataToBackend(data)
-        .then((response: IBackendResponse) => {
-          console.log(`BACKEND RESPONSED IN `, getTimeStamp() - data.created_at)
-          if (validateRtConstrain(data.created_at, getTimeStamp()))
-            return app.channel(data.channel).send(response);
-        })
-        .catch((err: any) =>
-          console.log("Error on sending new Input to Backend", err)
-        )
+  app.service("client-inputs").publish("created", async (data: IMessageToBackend, context) => {
+      console.log("client inputs created",  app.channel(data.channel).connections);
+      return app.channel(data.channel)
+  }
+      // await sendDataToBackend(data)
+      //   .then((response: IBackendResponse) => {
+      //     console.log(
+      //       `BACKEND RESPONSED IN `,
+      //       getTimeStamp() - data.created_at
+      //     );
+      //     if (validateRtConstrain(data.created_at, getTimeStamp()))
+      //       return app.channel(data.channel).send(response);
+      //   })
+      //   .catch((err: any) =>
+      //     console.log("Error on sending new Input to Backend", err)
+      //   )
   );
+
+  app.service("backend-inputs").publish("created", (data: IBackendResponse, context) => {
+    console.log('sending from backend')
+      return app.channel(data.client_channel);
+    });
 
   // Preventing area
   app.service("health").publish(() => {
