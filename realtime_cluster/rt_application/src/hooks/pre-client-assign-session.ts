@@ -6,28 +6,32 @@ import findOrCreateSession from "../modules/clients/find-or-create-session-for-c
 import createSessionData from "../modules/sessions/create-session-data";
 import validateClientSessionProp from "../modules/clients/validate-client-session-prop";
 import { IClientConnection } from "../models/Interfaces/clients/IClientConnection";
+import { getType } from "../modules/helpers/get-envs";
+import { _AppType } from "../models/Interfaces/_AppType";
 
 // ************************************************
 // Suche oder erstelle eine freie Session und ubergebe diese an den Client
+// Session verwaltung obligt dem app server
 // ************************************************
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
     const { app, data, path } = context as {app: any, data: IClientConnection, path: string};
     // 1 bedeutet dass es ein neuer Client ist
-    if (validateClientSessionProp(data) === 1) {
-      const targetChannel: { user: string; session: string, backend: string}  | null = await findOrCreateSession(
-        app.service("sessions"),
-        path,
-        app.service("backends"),
-        createSessionData(data.backend_url, data.user_name, app.service('backends'))
-      );
-      if (!targetChannel)
-        throw new Error("no channel exists or can be created");
-      context.data = assignSessionAndChannelName(data, targetChannel.session, targetChannel.user);
-      // -1 da ist irg.was schief gegangen
-    } else if(validateClientSessionProp(data) === -1) {
-       throw new Error("connection data incomplete. Missing channel or session")
-    }
+    if(getType() === _AppType[_AppType.application])
+      if (validateClientSessionProp(data) === 1) {
+        const targetChannel: { user: string; session: string, backend: string}  | null = await findOrCreateSession(
+          app.service("sessions"),
+          path,
+          app.service("backends"),
+          createSessionData(data.backend_url, data.user_name, app.service('backends'))
+        );
+        if (!targetChannel)
+          throw new Error("no channel exists or can be created");
+        context.data = assignSessionAndChannelName(data, targetChannel.session, targetChannel.user);
+        // -1 da ist irg.was schief gegangen
+      } else if(validateClientSessionProp(data) === -1) {
+        throw new Error("connection data incomplete. Missing channel or session")
+      }
     return context;
   };
 };

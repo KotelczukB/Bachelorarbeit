@@ -30,6 +30,7 @@ export default async (client: ILoginRegisterAnswer) => {
         type: 'client'
 			},
 		});
+		localStorage.setItem('session_name', login_data.session_name+'')
 		game_socket.on('backend-inputs created', (data: any) => {
 				console.log('RECIVED GAME DATA FROM BACKEND', data)
 			localStorage.setItem('game_data', JSON.stringify(data));

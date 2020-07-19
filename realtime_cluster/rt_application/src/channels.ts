@@ -7,11 +7,9 @@ import { _ExternType } from "./models/Interfaces/_ExternType";
 import idetifyBackendServer from "./modules/helpers/idetify-backend-server";
 import { IMessageToBackend } from "./models/Interfaces/backend-inputs/IMessageToBackend";
 import { IChatMessage } from "./models/Interfaces/chat/IChatMessage";
-import sendDataToBackend from "./modules/rtFunctions/send-data-to-backend";
 import { IBackendResponse } from "./models/Interfaces/backend-inputs/IBackendResponse";
 import validateRtConstrain from "./modules/rtFunctions/validate-rt-constrain";
 import getTimeStamp from "./modules/helpers/getTimeStamp";
-import { getType } from "./modules/helpers/get-envs";
 
 export default function (app: Application) {
   if (typeof app.channel !== "function") {
@@ -51,8 +49,9 @@ export default function (app: Application) {
               (elem: any) => elem.backend_url === backend_instance[0].own_url
             );
             console.log('SOCKET', obj.backend_channel, backend_connection[0]);
-            return [app.channel(obj.client_channel).join(connection),
-            app.channel(obj.backend_channel).join(backend_connection[0])];
+            if(backend_connection[0] !== undefined)
+              return [app.channel(obj.client_channel).join(connection), app.channel(obj.backend_channel).join(backend_connection[0])];
+            return app.channel(obj.client_channel).join(connection)
        }
       )
       .catch((err) => console.log(`connection setting error ${err}`));

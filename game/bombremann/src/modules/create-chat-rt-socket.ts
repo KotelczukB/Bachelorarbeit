@@ -5,6 +5,7 @@ import { IRT_AppLoginAnswer } from '../models/IRT_AppLoginAnswer';
 
 export default async (client: ILoginRegisterAnswer, app: any) => {
 	const rt_server_url = client.rt_servers.filter((elem) => elem.type === 'chat')[0].serverURL;
+	const session_name = localStorage.getItem('session_name');
 	const login_response = await fetch(
 		`${rt_server_url}/clients`,
 		{
@@ -13,7 +14,7 @@ export default async (client: ILoginRegisterAnswer, app: any) => {
 				user_name: client.user_name,
 				backend_url: client.backend_url,
 				target_channel: null,
-				session_name: null,
+				session_name: session_name,
 				token: client.token,
 			}),
 			headers: {
