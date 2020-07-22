@@ -19,6 +19,7 @@ export const createNewGameInput = (
 		vel_y: player.body.velocity.y,
 		hp: player.hp,
 		name: player.name,
+		player_won
 	};
 	if (player_bullets) {
 		const bullets_objects: IBulletObject = {

@@ -5,4 +5,5 @@ export interface IPlayerObject {
   vel_y: number;
   hp: number;
   name: string;
+  player_won: boolean;
 }
