@@ -228,6 +228,7 @@ export default class GameScene extends Scene {
 	}
 
 	update(time: number, delta: number) {
+		// this.frame++;
 		if (this.to_draw_bullets.length > 0) {
 			this.to_draw_bullets.forEach((bull) => {
 				if (bull.owner_id !== this.player.id) {
@@ -250,6 +251,11 @@ export default class GameScene extends Scene {
 			console.log('drawing');
 			this.to_draw_bullets = [];
 		}
+		// TEST 1
+		// if(this.frame > 5) {
+		// 	this.sendUpdateGameState_io()
+		// 	this.frame = 0;
+		// }
 		// own player
 		this.updatePlayer(delta);
 		// rt communication

@@ -10,5 +10,4 @@ export interface IBackendResponse {
   game_ended: boolean;
   player_won: boolean;
   session_name: string;
-  message: string;
 }

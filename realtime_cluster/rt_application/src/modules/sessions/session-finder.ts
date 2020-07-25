@@ -11,7 +11,7 @@ export const getFreeSession = async (
   userType: string,
   targetURL: string
 ): Promise<{ user: string; session: string; backend: string } | null> =>
-  filterSessions(session_service, targetURL)
+  await filterSessions(session_service, targetURL)
     .then((elem: ISession) => getNameAndPatchSession(elem, session_service, client_id, userType)
     )
     .catch((error) => { return null} );
@@ -22,9 +22,9 @@ export const getNameAndPatchSession = async (
   client_id: string,
   userType: string
 ): Promise<{ user: string; session: string; backend: string } | null> =>
-  service
+  await service
     .patch(session._id, { $push: { clients: client_id } }, default_params)
-    .then(() => getJustName(userType)(session)).catch((err: any) => {console.log(err); return null});
+    .then(getJustName(userType)).catch((err: any) => {console.log(err); return null});
 
 export const filterSessions = async (
   service: any,

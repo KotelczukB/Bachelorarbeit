@@ -2,9 +2,9 @@ import IClientMessage from "../../models/Interfaces/clients-inputs/IClientMessag
 import { IMessageToBackend } from "../../models/Interfaces/backend-inputs/IMessageToBackend";
 import getTimeStamp from "../helpers/getTimeStamp";
 
-export default (rt_server_url: string, channel: string, backend_url: string) => (param: (IClientMessage | undefined)[]): IMessageToBackend | null => (createBackendInput(rt_server_url, channel, initializeRang(param), backend_url));
+export default (rt_server_url: string, channel: string, backend_url: string) => (param: (IClientMessage | undefined)[]): IMessageToBackend | null => (createBackendMessage(rt_server_url, channel, initializeRang(param), backend_url));
 
-export const createBackendInput = (url: string, channel: string,  param: (IClientMessage | undefined)[], backend_url: string): IMessageToBackend | null => {
+export const createBackendMessage = (url: string, channel: string,  param: (IClientMessage | undefined)[], backend_url: string): IMessageToBackend | null => {
   const infos = param.filter(elem => elem !== undefined)
   if(infos.length < 1)
     return null;

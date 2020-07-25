@@ -85,8 +85,10 @@ export const getRTSetup = (app: Application) =>
             .service("player-inputs")
             .create(data)
             .then(
-              (snapshot: any) =>
+              (snapshot: any) => {
+                snapshot.created_at = +new Date();
                 socket.emit('create','backend-inputs', snapshot)
+              }
             )
             .catch((err: any) => console.log(err))
           });
