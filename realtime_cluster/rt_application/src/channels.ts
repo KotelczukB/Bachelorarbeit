@@ -10,6 +10,7 @@ import { IChatMessage } from "./models/Interfaces/chat/IChatMessage";
 import { IBackendResponse } from "./models/Interfaces/backend-inputs/IBackendResponse";
 import validateRtConstrain from "./modules/rtFunctions/validate-rt-constrain";
 import getTimeStamp from "./modules/helpers/getTimeStamp";
+import sendDataToBackend from "./modules/rtFunctions/send-data-to-backend";
 
 export default function (app: Application) {
   if (typeof app.channel !== "function") {
@@ -86,20 +87,20 @@ export default function (app: Application) {
   //******************************************** */
   app.service("backend-message").publish("created", async (data: IMessageToBackend, context) => {
     app.set('lastsend', getTimeStamp());
-      return app.channel(data.channel)
+    // Entferne Kommentrar fur HTTP
+    // await sendDataToBackend(data)
+    // .then(async (response: IBackendResponse) => {
+    //   if (validateRtConstrain(data.created_at, getTimeStamp())) {
+    //     await app.service('backend-inputs').create(response);
+    //   }
+    // })
+    // .catch((err: any) =>
+    //   console.log("Error on sending new Input to Backend", err)
+    // )
+    // Aukommentiere fur HTTP
+    return app.channel(data.channel)
   }
-      // await sendDataToBackend(data)
-      //   .then((response: IBackendResponse) => {
-      //     console.log(
-      //       `BACKEND RESPONSED IN `,
-      //       getTimeStamp() - data.created_at
-      //     );
-      //     if (validateRtConstrain(data.created_at, getTimeStamp()))
-      //       return app.channel(data.channel).send(response);
-      //   })
-      //   .catch((err: any) =>
-      //     console.log("Error on sending new Input to Backend", err)
-      //   )
+     
   );
 
   app.service("backend-inputs").publish("created", (data: IBackendResponse, context) => {

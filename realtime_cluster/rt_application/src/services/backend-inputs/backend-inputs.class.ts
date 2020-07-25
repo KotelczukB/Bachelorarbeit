@@ -17,11 +17,11 @@ export class BackendInputs extends Service {
     });
   }
 
-  public async create(data: IBackendResponse, params: any): Promise<any> {
+  public async create(data: IBackendResponse): Promise<any> {
     const input: IBackendResponse = {
       ...data,
       ping: getTimeStamp() - this.app.get('lastsend')
     }
-    return super.create(input, params)
+    return super.create(input)
   } 
 };

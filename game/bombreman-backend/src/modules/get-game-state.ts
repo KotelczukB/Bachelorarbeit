@@ -19,7 +19,6 @@ export default async (game_session_id: any, app: Application): Promise<IGameSnap
   const game: IGameSesion = await app.service('game-session').get(game_session_id);
   const player_objects = getPlayerObjects(game)
   const bullet_objects = (getBulletObjects(game))
-  console.log(bullet_objects)
   const ended = getEnded(game)
   const selected = game.player_inputs.map(elem => elem?.app.client_selected)
   const game_can_start = game.players_selected.filter(elem => elem !== null).length === game.player_tokens.length &&  game.players_selected.filter(elem => elem !== null).length >= game.min_player;

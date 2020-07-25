@@ -78,6 +78,7 @@ export const getRTSetup = (app: Application) =>
             type: "backend",
           },
         });
+        // Auskommentieren für HTTP
         socket.on("backend-message created" , (data: any) => {
           // Game RULEZ magic
           console.log('NEW CLIENT INPUT')

@@ -11,6 +11,7 @@ export default (options = {}): Hook => {
     const {result, app} = context as {result: IBackendResponse, app: Application}
 
       const session: Paginated<ISession> = await app.service('sessions').find(addToDefaultParams({query: {session_name: result.session_name}}))
+      if(session.data.length > 0)
       result.client_channel = session.data[0].clients_channel
       result.newest_at = getTimeStamp();
     return context;
