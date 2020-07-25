@@ -12,5 +12,6 @@ export interface IGameSesion {
   player_tokens: string[];
   players_selected: (string | undefined)[];
   player_inputs: (IClientInput | null)[];
+  newest_at: number;
   [idx: string]: any
 }

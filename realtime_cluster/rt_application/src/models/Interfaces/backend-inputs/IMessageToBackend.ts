@@ -7,4 +7,5 @@ export interface IMessageToBackend {
   channel: string;
   rt_server: string;
   created_at: number;
+  newest_at: number;
 }

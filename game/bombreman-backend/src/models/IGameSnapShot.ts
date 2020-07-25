@@ -11,4 +11,5 @@ export interface IGameSnapShot {
   session_name: string;
   type: string;
   created_at: number;
+  newest_at: number;
 }

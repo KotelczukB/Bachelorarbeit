@@ -15,6 +15,7 @@ export default (data: IGameSessionCreation, rt_server: IRTServer): IGameSesion =
     player_tokens: [data.token],
     players_selected: [],
     player_inputs: [],
-    player_won: false
+    player_won: false,
+    newest_at: 0
   };
 };

@@ -7,6 +7,7 @@ export interface IPlayerInput {
   backend_channel: string,
   client_inputs: IClientInput[]
   game_id: any;
+  newest_at: number;
   [idx: string]: any;
 }
 

@@ -103,7 +103,8 @@ export default function (app: Application) {
   );
 
   app.service("backend-inputs").publish("created", (data: IBackendResponse, context) => {
-    console.log('NEW BACKEND INPUT on DELAY', getTimeStamp() - data.created_at)
+    console.log('NEW BACKEND INPUT FROM SEND TO NOW DELAY', getTimeStamp() - data.newest_at)
+    console.log('NEW BACKEND INPUT OWN WORING DELAY', getTimeStamp() - data.created_at)
     // Valiedierung ob Daten die Echtzeitbedingung nicht verletzten
     if (validateRtConstrain(app.get('lastsend'), getTimeStamp()))
       return app.channel(data.client_channel);

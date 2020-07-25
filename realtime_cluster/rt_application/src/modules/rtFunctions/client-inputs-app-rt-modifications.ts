@@ -16,7 +16,8 @@ export const createBackendMessage = (url: string, channel: string,  param: (ICli
     rt_server: url,
     channel: channel,
     created_at: getTimeStamp(),
-    backend_url
+    backend_url,
+    newest_at: getTimeStamp()
   };
 };
 

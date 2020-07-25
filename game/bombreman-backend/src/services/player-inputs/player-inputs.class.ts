@@ -46,6 +46,7 @@ export class PlayerInputs implements ServiceMethods<IPlayerInput> {
       game_state.player_won = data.client_inputs.find(input => input.app.player_won) !== undefined
       game_state.player_inputs = data.client_inputs.filter(elem => elem !== null)
       game_state.players_selected = selected.filter(elem => elem !== null)
+      game_state.newest_at = data.newest_at;
     await this.app.service("game-session").update(game_state._id, game_state);
     data.game_id = result.data[0]._id;
     return data;
