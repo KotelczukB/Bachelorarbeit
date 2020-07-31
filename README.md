@@ -1,6 +1,6 @@
-# Bachelorarbeit README
-## Titel der Arbeit: Webbasierter Echtzeitserver für ein Multiplayer-System
-
+# README Bachelorarbeit
+Titel der Arbeit: Webbasierter Echtzeitserver für ein Multiplayer-System
+-
 ## Erläuterung
 Das Repository ist ein Teil der von Bartosz-Krzysztof Kotelczuk eigenständig verfassten Bachelorarbeit. Das Repository enthält den Prototypen der Echtzeitservers samt des Multiplayer-Systems in der Form eines Browsermultiplayerspiels.
 
