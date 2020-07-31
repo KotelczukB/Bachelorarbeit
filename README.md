@@ -1,13 +1,13 @@
 # README Bachelorarbeit
-Titel der Arbeit: Webbasierter Echtzeitserver für ein Multiplayer-System
--
-## Erläuterung
+### Titel der Arbeit: Webbasierter Echtzeitserver für ein Multiplayer-System
+#
+### Erläuterung
 Das Repository ist ein Teil der von Bartosz-Krzysztof Kotelczuk eigenständig verfassten Bachelorarbeit. Das Repository enthält den Prototypen der Echtzeitservers samt des Multiplayer-Systems in der Form eines Browsermultiplayerspiels.
 
 Zusätzlich wurden hier alle Blogs und online Quellen, die zum Zeitpunkt des letzten Aufrufs kopiert wurden, hier abgelegt.
 
-## How to start
-### Docker
+### How to start
+#### Docker
 Da der Echtzeitcluster und der Spielserver dockerized wurden muss auf dem Zielsystem docker installiert sein. 
 Falls Sie noch kein Docker haben folgen Sie einer der Installationsanweisungen.
 
@@ -15,7 +15,7 @@ Falls Sie noch kein Docker haben folgen Sie einer der Installationsanweisungen.
 - Windows https://docs.docker.com/docker-for-windows/install/
 - iOS https://docs.docker.com/docker-for-mac/install/
 
-### Node.js & NPM
+#### Node.js & NPM
 Der Client der Anwendung ist eine React app. Um die benötigten Abhängigkeiten zu installieren und die Anwendung starten zu können, benötigt das Zielsystem den NPM package manager. Hinzu verwendet der Teil der Anwendung Phaser.io. Um fehlerfreie Funktionalität von Phaser.io sicher zu stellen wird Node.js ebenfalls benötigt. 
 
 Falls Ihr System nicht über Node.js verfügt laden Sie die neueste stable Version über die folgende URL runter.
@@ -23,7 +23,7 @@ Falls Ihr System nicht über Node.js verfügt laden Sie die neueste stable Versi
 
 Folgen Sie den Anweisungen des Installers. Nach der erfolgreichen Installation können sie die Aplikation starten.
 
-### Starten der Anwendung
+#### Starten der Anwendung
 Damit die Anwendung fehlerfrei startet müssen die einzelnen Komponenten in entprechender Reihenfolge gestartet werden.
 
 1. Router
@@ -37,7 +37,7 @@ Der Router wird ebenfalls wie alle anderen Anwendungen über Docker Compose gest
 ```
 Der Befehl bildet die in der docker-compose enthaltenen Anwendungen und fährt den Container hoch.
 
-#### Docker Compose
+##### Docker Compose
 Die docker-compose.yml-Dateien enthalten environment Parameter die je nach Bedarf geändert werden können
 - Echtzeitserver
   - **APP_TYPE=application**
@@ -76,7 +76,7 @@ Die docker-compose.yml-Dateien sind jeweils im Root-Folder der Anwendungen zu fi
 
 Für den Spielclient werden ein paar mehr Schritte benötigt
 
-#### Spielclient
+##### Spielclient
 Gehen Sie in game\bombremann dort befindent sich das Dockerfile für die Anwendung.
 Führen Sie den folgenden Befehl aus: 
 ```cmd
@@ -91,7 +91,7 @@ Um den Container wieder zu entfernen benötigen Sie das folgende:
 ```cmd
 docker rm --force Bombremann_client
 ```
-## HTTP or Websockets
+### HTTP or Websockets
 In der theoretischen Ausarbeitung der Bachelorarbeit ist die Rede davon, dass der Echtzeitserver und der Spielserver ihre Kommunikation entweder über Websockets oder über HTTP-Abfragen gestallten können. 
 Die foldenden Schritte werden benötigt um die Kommunikationsart zu ändern.
 
