@@ -1,4 +1,4 @@
-import printError from './hooks/print-error';// Application hooks that run for every service
+import printError from './hooks/print-error';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 export default {

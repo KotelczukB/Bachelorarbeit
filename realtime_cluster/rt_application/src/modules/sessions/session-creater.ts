@@ -3,7 +3,7 @@ import ISessionCreate from "../../models/Interfaces/session/ISessionCreate";
 import { default_params, addToDefaultParams } from "../helpers/basic-default-service-params";
 
 // *************************************
-// generiere eine neue Session und weise das Backend zu falls es im Echtzeit server registriert wurde
+// Create new Session and get backend data
 // *************************************
 
 export const createSession = async (

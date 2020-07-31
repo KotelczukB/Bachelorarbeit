@@ -1,5 +1,4 @@
-// Use this hook to manipulate incoming or outgoing data.
-// For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
+
 import { Hook, HookContext, Application } from "@feathersjs/feathers";
 import { searchAndRemoveFromSessions } from "../modules/sessions/remove-from-sessions";
 import ISession from "../models/Interfaces/session/ISession";
@@ -11,11 +10,10 @@ import { createSession } from "../modules/sessions/session-creater";
 
 // ************************************************
 // a)
-// Entferne den Client aus laufenden Sessions, Massnahme um Redundanzen zu vermeiden
+// Remove incomming client from all sessions
 //
 // b)
-// Hinzufuge den Client zu der angebenen Session
-// Ein Client kennt die Session nur wenn es sich um die Chat app handelt
+// A client knows a sassion name only if a connection faild and he should be reconnected
 // ************************************************
 
 export default (options = {}): Hook => {

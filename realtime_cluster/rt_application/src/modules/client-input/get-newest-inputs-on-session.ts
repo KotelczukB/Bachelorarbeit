@@ -3,7 +3,7 @@ import { addToDefaultParams } from "../helpers/basic-default-service-params";
 import { Paginated } from "@feathersjs/feathers";
 import ISession from "../../models/Interfaces/session/ISession";
 //********************************************* */
-// Suche session -> hole alle client namen -> suche den neusten Input fur jeden client 
+// Search session -> get all client names -> get newest input from each client
 //********************************************* */
 export default async (
   session_service: any,

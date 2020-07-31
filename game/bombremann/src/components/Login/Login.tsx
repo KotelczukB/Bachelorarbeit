@@ -26,7 +26,7 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
   public handleLogin = async (event: any): Promise<void> => {
 		if(this.canSubmit()) {
 			event.preventDefault();
-			// sende an den Router
+			// send to router
 			await fetch(`${getRouterConnection()}?user_name=${this.state.user_name}&password=${this.state.password}&backend_url=${this.state.backend_url}`, {
 				method: 'GET',
 				headers: {

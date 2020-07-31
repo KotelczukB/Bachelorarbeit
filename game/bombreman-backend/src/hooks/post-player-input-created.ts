@@ -1,5 +1,3 @@
-// Use this hook to manipulate incoming or outgoing data.
-// For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
 import { Hook, HookContext, Application } from '@feathersjs/feathers';
 import { IPlayerInput } from '../models/IPlayerInput';
 import getGameState from '../modules/get-game-state';

@@ -4,7 +4,6 @@ import { IGameSessionCreation } from "../models/IGameSessionCreation";
 import app from "../app";
 import { IRTServer } from "../models/IRTServer";
 
-// Create State of GameSession !
 export default (data: IGameSessionCreation, rt_server: IRTServer): IGameSesion => {
   return {
     name: `game_${data.game_session}`,

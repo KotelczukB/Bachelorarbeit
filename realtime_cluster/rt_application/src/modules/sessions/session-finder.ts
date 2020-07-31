@@ -3,7 +3,7 @@ import ISession from "../../models/Interfaces/session/ISession";
 import { default_params, addToDefaultParams } from "../helpers/basic-default-service-params";
 import { Paginated } from "@feathersjs/feathers";
 // ***************************************
-// Sucht eine Session die bereits erstellt worden ist mit dem gleichem Backend
+// Searching session that is already created with requested backend data
 // ***************************************
 export const getFreeSession = async (
   session_service: any,
@@ -30,7 +30,6 @@ export const filterSessions = async (
   service: any,
   targetURL: string
 ): Promise<ISession> =>
-// weil feathers $where & $exists nicht unterstutzt ... 
   await service.find(addToDefaultParams({query: {backend: targetURL, state: {$lt: 3}}})).then((res: Paginated<ISession>) => res.data.find((sess: ISession) => sess.clients.length < (+sess.max_clients)));
 
 export const getJustName = (user_type: string) => (

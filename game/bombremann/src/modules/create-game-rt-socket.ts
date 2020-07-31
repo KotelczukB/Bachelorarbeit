@@ -22,7 +22,7 @@ export default async (client: ILoginRegisterAnswer) => {
 	);
 	if (login_response.ok) {
 		const login_data: IRT_AppLoginAnswer = await login_response.json();
-		// initial Data fur verbindung und registierung
+		// initial connection and registration data
 		console.log('Creating connection with SOCKET')
 		const game_socket = io(client.rt_servers.filter((elem) => elem.type === 'application')[0].serverURL, {
 			query: {

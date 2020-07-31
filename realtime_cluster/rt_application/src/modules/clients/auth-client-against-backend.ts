@@ -56,7 +56,6 @@ export const validateResponses = async (
   result: Response,
   backend_service: any
 ): Promise<boolean> => result.ok ? result.json().then(updateBackend(backend_service)) : false
-// zwischen methode wenn das Backend nicht existiert (key: url) dann erstelle ein neues
 export const updateBackend = (backend_service: any) => async (
   body: any
 ): Promise<boolean> =>
@@ -68,7 +67,7 @@ export const updateBackend = (backend_service: any) => async (
     )
     .catch((err) => {console.log(err); return false});
 
-// Schau ob das benotigte Backend angelegt ist
+// Search for backend
 export const findBackend = async (
   backend_service: any,
   body: any
@@ -82,7 +81,7 @@ export const findBackend = async (
   );
 
 
-// Update Backend wenn der gebene min player Wert nicht vorhandnen ist
+// update backend if the min player value not found 
 export const updateBackendCall = async (backend_service: any, body: any) =>
   await backend_service.patch(
     null,

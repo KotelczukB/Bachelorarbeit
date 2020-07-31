@@ -1,5 +1,5 @@
 import IClientMessage from "../../models/Interfaces/clients-inputs/IClientMessage";
 
-// Hier die Nachricht andern falls notig
+// Place to change the client message
 
 export default (message: IClientMessage) => message

@@ -1,5 +1,4 @@
-// Use this hook to manipulate incoming or outgoing data.
-// For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
+
 import {
   Hook,
   HookContext,
@@ -19,10 +18,10 @@ import { getType } from "../modules/helpers/get-envs";
 import { _AppType } from "../models/Interfaces/_AppType";
 
 //******************************************************************
-//Prufe vorausgesetzte props von Sessions, prufe anzahl von Clients.
-// falls < maxCount sende alle Clients an das Backend und setzte den status von aktiv auf running
-// bei jedem weiterem Client und solange die Session nicht "full" oder "closed" ist sende ein update an das Backend
-// wenn dei Session "full" oder "closed" ist dann werf einen Fehler dass die Session bereits geschlossen ist
+// Check session props and count clients in session
+// If count < maxCount send all clients to backend and set new session state
+// On every other new client, as long as session state is't 'full' or 'closed' send update to Backend 
+// On session closed abort action 
 //******************************************************************
 
 export default (options = {}): Hook => {

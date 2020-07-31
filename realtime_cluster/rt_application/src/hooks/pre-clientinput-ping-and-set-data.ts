@@ -1,5 +1,3 @@
-// Use this hook to manipulate incoming or outgoing data.
-// For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
 import { Hook, HookContext, Application, Paginated } from "@feathersjs/feathers";
 import IClientMessage from "../models/Interfaces/clients-inputs/IClientMessage";
 import createPingAndSessionDataClientinput, { getPing } from "../modules/client-input/create-ping-and-session-data-clientinput";

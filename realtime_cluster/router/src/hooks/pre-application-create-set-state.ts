@@ -1,5 +1,4 @@
-// Use this hook to manipulate incoming or outgoing data.
-// For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
+
 import { Hook, HookContext, Application } from '@feathersjs/feathers';
 import { _RealTimeAppStatus } from '../models/real-time/_RealTimeAppStatus';
 import { IRealTimeApp } from '../models/real-time/IReatTimeApp';

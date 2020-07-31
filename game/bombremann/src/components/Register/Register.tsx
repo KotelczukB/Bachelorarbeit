@@ -25,7 +25,7 @@ export class Register extends React.Component<IRegisterProps, IRegisterState> {
 	public handleRegister = async (event: any) => {
 		if (this.canSubmit()) {
 			event.preventDefault();
-			// sende an den Router
+			// send to router
 			await fetch(getRouterConnection(), {
 				method: 'POST',
 				headers: {
@@ -40,7 +40,7 @@ export class Register extends React.Component<IRegisterProps, IRegisterState> {
 				.then(async (res) => {
 					if (res.ok) {
 						const body: any = await res.json();
-						// setzte server_stuff und token in den localStorage
+						// set initial server data and player token to local storage
 						body.rt_servers.forEach((server: IRTServer) => {
 							localStorage.setItem(`rt_server_${server.type}`, server.serverURL);
 						});

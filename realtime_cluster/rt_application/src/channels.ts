@@ -20,14 +20,16 @@ export default function (app: Application) {
   const interval: number = app.get("min_rt_interval");
 
   //********************************************** */
-  // realtime mit sockets geht nur mit clients
-  // prufe ob backend schon gespeichert
-  // fuge client zu dem Session channel
+  // Whole Channel setting logic 
+  //
+  // If new backend, set to waiting channel
+  // If client get backend from waiting channel
+  // and join both to the new on session created channels
   //********************************************** */
 
   app.on("connection", async (connection: IConnection) => {
     try{
-    // On a new real-time connection, add it to the anonymous channel
+    // On a new backend connection, add it to the waiting channel
     if (connection.type === "backend") {
       console.log('backend connnected socket', connection)
       return app.channel("waiting").join(connection);
@@ -36,7 +38,7 @@ export default function (app: Application) {
     return await getConnectionObject(connection, app)
       .then(
         async (obj: { backend_channel: string; client_channel: string }) => {
-          // Check ob das backend gespeichert ist
+          // idetify requested backend server in waiting channel 
           const backend_instance = await idetifyBackendServer(
             connection,
             app.service("backends")
@@ -62,51 +64,51 @@ export default function (app: Application) {
   });
 
   //******************************************** */
-  // standard realtime verhalten
-  // get data
-  // send data
-  // easy
+  // Default realtime usage
+  // Get data
+  // Send data
+  // Easy
   //******************************************** */
   app.service("chat").publish("created", (data: IChatMessage, context) => {
     try{ 
-    return app.channel(data.channel).send(data);
+      return app.channel(data.channel).send(data);
     } catch (err) {
       console.log(err)
     }
   });
 
   //******************************************** */
-  // Sende clients Input zu validerung an das backend
-  // awaite die Antwort
-  // passe die Antwort an
-  // prufe Echtzeitbedingung
-  // sende an die clients
-  // Ziel -> async Kette bleibt beim Realtime Server
-  // oder 
-  // Mache das gleiche von der Logik nur sende uber sockets
+  // Send client-inputs to backend
+  // on HTTP 
+  // Await answer
+  // Validate answer
+  // Check on realtime constrains
+  // Send to clients 
   //******************************************** */
   app.service("backend-message").publish("created", async (data: IMessageToBackend, context) => {
-    app.set('lastsend', getTimeStamp());
-    // Entferne Kommentrar fur HTTP
-    // await sendDataToBackend(data)
-    // .then(async (response: IBackendResponse) => {
-    //   if (validateRtConstrain(data.created_at, getTimeStamp())) {
-    //     await app.service('backend-inputs').create(response);
-    //   }
-    // })
-    // .catch((err: any) =>
-    //   console.log("Error on sending new Input to Backend", err)
-    // )
-    // Aukommentiere fur HTTP
-    return app.channel(data.channel)
-  }
-     
+      app.set('lastsend', getTimeStamp());
+      // comment in for HTTP function
+      // await sendDataToBackend(data)
+      // .then(async (response: IBackendResponse) => {
+      //   if (validateRtConstrain(data.created_at, getTimeStamp())) {
+      //     await app.service('backend-inputs').create(response);
+      //   }
+      // })
+      // .catch((err: any) =>
+      //   console.log("Error on sending new Input to Backend", err)
+      // )
+      // comment out for HTTP function
+      return app.channel(data.channel)
+    }
   );
 
+  //******************************************** */
+  // Validate answer
+  // Check on realtime constrains
+  // Send to clients 
+  //******************************************** */
   app.service("backend-inputs").publish("created", (data: IBackendResponse, context) => {
-    console.log('NEW BACKEND INPUT FROM SEND TO NOW DELAY', getTimeStamp() - data.newest_at)
-    console.log('NEW BACKEND INPUT OWN WORING DELAY', getTimeStamp() - data.created_at)
-    // Valiedierung ob Daten die Echtzeitbedingung nicht verletzten
+    console.log('NEW BACKEND INPUT DELAY', getTimeStamp() - data.created_at)
     if (validateRtConstrain(app.get('lastsend'), getTimeStamp()))
       return app.channel(data.client_channel);
     });

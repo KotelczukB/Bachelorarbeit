@@ -14,12 +14,6 @@ export default class LoadScene extends Scene {
     this.token = data.token;
   }
 	preload() {
-
-    /******************************** */
-    // Get Socket connection? And Pass to GAME Scene for getting data pass connectinon string and connct in Game ... 
-
-
-
     // Map
 		this.load.tilemapTiledJSON('map', '/assets/map/level.json');
     this.load.image('objects', '/assets/map/tiledsets/objects.png');
@@ -28,8 +22,7 @@ export default class LoadScene extends Scene {
     this.load.image('walls', '/assets/map/tiledsets/walls.png');
     this.load.image('basic', '/assets/map/tiledsets/basic.png');
     
-    // Player 1
-    //this.load.spritesheet('player_1', '/assets/player/player_1/player.png', {frameHeight: 16, frameWidth: 16});
+    // Player
     this.load.atlas('player','/assets/player/player.png', '/assets/player/player_atlas.json');
 
     this.load.image('player_health', '/assets/gui/player_healt.png');

@@ -1,5 +1,4 @@
-// Use this hook to manipulate incoming or outgoing data.
-// For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
+
 import { Hook, HookContext } from "@feathersjs/feathers";
 import assignSessionAndChannelName from "../modules/sessions/assign-session-channel";
 import findOrCreateSession from "../modules/clients/find-or-create-session-for-client";
@@ -10,8 +9,7 @@ import { getType } from "../modules/helpers/get-envs";
 import { _AppType } from "../models/Interfaces/_AppType";
 
 // ************************************************
-// Suche oder erstelle eine freie Session und ubergebe diese an den Client
-// Session verwaltung obligt dem app server
+// Search or create session for the client
 // ************************************************
 export default (options = {}): Hook => {
   return async (context: HookContext) => {

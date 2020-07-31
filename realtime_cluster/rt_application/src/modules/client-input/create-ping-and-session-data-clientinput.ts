@@ -1,5 +1,3 @@
-// short way to get UTC timestamp
-
 import { addToDefaultParams } from "../helpers/basic-default-service-params";
 import IClientMessage from "../../models/Interfaces/clients-inputs/IClientMessage";
 import { Paginated } from "@feathersjs/feathers";
@@ -7,8 +5,8 @@ import { IClientConnection } from "../../models/Interfaces/clients/IClientConnec
 import ISession from "../../models/Interfaces/session/ISession";
 
 //************************************** */
-// setzte den ping falls er der hohste ist an der Session
-// gib den Session namen zuruck
+// set new ping if this is the higher one
+// return session name
 //************************************** */
 
 export default async (

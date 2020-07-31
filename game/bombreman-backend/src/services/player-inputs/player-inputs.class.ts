@@ -31,7 +31,7 @@ export class PlayerInputs implements ServiceMethods<IPlayerInput> {
     throw new Error("Method not implemented");
   }
 
-  // Patch session, player inputs werden nicht in den Stack gespeichet
+  // Patch game session, player inputs want be saved 
   async create(data: IPlayerInput, params?: Params): Promise<IPlayerInput> {
     const result: Paginated<IGameSesion> = (await this.app
       .service("game-session")

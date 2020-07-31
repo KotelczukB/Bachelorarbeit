@@ -12,6 +12,4 @@ export class Clients extends Service {
       this.Model = db.collection('clients');
     });
   }
-
-  // create Methode, muss den vergebenen Channel mit speichern
 };

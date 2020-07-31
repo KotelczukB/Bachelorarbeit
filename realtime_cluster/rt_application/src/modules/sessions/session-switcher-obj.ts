@@ -4,8 +4,7 @@ import { Application } from "@feathersjs/feathers";
 import R  from "ramda";
 
 //******************************************** */
-// Methoden fur switcher um Session state zu andern
-// edit: es wird nur der eigene Zustand geandert, kein aufruf auf backend, das wird uber client-inputs gespeist
+// Switching session state based on restrictions
 //******************************************** */
 
 export const validateIncreaseSessionState = async (app: Application, session: ISession): Promise<string>  => await R.pipe(rejectChanges, isFull, isClosed, getSession, updateSession(app))(session)

@@ -1,5 +1,4 @@
-// Use this hook to manipulate incoming or outgoing data.
-// For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
+
 import { Hook, HookContext, Paginated } from "@feathersjs/feathers";
 import findExistingClient from "../modules/clients/find-existing-client";
 import { IClientConnection } from "../models/Interfaces/clients/IClientConnection";

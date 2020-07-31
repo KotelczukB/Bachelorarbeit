@@ -1,5 +1,4 @@
-// Use this hook to manipulate incoming or outgoing data.
-// For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
+
 import { Hook, HookContext, Application } from "@feathersjs/feathers";
 import { IRealTimeApp } from "../models/real-time/IReatTimeApp";
 import { _RealTimeAppType } from "../models/real-time/_RealTimeAppType";
@@ -8,10 +7,11 @@ import R from "ramda";
 import getRealTimeSetup from "../modules/get-real-time-setup";
 import updateStateOnBackend from "../modules/update-state-on-backend";
 import { IClientLoginAnswer } from "../models/IClientLoginAnswer";
+
 //************************************ */
-// prufe ob da Backend rtServer mitgegeben hat
-// prufe ob diese noch aktiv sind
-// Holle das ganze setup das fur einen Clinet benotigt wird und ubergebe es an result
+// check if backend response contains rt setup
+// check on the state of those
+// if backend sent wrong data give new setup to user response
 //************************************ */
 
 export default (options = {}): Hook => {
@@ -28,7 +28,7 @@ export default (options = {}): Hook => {
                 type: {$in: result.rt_servers.map(elem => elem.type) }
               },
             })
-      // wenn die vom Backend gesendeten Server nicht mehr aktuell sind
+      // backend data not actual
       if (apps_res.data.filter((elem : IRealTimeApp) => elem !== undefined).length < 1) {
         const setup = await getRealTimeSetup(app.service("applications"));
         if (setup) {
@@ -36,7 +36,7 @@ export default (options = {}): Hook => {
           await updateStateOnBackend(result.backend_url, setup);
         }
       }
-      // Wenn das Backend nicht mitgesendet hat 
+      // backend send no data
     } else {
       const setup = await getRealTimeSetup(app.service("applications"));
       if (setup) {

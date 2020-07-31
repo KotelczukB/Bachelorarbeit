@@ -7,7 +7,7 @@ import { getPORT, getHOST, getRouterConnection } from "./get-envs";
 import io from "socket.io-client";
 
 //************************************** */
-// Remove old rt_servers -> connect to router -> save new Servers -> create backend object auf allen servern der art-> failed? -> repeat
+// remove old rt_servers -> connect to router -> save new Servers -> create backend object on each rt server -> failed? -> repeat
 //************************************** */
 export const getRTSetup = (app: Application) =>
   fetch(getRouterConnection(), {
@@ -16,7 +16,7 @@ export const getRTSetup = (app: Application) =>
   })
     .then(async (resp) => {
       if (resp.ok)
-        // Feathers blocks removeMany .......
+        // Feathers blocks removeMany
         await app
           .service("rt-server")
           .find({
@@ -48,7 +48,7 @@ export const getRTSetup = (app: Application) =>
       return body.data;
     })
     .then(async (resp: IRTServer[]) => {
-      // Melde dich auf jedem serverder rt_server classe an
+      // Register on each server
       await Promise.all(resp.map(async (rt_server: IRTServer) => 
         await fetch(`${rt_server.serverURL}/backends`, {
           method: "POST",
@@ -78,7 +78,7 @@ export const getRTSetup = (app: Application) =>
             type: "backend",
           },
         });
-        // Auskommentieren für HTTP
+        // Comment out for HTTP based function
         socket.on("backend-message created" , (data: any) => {
           // Game RULEZ magic
           console.log('NEW CLIENT INPUT')

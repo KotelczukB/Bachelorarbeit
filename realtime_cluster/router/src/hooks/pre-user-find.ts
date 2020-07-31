@@ -1,5 +1,4 @@
-// Use this hook to manipulate incoming or outgoing data.
-// For more information on hooks see: http://docs.feathersjs.com/api/hooks.html
+
 import { Hook, HookContext, Application, Paginated } from "@feathersjs/feathers";
 import fetch from "node-fetch";
 import { IClientLoginAnswer } from "../models/IClientLoginAnswer";
@@ -13,7 +12,7 @@ export default (options = {}): Hook => {
       context.params.provider !== "server" &&
       context.params.provider !== undefined
     ) {
-      // sende Auth an backend weiter
+      // send Auth to backend
       const backend_resp = await fetch(
         `${login_data.backend_url}/players?user_name=${login_data.user_name}&password=${login_data.password}`,
         {
@@ -26,7 +25,7 @@ export default (options = {}): Hook => {
       );
       if (!backend_resp.ok) throw new Error("Backend Login or Register faild!");
       const respJSON: Paginated<any> = await backend_resp.json();
-      // setzte backend sein setUp
+      // set backends setup
       if (context.method === "create") {
         login_data.rt_servers = respJSON.data[0].rt_setUp;
         login_data.token = respJSON.data[0].token;

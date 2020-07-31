@@ -25,7 +25,7 @@ export default async (client: ILoginRegisterAnswer, app: any) => {
 	if (login_response.ok) {
 		const login_data: IRT_AppLoginAnswer = await login_response.json();
     console.log(login_data)
-		// initial Data fur verbindung und registierung
+		// initial connection and registration data
 		console.log('Creating connection with CHAT', rt_server_url)
 		const game_socket = await io(rt_server_url, {
 			reconnection: true,

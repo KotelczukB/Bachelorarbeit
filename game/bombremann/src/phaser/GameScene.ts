@@ -280,13 +280,13 @@ export default class GameScene extends Scene {
 	};
 
 	//******************************************************************************************************** */
-	// Updates am Spiel Daten kommen vom Server
+	// Game update, data from server
 	updateGame() {
 		if (this.game_data) {
 			this.characters.forEach(this.updateEnemiePositionAndVelo(this.game_data));
 			this.characters.forEach(this.playAnimation);
 
-			// neue bullets suchen und hinzufugen da bullets latenz und bis auf erstellen user input unabhangig sind
+			// create new bullets
 			if (this.game_data.bullet_objects.length > 1) {
 				console.log(this.game_data.bullet_objects.filter((elem: any) => elem !== null));
 				this.to_draw_bullets = this.game_data.bullet_objects.filter((elem: any) => elem !== null);
@@ -334,7 +334,6 @@ export default class GameScene extends Scene {
 
 	updatePlayer(delta: number) {
 		//******************************* */
-		// Alles Controlls des Spielers
 
 		// Dead Follower update
 		if (this.player.hp < 0) {
@@ -462,7 +461,7 @@ export default class GameScene extends Scene {
 			);
 		});
 
-		// destroy alle chars die nicht gespielt werden. Sobald das spiel begonnen hat kann keine mehr dazu kommen
+		//destroy all chars with are not in use
 		const tempChars: CharacterSprite[] = [];
 		this.characters.forEach((char: CharacterSprite) => {
 			const selected = this.game_data.players_selected.find((char_name: string) => char_name === char.name);
@@ -474,10 +473,10 @@ export default class GameScene extends Scene {
 		});
 
 		this.characters = tempChars;
-		// hole den Spieler raus
+		// get player from list
 		this.player = this.characters.find((char: CharacterSprite) => char.id === this.char_id) as CharacterSprite;
 
-		// filter die restliche liste vom player aus
+		// filter list that only selected are left
 		this.characters = this.characters.filter((char: CharacterSprite) => char.id !== this.player.id);
 	}
 }

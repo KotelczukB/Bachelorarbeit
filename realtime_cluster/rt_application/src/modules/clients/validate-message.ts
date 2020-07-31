@@ -1,7 +1,5 @@
 import IClientMessage from "../../models/Interfaces/clients-inputs/IClientMessage";
 
-// falls im Root noch einfache Objekte vorhanden sind
-
 export default (inputObj: IClientMessage, root: string[], requirements: {[idx: string]: string[]}): boolean => 
   filterValidation(Object.keys(requirements).map(key => validateFlatObjectInput(requirements[key], inputObj[key]))) && validateFlatObjectInput(root, inputObj);
 

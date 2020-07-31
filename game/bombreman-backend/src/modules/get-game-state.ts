@@ -7,12 +7,12 @@ import { _BasicState } from "../models/_SessionState";
 import R from "ramda";
 
 //***************************************** */
-// where hole magic happens
-// hole game session
-// hole jeweils die letzten 2 player inputs von jedem player
-// vergleiche ob die Unterschiede in akzeptablem rahmen sind (chat test)
-// schmeiss alles in ein GameSnapShot
-// gebe es zuruck
+// where the magic happens
+// - get game session
+// - get last 2 inputs from each player 
+// - check on state changes
+// - trow everything into GameSpnapShot
+// - return snapshot
 //***************************************** */
 
 export default async (game_session_id: any, app: Application): Promise<IGameSnapShot> => {
