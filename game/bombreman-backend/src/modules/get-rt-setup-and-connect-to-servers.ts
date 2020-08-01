@@ -5,6 +5,7 @@ import { _BasicState } from "../models/_SessionState";
 import { _RTServerType } from "../models/_RTServerType";
 import { getPORT, getHOST, getRouterConnection } from "./get-envs";
 import io from "socket.io-client";
+import logger from "../logger";
 
 //************************************** */
 // remove old rt_servers -> connect to router -> save new Servers -> create backend object on each rt server -> failed? -> repeat
@@ -42,7 +43,7 @@ export const getRTSetup = (app: Application) =>
             })
         )
       );
-      console.log(
+      logger.info(
         `Server on init sendend request to Router and got new rt_setup`
       );
       return body.data;
@@ -61,7 +62,7 @@ export const getRTSetup = (app: Application) =>
           }),
           headers: { "Content-Type": "application/json" },
         })));
-        console.log(`Server created on rt_server`);
+        logger.info(`Server created on rt_server`);
       
 
       // Socket connection on pure socket
@@ -70,7 +71,7 @@ export const getRTSetup = (app: Application) =>
         (elem) => elem.type === _RTServerType.application
         );
         if (!game_rt) throw new Error("Cannot create rt_server connection");
-        console.log("CONNECTION WITH SOCKET", game_rt)
+        logger.info("Astimated connection with socket on ", game_rt)
         // initial Data fur verbindung und registierung
         const socket = io(game_rt.serverURL, {
           query: {
@@ -81,7 +82,7 @@ export const getRTSetup = (app: Application) =>
         // Comment out for HTTP based function
         socket.on("backend-message created" , (data: any) => {
           // Game RULEZ magic
-          console.log('NEW CLIENT INPUT')
+          //logger.info('NEW CLIENT INPUT')
           app
             .service("player-inputs")
             .create(data)
@@ -89,13 +90,13 @@ export const getRTSetup = (app: Application) =>
               (snapshot: any) => 
                 socket.emit('create','backend-inputs', snapshot)
             )
-            .catch((err: any) => console.log(err))
+            .catch((err: any) => logger.error('Exception on create player-input ', err))
           });
       }
     )
     .catch((err: any) =>
       setTimeout(() => {
-        console.log('On get RT_Setup or create backend object', err);
+        logger.error('Exception on getting RT_Setup or create backend object ', err);
         getRTSetup(app);
       }, 5000)
     );
