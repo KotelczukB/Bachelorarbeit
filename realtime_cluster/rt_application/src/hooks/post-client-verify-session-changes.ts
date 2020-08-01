@@ -40,7 +40,7 @@ export default (options = {}): Hook => {
         if (validateSessionRequierdProps(response.data[0]))
           return await validateIncreaseSessionState(app, response.data[0])
       })
-      .catch((error: any) => logger.error('Exception on session state switch', error));
+      .catch((error: any) => logger.error(`Exception on session state switch ${error}`));
     if (getType() !== _AppType[_AppType.chat])
     await updateClientOnBackendWithBackendChannel(
       result.backend_url,

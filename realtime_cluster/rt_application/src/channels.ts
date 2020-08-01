@@ -23,7 +23,7 @@ export default function (app: Application) {
   const interval: number = app.get("min_rt_interval");
 
   //********************************************** */
-  // Whole Channel setting logic 
+  // Whole Channel setting logic
   //
   // If new backend, set to waiting channel
   // If client get backend from waiting channel
@@ -33,14 +33,13 @@ export default function (app: Application) {
   app.on("connection", async (connection: IConnection) => {
     // On a new backend connection, add it to the waiting channel
     if (connection.type === "backend") {
-      logger.info('backend connnected socket', connection)
+      logger.info(`backend connnected socket with url ${connection.backend_url}`);
       return app.channel("waiting").join(connection);
-      
     }
     return await getConnectionObject(connection, app)
       .then(
         async (obj: { backend_channel: string; client_channel: string }) => {
-          // idetify requested backend server in waiting channel 
+          // idetify requested backend server in waiting channel
           const backend_instance = await idetifyBackendServer(
             connection,
             app.service("backends")
@@ -53,26 +52,37 @@ export default function (app: Application) {
             .connections.filter(
               (elem: any) => elem.backend_url === backend_instance[0].own_url
             );
-            logger.info('Socket', obj.backend_channel, backend_connection[0]);
-            if(backend_connection[0] !== undefined)
-              return [app.channel(obj.client_channel).join(connection), app.channel(obj.backend_channel).join(backend_connection[0])];
-            return app.channel(obj.client_channel).join(connection)
-       }
+          logger.info(`Socket ${obj.backend_channel} ${backend_connection[0].backend_url}`);
+          if (backend_connection[0] !== undefined)
+            return [
+              app.channel(obj.client_channel).join(connection),
+              app.channel(obj.backend_channel).join(backend_connection[0]),
+            ];
+          return app.channel(obj.client_channel).join(connection);
+        }
       )
-      .catch((err) => logger.error(`Connection setting error ${err}`));
+      .catch((err) => logger.error(`Connection setting error ${err.message}`));
   });
 
   //************************************ */
-  // if user disconnect and there are no connections left then close the related session 
+  // if user disconnect and there are no connections left then close the related session
   //************************************ */
-  app.on('disconnect', async (connection: IConnection) => {
-    if(connection.target_channel && connection.user_name) {
-      if(app.channel(connection.target_channel).connections.length < 1)
-        await app.service('sessions').patch(null, {state: _SessionState.closed}, addToDefaultParams({query: {session_name: connection.session_name}}))
-        logger.info('Session Closed', connection.session_name)
+  app.on("disconnect", async (connection: IConnection) => {
+    if (connection.target_channel && connection.user_name) {
+      if (app.channel(connection.target_channel).connections.length < 1)
+        await app
+          .service("sessions")
+          .patch(
+            null,
+            { state: _SessionState.closed },
+            addToDefaultParams({
+              query: { session_name: connection.session_name },
+            })
+          );
+      logger.info(`Session Closed ${connection.session_name}`);
     }
-    logger.info('Connection disconnected', connection)
-  })
+    logger.info(`Connection disconnected ${connection.type}`);
+  });
 
   //******************************************** */
   // Default realtime usage
@@ -81,19 +91,21 @@ export default function (app: Application) {
   // Easy
   //******************************************** */
   app.service("chat").publish("created", (data: IChatMessage, context) => {
-      return app.channel(data.channel).send(data);
+    return app.channel(data.channel).send(data);
   });
 
   //******************************************** */
   // Send client-inputs to backend
-  // on HTTP 
+  // on HTTP
   // Await answer
   // Validate answer
   // Check on realtime constrains
-  // Send to clients 
+  // Send to clients
   //******************************************** */
-  app.service("backend-message").publish("created", async (data: IMessageToBackend, context) => {
-      app.set('lastsend', getTimeStamp());
+  app
+    .service("backend-message")
+    .publish("created", async (data: IMessageToBackend, context) => {
+      app.set("lastsend", getTimeStamp());
       // comment in for HTTP function
       // await sendDataToBackend(data)
       // .then(async (response: IBackendResponse) => {
@@ -105,19 +117,20 @@ export default function (app: Application) {
       //   logger.error("Error on sending new Input to Backend", err)
       // )
       // comment out for HTTP function
-      return app.channel(data.channel)
-    }
-  );
+      return app.channel(data.channel);
+    });
 
   //******************************************** */
   // Validate answer
   // Check on realtime constrains
-  // Send to clients 
+  // Send to clients
   //******************************************** */
-  app.service("backend-inputs").publish("created", (data: IBackendResponse, context) => {
-    logger.info('New backend-input delay', getTimeStamp() - data.created_at)
-    if (validateRtConstrain(app.get('lastsend'), getTimeStamp()))
-      return app.channel(data.client_channel);
+  app
+    .service("backend-inputs")
+    .publish("created", (data: IBackendResponse, context) => {
+      logger.info("New backend-input delay " + (getTimeStamp() - data.created_at));
+      if (validateRtConstrain(app.get("lastsend"), getTimeStamp()))
+        return app.channel(data.client_channel);
     });
 
   // Preventing area

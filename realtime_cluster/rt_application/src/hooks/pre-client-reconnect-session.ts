@@ -28,7 +28,7 @@ export default (options = {}): Hook => {
       data.user_name,
       app.service("sessions")
     ).catch((err: any) =>
-      logger.error("Pre clinet reconnect session on search and remove", err)
+      logger.error(`Pre clinet reconnect session on search and remove ${err.message}`)
     );
     // b)
 
@@ -50,7 +50,7 @@ export default (options = {}): Hook => {
             default_params
           )
           .catch((err: any) =>
-            logger.error("Pre clinet reconnect session patch session", err)
+            logger.error(`Pre clinet reconnect session patch session ${err.message}`)
           );
         context.data.targetChannel = session.clients_channel;
       } else {

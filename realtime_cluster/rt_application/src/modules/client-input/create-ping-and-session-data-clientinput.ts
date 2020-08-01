@@ -37,4 +37,4 @@ export const patchSessions = async (
       });
       return session.data[0].session_name;
     })
-    .catch((err: any) => logger.error(`Exception on session set Ping ${err}`));
+    .catch((err: any) => logger.error(`Exception on session set Ping ${err.message}`));

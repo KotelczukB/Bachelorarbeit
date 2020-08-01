@@ -20,7 +20,7 @@ export default async (
         )) ?? (await createSession(service_session, service_backends, res))
       );
     } catch (err) {
-      logger.error('Exception on providing session to client', err);
+      logger.error(`Exception on providing session to client ${err.message}`);
       return null;
     }
   });

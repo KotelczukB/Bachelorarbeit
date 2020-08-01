@@ -66,7 +66,7 @@ export const updateBackend = (backend_service: any) => async (
         ? await updateBackendCall(backend_service, body)
         : new Error('backend not connected to the realtime server!')
     )
-    .catch((err) => {logger.error('Exception while searching for backend', err); return false});
+    .catch((err) => {logger.error(`Exception while searching for backend ${err.message}`); return false});
 
 // Search for backend
 export const findBackend = async (

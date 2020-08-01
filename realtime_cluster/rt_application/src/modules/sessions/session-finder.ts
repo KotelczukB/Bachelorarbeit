@@ -21,7 +21,7 @@ export const getFreeSession = async (
         await patchSession(elem, session_service, client_id)
           .then(getChannelsSetup(userType))
           .catch((err: any) => {
-            logger.error('Exception on patching session within getFreeSession', err);
+            logger.error(`Exception on patching session within getFreeSession ${err.message}`);
             return null;
           })
     )
@@ -46,7 +46,7 @@ export const filterSessions = async (
 ): Promise<ISession> =>
   await service
     .find(
-      addToDefaultParams({ query: { backend: targetURL, state: { $lt: 3 } } })
+      addToDefaultParams({ query: { backend: targetURL, state: { $lt: 2 } } })
     )
     .then((res: Paginated<ISession>) =>
       res.data.find((sess: ISession) => sess.clients.length < +sess.max_clients)

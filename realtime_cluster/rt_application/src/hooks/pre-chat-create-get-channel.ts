@@ -25,7 +25,7 @@ export default (options = {}): Hook => {
       const client: Paginated<IClientConnection> = await app
         .service("clients")
         .find(addToDefaultParams({ query: { token: data.token } }))
-        .catch((err: any) => logger.error('Exception on getting client while finding channel',err));
+        .catch((err: any) => logger.error(`Exception on getting client while finding channel ${err.message}`));
       if (client.data.length < 1 || client.data[0].user_name !== data.user)
         throw new Error("Requested client not found");
       const session: Paginated<ISession> = await app
@@ -38,7 +38,7 @@ export default (options = {}): Hook => {
             },
           })
         )
-        .catch((err: any) => logger.error('Exception on getting session while finding channel',err));
+        .catch((err: any) => logger.error(`Exception on getting session while finding channel ${err.message}`));
       if (session.data.length < 1 || !session.data[0])
         throw new Error("Requested session not found");
       context.data.channel = session.data[0].clients_channel;

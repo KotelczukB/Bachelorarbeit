@@ -19,7 +19,7 @@ export class Backends extends Service {
   public async create (data: IBackend) {
     const result = await super.find(addToDefaultParams({query : {own_url: data.own_url}}))
     if(result !== undefined && (result as any).length > 0)
-      super.remove((result as any)[0]._id).catch((err: any) => logger.error('Exception on remove on create backend', err))
+      super.remove((result as any)[0]._id).catch((err: any) => logger.error(`Exception on remove on create backend ${err.message}`))
     return super.create(data);
   }
 };

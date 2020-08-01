@@ -29,5 +29,5 @@ export const handleClientConnection = async (
         client_channel: elem.clients_channel,
       };
     }).catch((err: any) => {
-      logger.error(`Client not registered for socket connection Error: ${err}`);
+      logger.error(`Client not registered for socket connection Error: ${err.message}`);
   });
