@@ -3,6 +3,7 @@ import { Hook, HookContext } from "@feathersjs/feathers";
 import { IRealTimeApp } from "../models/real-time/IReatTimeApp";
 import fetch from "node-fetch";
 import { _RealTimeAppStatus } from "../models/real-time/_RealTimeAppStatus";
+import logger from "../logger";
 
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
@@ -30,12 +31,12 @@ export const updateApplicationsOnHealthCheck = async (
             method: "get",
           })
             .then((resp: any) => {
-              console.log(resp);
+              logger.info('Health service response', resp);
               if (!resp.succeed)
                 app_service.patch(item._id, {
                   state: _RealTimeAppStatus.inactive,
                 });
             })
-            .catch((err: any) => console.log(err))
+            .catch((err: any) => logger.info('Exception on health request', err))
         );
     });
