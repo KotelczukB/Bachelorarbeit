@@ -8,14 +8,14 @@ import logger from "../../logger";
 // Switching session state based on restrictions
 //******************************************** */
 
-export const validateIncreaseSessionState = async (app: Application, session: ISession): Promise<string>  => await R.pipe(rejectChanges, isFull, isClosed, getSession, updateSession(app))(session)
+export const validateIncreaseSessionState = async (app: Application, session: ISession): Promise<string>  => await R.pipe(rejectChanges, isRunning, isFull, getSession, updateSession(app))(session)
   
 
-export const isFull = (
+export const isRunning = (
   session: ISession | string
-): ISession | string =>  typeof session === 'string' ? session : changeSessionState(session, session.clients.length >= +session.min_clients && session.state !== _SessionState.full)
+): ISession | string =>  typeof session === 'string' ? session : changeSessionState(session, session.clients.length >= +session.min_clients && session.state < 1)
 
-export const isClosed = (
+export const isFull = (
   session: ISession | string
 ): ISession | string =>  typeof session === 'string' ? session : changeSessionState(session, session.clients.length === +session.max_clients)
 
