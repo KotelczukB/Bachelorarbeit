@@ -5,7 +5,7 @@ export interface IGameSnapShot {
   players_selected: (string | undefined)[];
   players_objects: (IPlayerObject | undefined)[];
   bullet_objects: (IBulletObject | undefined)[];
-  game_ended: boolean;
+  player_won: boolean;
   game_started: boolean;
   game_can_start: boolean;
   session_name: string;

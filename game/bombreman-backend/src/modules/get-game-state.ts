@@ -19,15 +19,14 @@ export default async (game_session_id: any, app: Application): Promise<IGameSnap
   const game: IGameSesion = await app.service('game-session').get(game_session_id);
   const player_objects = getPlayerObjects(game)
   const bullet_objects = (getBulletObjects(game))
-  const ended = getEnded(game)
   const selected = game.player_inputs.map(elem => elem?.app.client_selected)
   const game_can_start = game.players_selected.filter(elem => elem !== null).length === game.player_tokens.length &&  game.players_selected.filter(elem => elem !== null).length >= game.min_player;
   return {
     game_can_start,
+    player_won: game.player_won,
     players_selected: selected,
     players_objects: player_objects,
     bullet_objects: bullet_objects,
-    game_ended: ended,
     session_name: game.game_session,
     type: 'backend',
     game_started: player_objects !== undefined && player_objects.length > 0,
@@ -46,8 +45,4 @@ export const getBulletObjects = (game: IGameSesion): (IBulletObject | undefined)
   if(game.player_inputs.length > 0)
   return game.player_inputs.map(elem => elem?.app.bullets_data)
 return [];
-}
-
-export const getEnded = (game: IGameSesion): boolean => {
-  return game.state === _BasicState.inactive ? true : game.player_inputs.length > 1 ? game.player_inputs.map(elem => elem ? elem.app.player_data !== undefined ? elem.app.player_data.hp <= 0 : false : false).every(elem => elem === true) : false
 }
