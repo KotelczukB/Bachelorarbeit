@@ -2,6 +2,7 @@ import ISession from "../../models/Interfaces/session/ISession";
 import { _SessionState } from "../../models/enums/_SessionState";
 import { Application } from "@feathersjs/feathers";
 import R  from "ramda";
+import logger from "../../logger";
 
 //******************************************** */
 // Switching session state based on restrictions
@@ -34,7 +35,7 @@ export const getSession = (
 // closed
 export const rejectChanges = (session: ISession): string | ISession => {
   if(session.state === _SessionState.closed) {
-    console.log(`${session.session_name} ist closed`);
+    logger.info(`${session.session_name} ist closed`);
     return session.session_name;
   }
   return session;

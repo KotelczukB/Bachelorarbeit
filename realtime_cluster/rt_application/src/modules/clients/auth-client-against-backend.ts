@@ -2,6 +2,7 @@ import fetch from "node-fetch";
 import { IBackend } from "../../models/Interfaces/backends/IBackend";
 import { addToDefaultParams } from "../helpers/basic-default-service-params";
 import { IClientConnection } from "../../models/Interfaces/clients/IClientConnection";
+import logger from "../../logger";
 
 export default async (
   backend_service: any,
@@ -65,7 +66,7 @@ export const updateBackend = (backend_service: any) => async (
         ? await updateBackendCall(backend_service, body)
         : new Error('backend not connected to the realtime server!')
     )
-    .catch((err) => {console.log(err); return false});
+    .catch((err) => {logger.error('Exception while searching for backend', err); return false});
 
 // Search for backend
 export const findBackend = async (

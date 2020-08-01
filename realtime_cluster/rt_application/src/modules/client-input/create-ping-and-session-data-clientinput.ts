@@ -3,6 +3,7 @@ import IClientMessage from "../../models/Interfaces/clients-inputs/IClientMessag
 import { Paginated } from "@feathersjs/feathers";
 import { IClientConnection } from "../../models/Interfaces/clients/IClientConnection";
 import ISession from "../../models/Interfaces/session/ISession";
+import logger from "../../logger";
 
 //************************************** */
 // set new ping if this is the higher one
@@ -36,4 +37,4 @@ export const patchSessions = async (
       });
       return session.data[0].session_name;
     })
-    .catch((err: any) => console.log(`On session set Ping ${err}`));
+    .catch((err: any) => logger.error(`Exception on session set Ping ${err}`));

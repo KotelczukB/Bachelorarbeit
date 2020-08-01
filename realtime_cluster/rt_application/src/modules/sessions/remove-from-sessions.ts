@@ -1,7 +1,7 @@
 import ISession from "../../models/Interfaces/session/ISession";
 import { addToDefaultParams } from "../helpers/basic-default-service-params";
 
-export const searchAndRemoveFromSessions = async (
+export default async (
   id: string,
   service: any
 ) =>

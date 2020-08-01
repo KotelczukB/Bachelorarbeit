@@ -71,7 +71,7 @@ fetch(`${getRouterConnection()}`, {
     state: null
   }),
   headers: { "Content-Type": "application/json" },
-}).then(resp => resp.json()).catch(console.log)
+}).then(resp => resp.json()).catch(logger.error)
 app.set('lastsend', getTimeStamp());
 app.hooks(appHooks);
 

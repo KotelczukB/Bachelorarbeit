@@ -1,12 +1,12 @@
 
 import { Hook, HookContext } from "@feathersjs/feathers";
 import assignSessionAndChannelName from "../modules/sessions/assign-session-channel";
-import findOrCreateSession from "../modules/clients/find-or-create-session-for-client";
 import createSessionData from "../modules/sessions/create-session-data";
 import validateClientSessionProp from "../modules/clients/validate-client-session-prop";
 import { IClientConnection } from "../models/Interfaces/clients/IClientConnection";
 import { getType } from "../modules/helpers/get-envs";
 import { _AppType } from "../models/Interfaces/_AppType";
+import provideSessionToClient from "../modules/clients/provide-session-to-client";
 
 // ************************************************
 // Search or create session for the client
@@ -17,7 +17,7 @@ export default (options = {}): Hook => {
     // 1 bedeutet dass es ein neuer Client ist
     if(getType() === _AppType[_AppType.application])
       if (validateClientSessionProp(data) === 1) {
-        const targetChannel: { user: string; session: string, backend: string}  | null = await findOrCreateSession(
+        const targetChannel: { user: string; session: string, backend: string}  | null = await provideSessionToClient (
           app.service("sessions"),
           path,
           app.service("backends"),

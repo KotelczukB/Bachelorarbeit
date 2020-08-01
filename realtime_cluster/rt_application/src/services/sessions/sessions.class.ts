@@ -5,6 +5,7 @@ import ISession from '../../models/Interfaces/session/ISession';
 import ISessionCreate from '../../models/Interfaces/session/ISessionCreate';
 import { _SessionState } from '../../models/enums/_SessionState';
 import getTimeStamp from '../../modules/helpers/getTimeStamp';
+import logger from '../../logger';
 
 export class Sessions extends Service {
   constructor(options: Partial<MongoDBServiceOptions>, app: Application) {
@@ -14,7 +15,7 @@ export class Sessions extends Service {
 
     client.then(db => {
       this.Model = db.collection('sessions');
-    }).catch((err: any) => console.log(err));
+    }).catch((err: any) => logger.error(err));
   }
   public async create(data: ISessionCreate): Promise<any> {
     const session: ISession = {

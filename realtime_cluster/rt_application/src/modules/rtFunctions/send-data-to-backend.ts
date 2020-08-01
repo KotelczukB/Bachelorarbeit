@@ -12,4 +12,4 @@ export default async (message: IMessageToBackend): Promise<IBackendResponse> =>
     body: JSON.stringify(message),
   })
     .then(async (resp: any) => await resp.json())
-    .then((body: IBackendResponse) => {/*console.log('BACKEND RESPONSE', body);*/ return body});
+    .then((body: IBackendResponse) => body);

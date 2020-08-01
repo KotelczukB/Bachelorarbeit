@@ -12,9 +12,7 @@ declare module '../../declarations' {
 }
 
 export default function (app: Application) {
-  const options = {
-    paginate: app.get('paginate')
-  };
+  const options = {};
 
   // Initialize our service with any options it requires
   app.use('/chat', new Chat(options, app));

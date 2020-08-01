@@ -1,12 +1,13 @@
 
 import { Hook, HookContext, Application } from "@feathersjs/feathers";
-import { searchAndRemoveFromSessions } from "../modules/sessions/remove-from-sessions";
+import removeFromSession from "../modules/sessions/remove-from-sessions";
 import ISession from "../models/Interfaces/session/ISession";
 import findOnServiceGetFirst from "../modules/helpers/find-on-service-get-first";
 import { default_params } from "../modules/helpers/basic-default-service-params";
 import { IClientConnection } from "../models/Interfaces/clients/IClientConnection";
 import createSessionData from "../modules/sessions/create-session-data";
 import { createSession } from "../modules/sessions/session-creater";
+import logger from "../logger";
 
 // ************************************************
 // a)
@@ -23,11 +24,11 @@ export default (options = {}): Hook => {
       app: Application;
     };
     // a)
-    await searchAndRemoveFromSessions(
+    await removeFromSession(
       data.user_name,
       app.service("sessions")
     ).catch((err: any) =>
-      console.log("pre clinet reconnect session on search and remove", err)
+      logger.error("Pre clinet reconnect session on search and remove", err)
     );
     // b)
 
@@ -49,7 +50,7 @@ export default (options = {}): Hook => {
             default_params
           )
           .catch((err: any) =>
-            console.log("pre clinet reconnect session patch session", err)
+            logger.error("Pre clinet reconnect session patch session", err)
           );
         context.data.targetChannel = session.clients_channel;
       } else {

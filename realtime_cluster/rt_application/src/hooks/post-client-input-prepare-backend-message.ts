@@ -11,7 +11,7 @@ export default (options = {}): Hook => {
     if(getTimeStamp() - (+last) > getMESSAGE_AWAITER()) {
       await app.service('backend-message').create(result);
     }
-   // console.log('HERE COMES JOHNY', data)
+   // logger.info('HERE COMES JOHNY', data)
     return context;
   };
 }

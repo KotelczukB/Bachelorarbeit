@@ -5,6 +5,7 @@ import { IBackend } from "../../models/Interfaces/backends/IBackend";
 import { IConnection } from "../../models/IConnection";
 import ISession from "../../models/Interfaces/session/ISession";
 import { _SessionState } from "../../models/enums/_SessionState";
+import logger from "../../logger";
 
 export default async (connection: IConnection, app: Application): Promise<{ backend_channel: string; client_channel: string }> =>
      await handleClientConnection(connection, app.service('sessions'))
@@ -28,5 +29,5 @@ export const handleClientConnection = async (
         client_channel: elem.clients_channel,
       };
     }).catch((err: any) => {
-      console.log(`Client not registert for socket connection Error: ${err}`);
+      logger.error(`Client not registered for socket connection Error: ${err}`);
   });

@@ -16,6 +16,7 @@ import { IClientConnection } from "../models/Interfaces/clients/IClientConnectio
 import updateClientOnBackendWithBackendChannel from "../modules/clients/update-client-on-backend-with-backend-channel";
 import { getType } from "../modules/helpers/get-envs";
 import { _AppType } from "../models/Interfaces/_AppType";
+import logger from "../logger";
 
 //******************************************************************
 // Check session props and count clients in session
@@ -39,7 +40,7 @@ export default (options = {}): Hook => {
         if (validateSessionRequierdProps(response.data[0]))
           return await validateIncreaseSessionState(app, response.data[0])
       })
-      .catch((error: any) => console.log(error));
+      .catch((error: any) => logger.error('Exception on session state switch', error));
     if (getType() !== _AppType[_AppType.chat])
     await updateClientOnBackendWithBackendChannel(
       result.backend_url,
