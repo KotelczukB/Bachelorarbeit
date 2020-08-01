@@ -76,7 +76,9 @@ Die docker-compose.yml-Dateien sind jeweils im Root-Folder der Anwendungen zu fi
 - Spielserver: game\bombreman-backend\docker-compose.yml
 
 ##### Spielclient
-Öffnen Sie game\bombremann. Dort befindet sich das Dockerfile für die Anwendung.
+Unter **src\components\consts\paths.ts** sind die Pfade für den Client zu finden. Dort liegen die Konstanten mit der Adresse des Routers und des Backends. Falls die Anwendung außerhalb des lokalen System betrieben wird oder andere Teile der Gesamtanwendung geändert wurden, müssen die Werte dementsprechend angepasst werden.
+
+Öffnen Sie **game\bombremann**. Dort befindet sich das Dockerfile für die Anwendung.
 Führen Sie den folgenden Befehl aus: 
 ```cmd
 docker build --tag bombremann:1.0 .
@@ -84,7 +86,7 @@ docker build --tag bombremann:1.0 .
 Damit wird, basierend auf den Angaben im Dockerfile, der Container gebildet.
 Um die Anwendung zu starten, führen Sie den folgenden Befehl aus:
 ```cmd
-docker run --publish 3000:3000 --detach --name Bombremann_client bombremann:1.0
+docker run -it -p 3000:3000 --name Bombremann_client bombremann:1.0
 ```
 Um den Container wieder zu entfernen benötigen Sie folgenden Befehl: 
 ```cmd
