@@ -1,6 +1,6 @@
 export enum _SessionState {
-  "running" = 0,
-  "active" = 1,
+  "active" = 0,
+  "running" = 1,
   "full" = 2,
   "closed" = 3,
 }

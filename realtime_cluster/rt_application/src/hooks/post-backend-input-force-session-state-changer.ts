@@ -13,7 +13,7 @@ export default (options = {}): Hook => {
       await app.service('sessions').patch(session.data[0]._id, {state: _SessionState.full})
     } if(result.player_won) {
       const session: Paginated<ISession> = await app.service('sessions').find(addToDefaultParams({query: {session_name: result.session_name}}))
-      await app.service('sessions').patch(session.data[0]._id, {state: _SessionState.closed})
+      await app.service('sessions').patch(session.data[0]._id, {state: _SessionState.full})
     }
     return context;
   };
