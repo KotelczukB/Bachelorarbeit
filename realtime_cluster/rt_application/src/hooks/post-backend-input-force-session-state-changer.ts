@@ -8,7 +8,11 @@ import ISession from "../models/Interfaces/session/ISession";
 export default (options = {}): Hook => {
   return async (context: HookContext) => {
     const { result, app } = context as { result: IBackendResponse; app: Application };
-    if(result.game_can_start) {
+    if(result.player_won) {
+      console.log('got a winner')
+      const session: Paginated<ISession> = await app.service('sessions').find(addToDefaultParams({query: {session_name: result.session_name}}))
+      await app.service('sessions').patch(session.data[0]._id, {state: _SessionState.closed})
+    } else if(result.game_can_start) {
       console.log('game is full')
       const session: Paginated<ISession> = await app.service('sessions').find(addToDefaultParams({query: {session_name: result.session_name}}))
       await app.service('sessions').patch(session.data[0]._id, {state: _SessionState.full})

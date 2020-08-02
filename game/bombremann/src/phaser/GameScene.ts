@@ -173,6 +173,7 @@ export default class GameScene extends Scene {
 				(bullet as BulletSprite).destroyOnCollision();
 				// kill char
 				if ((enemie as CharacterSprite).hp < 1) {
+					(enemie as CharacterSprite).isDead = true;
 					(enemie as CharacterSprite)
 						.play((enemie as CharacterSprite).anima.head.name)
 						.setSize(0.1, 0.1)
@@ -186,7 +187,6 @@ export default class GameScene extends Scene {
 				(bullet as BulletSprite).owner_id !== (player as CharacterSprite).id &&
 				(bullet as BulletSprite).state === 1
 			) {
-				debugger;
 				console.log(`${(bullet as BulletSprite).damage} Player HIT`);
 				(player as CharacterSprite).hp = (player as CharacterSprite).hp - (bullet as BulletSprite).damage;
 				(bullet as BulletSprite).destroyOnCollision();
@@ -195,12 +195,13 @@ export default class GameScene extends Scene {
 				for (let index = 0; index < (bullet as BulletSprite).damage; index++) {
 					this.gui_hearts.pop()?.destroy();
 				}
-				if (this.player.hp < 1) {
+				if (this.player.hp < 1 && !this.player.isDead) {
 					this.follower =
 						this.characters.find((elem) => (elem.id = (bullet as BulletSprite).owner_id)) ??
 						(player as CharacterSprite);
 					this.updatePlayerState();
 				}
+				this.sendUpdateGameState_io();
 			}
 		});
 
@@ -237,7 +238,7 @@ export default class GameScene extends Scene {
 							this,
 							bull.owner_id,
 							bull.pos_x - 10,
-							bull.pos_y - 10,
+							bull.pos_y - 8,
 							bull.sheet_id,
 							bull.shot_anim_fly,
 							bull.shot_anim_imp,
@@ -276,7 +277,7 @@ export default class GameScene extends Scene {
 		const enemie = this.game_data.players_objects.find((enemie: IPlayerObject) =>
 			enemie ? enemie.name === character.name : false
 		);
-		if (enemie) return character.setVelocity(enemie.vel_x, enemie.vel_y);
+		if (enemie && !character.isDead) return character.setVelocity(enemie.vel_x, enemie.vel_y);
 	};
 
 	//******************************************************************************************************** */
@@ -298,7 +299,7 @@ export default class GameScene extends Scene {
 		const enemie = game_data.players_objects.find((enemie: IPlayerObject) =>
 			enemie ? enemie.name === character.name : false
 		);
-		if (enemie) {
+		if (enemie && !character.isDead) {
 			if (Math.abs(character.body.x - enemie.pos_x) > 5 || Math.abs(character.body.y - enemie.pos_y) > 5)
 				character.setPosition(enemie.pos_x, enemie.pos_y);
 			return (character.setVelocity(enemie.vel_x, enemie.vel_y).hp = enemie.hp);
@@ -314,6 +315,7 @@ export default class GameScene extends Scene {
 	updatePlayerState() {
 		this.cameras.main.flash(200);
 		this.player.setVelocity(0, 0);
+		this.player.isDead = true;
 		this.player
 			.play(this.player.anima.head.name)
 			.setSize(0.1, 0.1)
@@ -336,12 +338,12 @@ export default class GameScene extends Scene {
 		//******************************* */
 
 		// Dead Follower update
-		if (this.player.hp < 0) {
+		if (this.player.hp <= 0) {
 			this.follower_pic_1.setPosition(this.follower.body.x, this.follower.body.y - 60);
 			this.follower_pic_2.setPosition(this.follower.body.x, this.follower.body.y + 90);
 		}
 		// Winning
-		if (this.characters.filter((char) => char.hp > 0).length < 1 && !this.won && this.game_data.game_ended) {
+		if (this.characters.filter((char) => !char.isDead).length < 1 && !this.won) {
 			this.add.image(this.player.body.x, this.player.body.y, 'player_win').setDepth(10);
 			this.player.setVelocity(0, 0);
 			const again_btn = this.add.image(this.player.body.x, this.player.body.y + 60, 'play_again').setDepth(10);
@@ -415,7 +417,6 @@ export default class GameScene extends Scene {
 					null
 				);
 				this.temp_bullet_id = bullet.id;
-				console.log('OWN', bullet);
 				this.bullets.push(bullet);
 			}
 
@@ -424,6 +425,7 @@ export default class GameScene extends Scene {
 		//******************************* */
 	}
 	playAnimation(character: CharacterSprite) {
+		if(!character.isDead)
 		if (character.body.velocity.x > 0) {
 			//moving right
 			character.play(character.anima.right.name, true);
