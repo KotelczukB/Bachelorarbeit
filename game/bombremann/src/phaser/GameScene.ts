@@ -230,6 +230,7 @@ export default class GameScene extends Scene {
 
 	update(time: number, delta: number) {
 		// this.frame++;
+		// position is very confusing. Phaser drowes same values different on each client. 
 		if (this.to_draw_bullets.length > 0) {
 			this.to_draw_bullets.forEach((bull) => {
 				if (bull.owner_id !== this.player.id) {
@@ -237,8 +238,8 @@ export default class GameScene extends Scene {
 						new BulletSprite(
 							this,
 							bull.owner_id,
-							bull.pos_x - 10,
-							bull.pos_y - 8,
+							bull.pos_x - (bull.vel_x === 0 ? 10 : 0),
+							bull.pos_y - (bull.vel_y === 0 ? 10 : 0),
 							bull.sheet_id,
 							bull.shot_anim_fly,
 							bull.shot_anim_imp,
