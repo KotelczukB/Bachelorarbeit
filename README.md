@@ -13,15 +13,7 @@ Falls Sie noch kein Docker haben, folgen Sie einer der Installationsanweisungen.
 
 - Linux / Ubuntu https://docs.docker.com/engine/install/ubuntu/
 - Windows https://docs.docker.com/docker-for-windows/install/
-- iOS https://docs.docker.com/docker-for-mac/install/
-
-#### Node.js & NPM
-Der Client der Anwendung ist eine React-App. Um die benötigten Abhängigkeiten zu installieren und die Anwendung starten zu können, benötigt das Zielsystem den NPM Package-Manager. Außerdem verwendet der Teil der Anwendung Phaser.io. Um fehlerfreie Funktionalität von Phaser.io sicherzustellen wird Node.js ebenfalls benötigt. 
-
-Falls Ihr System nicht über Node.js verfügt, laden Sie die neueste stable Version über die folgende URL runter.
-- https://nodejs.org/en/download/
-
-Folgen Sie den Anweisungen des Installers. Nach der erfolgreichen Installation können Sie die Applikation starten.
+- macOS https://docs.docker.com/docker-for-mac/install/
 
 #### Starten der Anwendung
 Damit die Anwendung fehlerfrei arbeitet, müssen die einzelnen Komponenten in entprechender Reihenfolge gestartet werden.
@@ -42,7 +34,7 @@ Der Befehl bildet die in der docker-compose.yml-Datei enthaltenen Anwendungen un
 Die docker-compose.yml-Dateien enthalten Environment-Parameter die je nach Bedarf geändert werden können.
 - Echtzeitserver
   - **APP_TYPE=application**
-    | Hier kann der Typ des Echtzeitservers bestimmt werden. Es kann zwischen 'application' und 'chat' entschieden werden. 
+    | Hier kann der Typ des Echtzeitservers bestimmt werden. Es kann zwischen application und chat gewählt werden. 
   - **MONGO=mongodb://mongo_app:27017/rt_app**
     | DB connection String.
   - **ROUTER=http://host.docker.internal:3080/applications**
@@ -67,7 +59,7 @@ Die docker-compose.yml-Dateien enthalten Environment-Parameter die je nach Bedar
     | DB connection String.
   - **PORT=3080**
 
-Der String 'host.docker.internal' wird durch Docker als der Host der **lokalen** **Maschine** aufgelöst. Der String muss geändert werden wenn die Anwendung verteilt betrieben wird oder Zugriffe von außen ermöglicht werden!  
+Der String 'host.docker.internal' wird durch Docker als der Host der **lokalen** **Maschine** aufgelöst. Der String muss geändert werden Falls die Anwendung außerhalb des lokalen Systems betrieben wird!  
 
 Die docker-compose.yml-Dateien sind jeweils im Root-Folder der Anwendungen zu finden.
 
@@ -99,7 +91,7 @@ Folgende Dateien müssen hierfür modifiziert werden:
   - \game\bombreman-backend\src\modules\get-rt-setup-and-connect-to-servers.ts
   - \realtime_cluster\rt_application\src\channels.ts
 
-In der **get-rt-setup-and-connect-to-servers.ts**-Datei muss die Codestelle auskommentiert werden die eine Socket-Verbindung aufbaut:
+In der **get-rt-setup-and-connect-to-servers.ts**-Datei muss die Codestelle auskommentiert werden, die eine Socket-Verbindung aufbaut:
 
 ```typescript
   // Comment out for HTTP
