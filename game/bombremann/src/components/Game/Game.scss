@@ -5,7 +5,11 @@
 }
 
 .credits {
-    width: 70%;
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+    width: 100%;
     margin: 1.5% auto;
     color: rgb(184, 184, 184);
+    z-index: -1;
 }

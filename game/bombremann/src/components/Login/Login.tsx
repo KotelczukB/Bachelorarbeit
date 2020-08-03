@@ -78,7 +78,7 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
 				<form onSubmit={this.handleLogin} className='login-form'>
           <h3 className="title"> Login </h3>
 					<div className="form-group">
-						<label>Email address</label>
+						<label>Nickname</label>
 						<input
 							type="text"
 							className="form-control"

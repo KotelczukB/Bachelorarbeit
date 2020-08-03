@@ -43,6 +43,9 @@ Für eine lokale Ausführung der Anwendung muss im Root-Verzeichnis des Reposito
 ```
 Der Befehl bildet die in der docker-compose.yml-Datei enthaltene Anwendungen und fährt den gesamten Container hoch. Jeder wieitere Aufruf, fügt die neue App dem Container hinzu. Der gesamte Vorgang nimmt einige Minuten in Anspruch. 
 
+
+Der Anwendungsclient ist über http://localhost:3000 erreichbar.
+
 ##### Docker Compose
 Die docker-compose.yml-Datei enthält Environment-Parameter die je nach Bedarf geändert werden können.
 - Echtzeitserver
