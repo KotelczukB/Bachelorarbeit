@@ -3,6 +3,7 @@ import { Header } from '../Header/Header';
 import './Register.scss';
 import { IRTServer } from '../../models/IRTServer';
 import { getBackendURL, getRouterConnection } from '../../modules/get-envs';
+import getDEVServerURL from '../../modules/getDEV-serverURL';
 
 export interface IRegisterProps {}
 
@@ -42,7 +43,7 @@ export class Register extends React.Component<IRegisterProps, IRegisterState> {
 						const body: any = await res.json();
 						// set initial server data and player token to local storage
 						body.rt_servers.forEach((server: IRTServer) => {
-							localStorage.setItem(`rt_server_${server.type}`, server.serverURL);
+							localStorage.setItem(`rt_server_${server.type}`, getDEVServerURL(server.serverURL));
 						});
 						localStorage.setItem('token', body.token);
 

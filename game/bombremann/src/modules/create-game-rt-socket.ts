@@ -2,10 +2,11 @@
 import io from 'socket.io-client';
 import { ILoginRegisterAnswer } from '../models/ILoginRegisterAnswer';
 import { IRT_AppLoginAnswer } from '../models/IRT_AppLoginAnswer';
+import getDEVServerURL from './getDEV-serverURL';
 
 export default async (client: ILoginRegisterAnswer) => {
 	const login_response = await fetch(
-		`${client.rt_servers.filter((elem) => elem.type === 'application')[0].serverURL}/clients`,
+		`${getDEVServerURL(client.rt_servers.filter((elem) => elem.type === 'application')[0].serverURL)}/clients`,
 		{
 			method: 'POST',
 			body: JSON.stringify({
@@ -24,7 +25,7 @@ export default async (client: ILoginRegisterAnswer) => {
 		const login_data: IRT_AppLoginAnswer = await login_response.json();
 		// initial connection and registration data
 		console.log('Creating connection with SOCKET')
-		const game_socket = io(client.rt_servers.filter((elem) => elem.type === 'application')[0].serverURL, {
+		const game_socket = io(getDEVServerURL(client.rt_servers.filter((elem) => elem.type === 'application')[0].serverURL), {
 			query: {
         ...login_data,
         type: 'client'
@@ -38,5 +39,5 @@ export default async (client: ILoginRegisterAnswer) => {
 		console.log(`Game connected to game_application Server with socket`);
 		return game_socket;
 	}
-	throw new Error('GAME - Cannot connect to the realtime server - no socket connection possible!');
+	throw new Error(`GAME - Cannot connect to the realtime server - no socket connection possible! ${login_response.status}`);
 };

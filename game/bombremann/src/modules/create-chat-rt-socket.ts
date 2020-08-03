@@ -2,9 +2,10 @@
 import io from 'socket.io-client';
 import { ILoginRegisterAnswer } from '../models/ILoginRegisterAnswer';
 import { IRT_AppLoginAnswer } from '../models/IRT_AppLoginAnswer';
+import getDEVServerURL from './getDEV-serverURL';
 
 export default async (client: ILoginRegisterAnswer, app: any) => {
-	const rt_server_url = client.rt_servers.filter((elem) => elem.type === 'chat')[0].serverURL;
+	const rt_server_url = getDEVServerURL(client.rt_servers.filter((elem) => elem.type === 'chat')[0].serverURL);
 	const session_name = localStorage.getItem('session_name');
 	const login_response = await fetch(
 		`${rt_server_url}/clients`,

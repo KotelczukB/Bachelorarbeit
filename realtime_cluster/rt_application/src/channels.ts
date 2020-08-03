@@ -14,13 +14,12 @@ import sendDataToBackend from "./modules/rtFunctions/send-data-to-backend";
 import { _SessionState } from "./models/enums/_SessionState";
 import { addToDefaultParams } from "./modules/helpers/basic-default-service-params";
 import logger from "./logger";
+import { getType } from "./modules/helpers/get-envs";
 
 export default function (app: Application) {
   if (typeof app.channel !== "function") {
     return;
   }
-
-  const interval: number = app.get("min_rt_interval");
 
   //********************************************** */
   // Whole Channel setting logic
@@ -46,18 +45,18 @@ export default function (app: Application) {
           );
           if (!backend_instance || backend_instance.length < 1)
             throw new Error("requested Backendserver could not be found");
-
+          if(getType() === _AppType[_AppType.application]) {
           const backend_connection = app
             .channel("waiting")
             .connections.filter(
               (elem: any) => elem.backend_url === backend_instance[0].own_url
             );
           logger.info(`Socket ${obj.backend_channel} ${backend_connection[0].backend_url}`);
-          if (backend_connection[0] !== undefined)
             return [
               app.channel(obj.client_channel).join(connection),
               app.channel(obj.backend_channel).join(backend_connection[0]),
             ];
+          }
           return app.channel(obj.client_channel).join(connection);
         }
       )

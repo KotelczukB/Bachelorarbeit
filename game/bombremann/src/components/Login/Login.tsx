@@ -3,6 +3,7 @@ import './Login.scss'
 import { Header } from '../Header/Header';
 import { IRTServer } from '../../models/IRTServer';
 import { getBackendURL, getRouterConnection } from '../../modules/get-envs';
+import getDEVServerURL from '../../modules/getDEV-serverURL';
 
 export interface ILoginProps {}
 
@@ -37,7 +38,7 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
 					const body: any = await res.json();
 					if(body.data.length < 1)
 						throw new Error('You have to register first')
-					body.data[0].rt_servers.forEach((server: IRTServer) => { localStorage.setItem(`rt_server_${server.type}`, server.serverURL) });
+					body.data[0].rt_servers.forEach((server: IRTServer) => { localStorage.setItem(`rt_server_${server.type}`, getDEVServerURL(server.serverURL)) });
 					localStorage.setItem('token', body.data[0].token);
 					(this.props as any).history.push({
 						pathname: '/game',
