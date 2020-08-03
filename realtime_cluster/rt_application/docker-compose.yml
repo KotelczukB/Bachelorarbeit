@@ -18,9 +18,9 @@ services:
     environment: 
       - APP_TYPE=application
       - MONGO=mongodb://mongo_app:27017/rt_app
-      - ROUTER=http://host.docker.internal:3080/applications
+      - ROUTER=http://192.168.10.2:3080/applications
       - PORT=3050
-      - HOST=host.docker.internal
+      - HOST=192.168.10.3
       # Echtzeit Bedingung - dieser wert darf nicht uberschritten werden in der rt_server -> backend kommunikation (in ms)
       - RT_CONSTRAIN=500
       # Es besteht die Moglichkeit die Nachrichen an das Backend hinauszuzuggern um den Server nicht zu uberlasten - Gefahr bottleneck
@@ -52,9 +52,9 @@ services:
     environment: 
       - APP_TYPE=chat
       - MONGO=mongodb://mongo_chat:27017/rt_chat
-      - ROUTER=http://host.docker.internal:3080/applications
+      - ROUTER=http://192.168.10.2:3080/applications
       - PORT=3040
-      - HOST=host.docker.internal
+      - HOST=192.168.10.5
       # Just als placeholder damit versehentlich kein Fehler fliegt
       - RT_CONSTRAIN=60000
       # Just als placeholder damit versehentlich kein Fehler fliegt

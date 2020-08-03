@@ -15,9 +15,9 @@ services:
     restart: always
     environment: 
       - MONGO=mongodb://mongo_backend:27017/bombremann_backend
-      - ROUTER=http://host.docker.internal:3080/applications
+      - ROUTER=http://192.168.10.2:3080/applications
       - PORT=8080
-      - HOST=host.docker.internal
+      - HOST=192.168.10.4
     build: .
     ports:
       - "8080:8080"
