@@ -18,12 +18,30 @@ Falls Sie noch kein Docker haben, folgen Sie einer der Installationsanweisungen.
 Stellen Sie sicher, dass die Installation ebenfalls Docker Compose beinhaltet. 
 
 #### Starten der Anwendung
-Für eine lokale Ausführung muss im Root-Verzeichnis des Repositories folgender Befehl ausgeführt werden.
+Bevor die Anwendungscontainer gestartet werden können so müssen die in der docker-compose.yml-Datei referenzierten Networks angelegt werden. Führen Sie hierzu den folgenden Befehl für jedes der Networks aus.
+
+**network**: 
+  - rt_app_net
+  - rt_chat_net
+  - router_net
+  - game_backend_net
+  - static-network
+```
+ $ docker network create <network>
+```
+Für eine lokale Ausführung der Anwendung muss im Root-Verzeichnis des Repositories folgender Befehl für alle Apps in folgender Reihenfolge ausgeführt werden.
+
+**app:**
+  1. router
+  2. app
+  3. chat
+  4. backend
+  5. client
 
 ```
- $ docker-compose up -d --build
+ $ docker-compose up -d --build <app>
 ```
-Der Befehl bildet die in der docker-compose.yml-Datei enthaltenen Anwendungen und fährt den gesamten Container hoch. Der Vorgang nimmt einige Minuten in Anspruch. 
+Der Befehl bildet die in der docker-compose.yml-Datei enthaltene Anwendungen und fährt den gesamten Container hoch. Jeder wieitere Aufruf, fügt die neue App dem Container hinzu. Der gesamte Vorgang nimmt einige Minuten in Anspruch. 
 
 ##### Docker Compose
 Die docker-compose.yml-Datei enthält Environment-Parameter die je nach Bedarf geändert werden können.
