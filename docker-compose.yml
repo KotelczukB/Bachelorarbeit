@@ -28,7 +28,7 @@ services:
       - mongo_router
     networks: 
       router_net:
-      static-network: 
+      static_network: 
         ipv4_address: 172.20.128.10
 #RT_apps
   mongo_app:
@@ -66,7 +66,7 @@ services:
       - mongo_app
     networks: 
       rt_app_net:
-      static-network: 
+      static_network: 
         ipv4_address: 172.20.128.3
   mongo_chat:
     container_name: mongo_chat
@@ -103,7 +103,7 @@ services:
       - mongo_chat
     networks: 
       rt_chat_net:
-      static-network: 
+      static_network: 
         ipv4_address: 172.20.128.4
 # Spielbackend
   mongo_backend:
@@ -127,7 +127,7 @@ services:
       - PORT=8080
       - HOST=172.20.128.5
     build: 
-      context: ./game/bombremann-backend
+      context: ./game/bombremann_backend
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
@@ -140,17 +140,17 @@ services:
       - mongo_backend
     networks: 
       game_backend_net:
-      static-network: 
+      static_network: 
         ipv4_address: 172.20.128.5
 #Client
   client:
-    container_name: bombremann-client
+    container_name: bombremann_client
     restart: always
     build: ./game/bombremann
     ports:
       - "3000:3000"
     networks: 
-      static-network: 
+      static_network: 
         ipv4_address: 172.20.128.2
 volumes:
   mongodbdata:
@@ -164,17 +164,17 @@ volumes:
 networks: 
   rt_app_net:
     external: 
-      name: rt_service_app
+      name: rt_app_net
   rt_chat_net:
     external: 
-      name: rt_service_chat
+      name: rt_chat_net
   router_net:
     external:
       name: router_net
   game_backend_net:
     external:
       name: game_backend_net
-  static-network: 
+  static_network: 
     ipam: 
       config: 
         - subnet: 172.20.0.0/16
