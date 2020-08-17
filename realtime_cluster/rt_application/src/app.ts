@@ -21,13 +21,18 @@ import { getRouterConnection, getPort, getType, getHOST } from './modules/helper
 import getTimeStamp from './modules/helpers/getTimeStamp';
 // Don't remove this comment. It's needed to format import lines nicely.
 
+const corsOptions = {
+	origin: '*',
+	optionsSuccessStatus: 200
+}
+
 const app: Application = express(feathers());
 
 // Load app configuration
 app.configure(configuration());
 // Enable security, CORS, compression, favicon and body parsing
 app.use(helmet());
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(compress());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -67,10 +72,13 @@ fetch(`${getRouterConnection()}`, {
   method: "POST",
   body: JSON.stringify({
     type: getType(),
-    connection_string: `http://${getHOST()}:${getPort()}`,
+    connection_string: `https://${getHOST()}`,
     state: null
   }),
-  headers: { "Content-Type": "application/json" },
+  headers: { 
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*"
+  },
 }).then(resp => resp.json()).catch(logger.error)
 app.set('lastsend', getTimeStamp());
 app.hooks(appHooks);

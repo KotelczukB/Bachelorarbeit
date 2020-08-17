@@ -5,8 +5,9 @@ import { IRT_AppLoginAnswer } from '../models/IRT_AppLoginAnswer';
 import getDEVServerURL from './getDEV-serverURL';
 
 export default async (client: ILoginRegisterAnswer) => {
+	const serverUrl = `${getDEVServerURL(client.rt_servers.filter((elem) => elem.type === 'application')[0].serverURL)}/clients`.replace('http://','https://');
 	const login_response = await fetch(
-		`${getDEVServerURL(client.rt_servers.filter((elem) => elem.type === 'application')[0].serverURL)}/clients`,
+		serverUrl,
 		{
 			method: 'POST',
 			body: JSON.stringify({
@@ -17,7 +18,8 @@ export default async (client: ILoginRegisterAnswer) => {
 				token: client.token,
 			}),
 			headers: {
-				'Content-Type': 'application/json',
+				"Content-Type": "application/json",
+				"Access-Control-Allow-Origin": "*"
 			},
 		}
 	);

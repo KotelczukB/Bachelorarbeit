@@ -19,13 +19,18 @@ import channels from './channels';
 import mongodb from './mongodb';
 // Don't remove this comment. It's needed to format import lines nicely.
 
+const corsOptions = {
+	origin: '*',
+	optionsSuccessStatus: 200
+}
+
 const app: Application = express(feathers());
 
 // Load app configuration
 app.configure(configuration());
 // Enable security, CORS, compression, favicon and body parsing
 app.use(helmet());
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(compress());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

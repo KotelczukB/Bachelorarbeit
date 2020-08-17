@@ -15,7 +15,7 @@ export default (options = {}): Hook => {
     if (context.method === "create") {
       result.password = null;
       result.rt_setUp = rt_server.data.length > 1 ? rt_server.data : null;
-      result.backend_url = `http://${getHOST()}:${getPORT()}`;
+      result.backend_url = `http://${getHOST()}`;
     } else {
       if(context.params.provider !== undefined && context.params.provider !== 'server' && (result as any).data.length > 0)
       (result as any).data[0].rt_setUp = rt_server.data.length > 1 ? rt_server.data : null;

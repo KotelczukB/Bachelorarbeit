@@ -1,3 +1,3 @@
-export const BACKEND="http://172.20.128.5:8080";
-export const ROUTER=`${window.location.protocol}//${window.location.hostname}:3080/users`;
-export const DEBUG='DEV' // PROD
+export const BACKEND="https://bombremann-backend.kkf-solutions.de";
+export const ROUTER=`https://bombremann-router.kkf-solutions.de/users`;
+export const DEBUG='PROD' // DEV

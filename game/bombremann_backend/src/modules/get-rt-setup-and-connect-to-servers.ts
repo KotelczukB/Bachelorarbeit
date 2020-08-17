@@ -13,7 +13,10 @@ import logger from "../logger";
 export const getRTSetup = (app: Application) =>
   fetch(getRouterConnection(), {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+    },
   })
     .then(async (resp) => {
       if (resp.ok)
@@ -54,13 +57,16 @@ export const getRTSetup = (app: Application) =>
         await fetch(`${rt_server.serverURL}/backends`, {
           method: "POST",
           body: JSON.stringify({
-            own_url: `http://${getHOST()}:${getPORT()}`,
+            own_url: `https://${getHOST()}`,
             type: "backend",
             min_players: app.get("min_players"),
             max_players: app.get("max_players"),
             interval: app.get("custom_interval"),
           }),
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          },
         })));
         logger.info(`Server created on rt_server`);
       
@@ -71,11 +77,11 @@ export const getRTSetup = (app: Application) =>
         (elem) => elem.type === _RTServerType.application
         );
         if (!game_rt) throw new Error("Cannot create rt_server connection");
-        logger.info("Astimated connection with socket on ", game_rt)
+        logger.info("Estimated connection with socket on ", game_rt)
         // initial Data fur verbindung und registierung
         const socket = io(game_rt.serverURL, {
           query: {
-            backend_url: `http://${getHOST()}:${getPORT()}`,
+            backend_url: `https://${getHOST()}`,
             type: "backend",
           },
         });

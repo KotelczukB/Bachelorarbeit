@@ -31,6 +31,7 @@ export class Login extends React.Component<ILoginProps, ILoginState> {
 			await fetch(`${getRouterConnection()}?user_name=${this.state.user_name}&password=${this.state.password}&backend_url=${this.state.backend_url}`, {
 				method: 'GET',
 				headers: {
+					"Content-Type": "application/json",
 					"Access-Control-Allow-Origin": "*"
 				}
 			}).then(async (res) => {

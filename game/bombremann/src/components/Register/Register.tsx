@@ -30,7 +30,8 @@ export class Register extends React.Component<IRegisterProps, IRegisterState> {
 			await fetch(getRouterConnection(), {
 				method: 'POST',
 				headers: {
-					'Content-Type': 'application/json',
+					"Content-Type": "application/json",
+					"Access-Control-Allow-Origin": "*"
 				},
 				body: JSON.stringify({
 					user_name: this.state.user_name,

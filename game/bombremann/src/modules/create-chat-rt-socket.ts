@@ -19,7 +19,8 @@ export default async (client: ILoginRegisterAnswer, app: any) => {
 				token: client.token,
 			}),
 			headers: {
-				'Content-Type': 'application/json',
+				"Content-Type": "application/json",
+				"Access-Control-Allow-Origin": "*"
 			},
 		}
 	);

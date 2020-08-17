@@ -9,7 +9,15 @@ export const getPORT = (): string => {
   }
 };
 
-const port = getPORT();
+export const getPortInternal = (): string => {
+  if (process.env.PORT_INTERNAL) {
+    return process.env.PORT_INTERNAL;
+  } else {
+    throw new Error('critical ENV Variable not provided')
+  }
+};
+
+const port = getPortInternal();
 const server = app.listen(port);
 
 process.on('unhandledRejection', (reason, p) =>

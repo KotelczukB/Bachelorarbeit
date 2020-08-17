@@ -13,7 +13,7 @@ export default async (backend_url: string, session: string, client_token: string
     body: JSON.stringify(
       {
         game_session: session,
-        rt_serverURL: `http://${getHOST()}:${getPort()}`,
+        rt_serverURL: `https://${getHOST()}`,
         token: client_token,
       }
     )

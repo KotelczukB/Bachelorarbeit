@@ -1,8 +1,8 @@
 import logger from './logger';
 import app from './app';
-import { getPort } from './modules/helpers/get-envs';
+import { getPortInternal } from './modules/helpers/get-envs';
 
-const port = getPort();
+const port = getPortInternal();
 const server = app.listen(port);
 
 process.on('unhandledRejection', (reason, p) =>
@@ -10,5 +10,5 @@ process.on('unhandledRejection', (reason, p) =>
 );
 
 server.on('listening', () =>
-  logger.info('Feathers application started on http://%s:%d', getPort(), port)
+  logger.info('Feathers application started on http://%s:%d', getPortInternal(), port)
 );

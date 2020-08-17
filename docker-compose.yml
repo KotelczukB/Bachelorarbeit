@@ -1,24 +1,63 @@
 version: '3'
+
 services:
-#router
+
+  # nginx
+  nginx:
+    image: nginx:1.19.2-alpine
+    container_name: nginx
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./../../nginx-proxy/config:/etc/nginx/conf.d
+      - ./../../nginx-proxy/data/certbot/conf:/etc/letsencrypt
+      - ./../../nginx-proxy/data/certbot/www:/var/www/certbot
+    restart: always
+    links:
+      - router:ROUTER
+      - client:CLIENT
+      - app:RT_APP
+      - chat:RT_CHAT
+      - backend:BACKEND
+    networks:
+      proxy-tier:
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    volumes:
+      - ./../../nginx-proxy/data/certbot/conf:/etc/letsencrypt
+      - ./../../nginx-proxy/data/certbot/www:/var/www/certbot
+    restart: always
+    networks:
+      proxy-tier:
+
+
+  # router
   mongo_router:
     container_name: mongo_router
     restart: always
     image: mongo:latest
     volumes:
-       - mongodbdata_router:/data/router/db
+       - ./data/mongodbdata_router:/data/router/db
        - ./etc/mongod.conf:/etc/mongo/mongod.conf
     ports:
       - '27030:27017'
     command: --config /etc/mongo/mongod.conf
     networks: 
       router_net:
+
   router:
+    image: 'bombremann/router'
     container_name: router
     restart: always
     environment: 
       - MONGO=mongodb://mongo_router:27017/rt_router
-      - PORT=3080
+      - PORT=443
+      - PORT_INTERNAL=3080
     build: ./realtime_cluster/router
     ports:
       - "3080:3080"
@@ -28,15 +67,15 @@ services:
       - mongo_router
     networks: 
       router_net:
-      static_network: 
-        ipv4_address: 172.20.128.10
-#RT_apps
+      proxy-tier:
+
+  #rt_app
   mongo_app:
     container_name: mongo_app
     restart: always
     image: mongo:latest
     volumes:
-       - mongodbdata:/data/app/db
+       - ./data/mongodbdata_app:/data/app/db
        - ./etc/mongod.conf:/etc/mongo/mongod.conf
     ports:
       - '27017:27017'
@@ -44,14 +83,16 @@ services:
     networks: 
       rt_app_net:
   app:
+    image: 'bombremann/rt_app'
     container_name: rt_app
     restart: always
     environment: 
       - APP_TYPE=application
       - MONGO=mongodb://mongo_app:27017/rt_app
-      - ROUTER=http://172.20.128.10:3080/applications
-      - PORT=3050
-      - HOST=172.20.128.3
+      - ROUTER=https://bombremann-router.kkf-solutions.de/applications
+      - PORT=443
+      - PORT_INTERNAL=3050
+      - HOST=bombremann-app.kkf-solutions.de
       # Echtzeit Bedingung - dieser wert darf nicht uberschritten werden in der rt_server -> backend kommunikation (in ms)
       - RT_CONSTRAIN=500
       # Es besteht die Moglichkeit die Nachrichen an das Backend hinauszuzuggern um den Server nicht zu uberlasten - Gefahr bottleneck
@@ -61,34 +102,38 @@ services:
       - "3050:3050"
     depends_on:
       - mongo_app
-      - router
+      # - router
     links:
       - mongo_app
     networks: 
       rt_app_net:
-      static_network: 
-        ipv4_address: 172.20.128.3
+      proxy-tier:
+
+  # rt_chat
   mongo_chat:
     container_name: mongo_chat
     restart: always
     image: mongo:latest
     volumes:
-       - mongodbdata_chat:/data/chat/db
+       - ./data/mongodbdata_chat:/data/chat/db
        - ./etc/mongod.conf:/etc/mongo/mongod.conf
     ports:
       - '27020:27017'
     command: --config /etc/mongo/mongod.conf
     networks: 
       rt_chat_net:
+
   chat:
+    image: 'bombremann/rt_chat'
     container_name: rt_chat
     restart: always
     environment: 
       - APP_TYPE=chat
       - MONGO=mongodb://mongo_chat:27017/rt_chat
-      - ROUTER=http://172.20.128.10:3080/applications
-      - PORT=3040
-      - HOST=172.20.128.4
+      - ROUTER=https://bombremann-router.kkf-solutions.de/applications
+      - PORT=443
+      - PORT_INTERNAL=3040
+      - HOST=bombremann-chat.kkf-solutions.de
       # Just als placeholder damit versehentlich kein Fehler fliegt
       - RT_CONSTRAIN=60000
       # Just als placeholder damit versehentlich kein Fehler fliegt
@@ -98,20 +143,20 @@ services:
       - "3040:3040"
     depends_on:
       - mongo_chat
-      - router
+      # - router
     links:
       - mongo_chat
     networks: 
       rt_chat_net:
-      static_network: 
-        ipv4_address: 172.20.128.4
-# Spielbackend
+      proxy-tier:
+  
+  # backend
   mongo_backend:
     container_name: mongo_backend
     restart: always
     image: mongo:latest
     volumes:
-       - mongodbdata_backend:/data/backend/db
+       - ./data/mongodbdata_backend:/data/backend/db
        - ./etc/mongod.conf:/etc/mongo/mongod.conf
     ports:
       - '27040:27017'
@@ -119,13 +164,15 @@ services:
     networks: 
       game_backend_net:
   backend:
+    image: 'bombremann/backend'
     container_name: game_backend
     restart: always
     environment: 
       - MONGO=mongodb://mongo_backend:27017/bombremann_backend
-      - ROUTER=http://172.20.128.10:3080/applications
-      - PORT=8080
-      - HOST=172.20.128.5
+      - ROUTER=https://bombremann-router.kkf-solutions.de/applications
+      - PORT=443
+      - PORT_INTERNAL=8080
+      - HOST=bombremann-backend.kkf-solutions.de
     build: 
       context: ./game/bombremann_backend
       dockerfile: Dockerfile
@@ -133,34 +180,26 @@ services:
       - "8080:8080"
     depends_on:
       - mongo_backend
-      - router
-      - app
-      - chat
+      # - router
+      # - app
+      # - chat
     links:
       - mongo_backend
     networks: 
       game_backend_net:
-      static_network: 
-        ipv4_address: 172.20.128.5
-#Client
+      proxy-tier:
+
+  # client
   client:
+    image: 'bombremann/client'
     container_name: bombremann_client
     restart: always
     build: ./game/bombremann
     ports:
       - "3000:3000"
     networks: 
-      static_network: 
-        ipv4_address: 172.20.128.2
-volumes:
-  mongodbdata:
-    external: false
-  mongodbdata_chat:
-    external: false
-  mongodbdata_router:
-    external: false
-  mongodbdata_backend:
-    external: false
+      proxy-tier:
+
 networks: 
   rt_app_net:
     external: 
@@ -174,7 +213,6 @@ networks:
   game_backend_net:
     external:
       name: game_backend_net
-  static_network: 
-    ipam: 
-      config: 
-        - subnet: 172.20.0.0/16
+  proxy-tier:
+    external:
+      name: nginx-proxy

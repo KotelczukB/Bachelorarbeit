@@ -23,6 +23,14 @@ export const getPORT = (): string => {
   }
 };
 
+export const getPortInternal = (): string => {
+  if (process.env.PORT_INTERNAL) {
+    return process.env.PORT_INTERNAL;
+  } else {
+    throw new Error('critical ENV Variable not provided')
+  }
+};
+
 export const getHOST = (): string => {
   if (process.env.HOST) {
     return process.env.HOST;

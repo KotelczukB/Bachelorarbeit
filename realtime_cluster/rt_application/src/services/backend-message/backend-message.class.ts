@@ -59,7 +59,7 @@ export class BackendMessage implements ServiceMethods<Data> {
               )
                 .then(
                   clientInputsAppRtModifications(
-                    `http://${getHOST()}:${getPort()}`,
+                    `https://${getHOST()}`,
                     session.backends_channel,
                     session.backend[0]
                   )

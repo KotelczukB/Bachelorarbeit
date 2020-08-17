@@ -1,8 +1,8 @@
 import logger from './logger';
 import app from './app';
-import { getPORT, getHOST } from './modules/get-envs';
+import { getPortInternal, getHOST } from './modules/get-envs';
 
-const port = getPORT();
+const port = getPortInternal();
 const server = app.listen(port);
 
 process.on('unhandledRejection', (reason, p) =>
