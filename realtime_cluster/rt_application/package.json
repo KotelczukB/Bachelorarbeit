@@ -52,7 +52,7 @@
         "helmet": "^3.22.1",
         "mongodb": "^3.5.9",
         "mongodb-core": "^3.2.7",
-        "node-fetch": "^2.6.0",
+        "node-fetch": "^2.6.1",
         "ramda": "^0.27.0",
         "serve-favicon": "^2.5.0",
         "winston": "^3.2.1"
